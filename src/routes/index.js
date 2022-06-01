@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
+import ClassList from './ClassList';
 import Login from './Login';
 import NotFound from './NotFound';
 import PrivateRoute from './PrivateRoute';
@@ -17,9 +18,9 @@ export const publicRoute = [
 
 export const privateRoute = [
     {
-        path: 'login',
-        name: 'login',
-        component: <Login />,
+        path: 'class-list',
+        name: 'class-list',
+        component: <ClassList />,
         exact: true,
         restrict: true,
     },
