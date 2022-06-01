@@ -6,6 +6,7 @@ import Login from './Login';
 import NotFound from './NotFound';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
+import StudentList from './StudentList';
 
 export const RouterComponent = ({ isAuth, setAuth }) => {
     const publicRoute = [
@@ -23,6 +24,13 @@ export const RouterComponent = ({ isAuth, setAuth }) => {
             path: 'class-list',
             name: 'class-list',
             component: <ClassList />,
+            exact: true,
+            restrict: true,
+        },
+        {
+            path: 'student-list',
+            name: 'student-list',
+            component: <StudentList />,
             exact: true,
             restrict: true,
         },
