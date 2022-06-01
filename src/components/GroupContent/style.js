@@ -38,7 +38,6 @@ const GMember = styled.div`
 
 const GFooter = styled.div`
     display: flex;
-    justify-content: space-between;
     align-items: center;
     width: 100%;
 `;
@@ -56,6 +55,7 @@ const GButton = styled.button`
     text-transform: uppercase;
     font-size: 14px;
     color: #ffffff;
+    margin-right: 10px;
     :hover {
         cursor: pointer;
     }

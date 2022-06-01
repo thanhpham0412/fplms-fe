@@ -132,7 +132,7 @@ const SideBar = () => {
     };
 
     return (
-        <StyledContainer width="250px" height="100vh" padding="16px 0" shadow>
+        <StyledContainer width="250px" height="100%" padding="16px 0" shadow>
             <StyledContainer height="fit-content" padding="0 16px">
                 <StyledJumbotron />
             </StyledContainer>
