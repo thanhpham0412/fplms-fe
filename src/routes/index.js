@@ -1,8 +1,10 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
+import RoutePaging from '../components/RoutePaging';
 import NotFound from './NotFound';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
+import StudentList from './StudentList';
 
 export const publicRoute = [
     {
@@ -14,7 +16,15 @@ export const publicRoute = [
     },
 ];
 
-export const privateRoute = [];
+export const privateRoute = [
+    {
+        path: 'student-list',
+        name: 'student-list',
+        component: <StudentList />,
+        exact: true,
+        restrict: true,
+    },
+];
 
 export const RouterComponent = ({ isAuth }) => {
     return (
@@ -26,7 +36,7 @@ export const RouterComponent = ({ isAuth }) => {
                         <Route
                             key={route.name}
                             path={route.path}
-                            element={route.component}
+                            element={<RoutePaging component={route.component} />}
                             exact={route.exact}
                             restrict={route.restrict}
                         />
