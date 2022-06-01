@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
+import ClassList from './ClassList';
 import NotFound from './NotFound';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
@@ -14,7 +15,15 @@ export const publicRoute = [
     },
 ];
 
-export const privateRoute = [];
+export const privateRoute = [
+    {
+        path: 'class-list',
+        name: 'class-list',
+        component: <ClassList />,
+        exact: true,
+        restrict: true,
+    },
+];
 
 export const RouterComponent = ({ isAuth }) => {
     return (
