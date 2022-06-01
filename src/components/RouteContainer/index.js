@@ -1,12 +1,6 @@
 import Header from '../Header';
 import SideBar from '../SideBar';
-import {
-    StyledContainer,
-    StyledHolder,
-    StyledHeader,
-    HeaderContainer,
-    BodyContainer,
-} from './style';
+import { StyledContainer, StyledHeader, HeaderContainer, BodyContainer } from './style';
 
 const RouteContainer = ({ component }) => {
     return (
@@ -19,7 +13,6 @@ const RouteContainer = ({ component }) => {
                     <SideBar />
                 </HeaderContainer>
                 <BodyContainer>{component}</BodyContainer>
-                <StyledHolder />
             </StyledContainer>
         </>
     );
