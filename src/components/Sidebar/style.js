@@ -15,10 +15,10 @@ export const StyledContainer = styled.div`
     box-shadow: ${({ shadow }) => (shadow ? 'rgba(0, 0, 0, 0.16) 0px 1px 4px' : null)};
     font-family: Segoe UI;
     z-index: 10;
-
     * {
         box-sizing: border-box;
     }
+    grid-area: sidebar;
 `;
 
 export const StyledJumbotron = styled.div`

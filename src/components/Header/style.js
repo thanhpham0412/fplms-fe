@@ -9,6 +9,7 @@ const HContainer = styled.header`
     align-items: center;
     background: #ffffff;
     box-shadow: 0px 4px 2px rgba(0, 0, 0, 0.25);
+    grid-area: head;
 `;
 
 const HLogo = styled.div`

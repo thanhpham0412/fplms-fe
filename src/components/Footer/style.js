@@ -9,6 +9,7 @@ const FSection = styled.div`
     margin-top: 25px;
     bottom: 0;
     left: 0;
+    grid-area: footer;
 `;
 
 const FTitle = styled.div`

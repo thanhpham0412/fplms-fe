@@ -6,7 +6,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 
 const Header = () => {
     return (
-        <div>
+        <>
             <HContainer>
                 <HLogo>
                     <img src={logo} alt="FPT Logo" />
@@ -37,7 +37,7 @@ const Header = () => {
                     </HLink>
                 </HIcons>
             </HContainer>
-        </div>
+        </>
     );
 };
 

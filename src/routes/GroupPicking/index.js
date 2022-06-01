@@ -1,5 +1,5 @@
 import bannerImg from '../../assets/header.png';
-import { Footer, GroupContent, Header } from '../../components';
+import { GroupContent } from '../../components';
 // import SideBar from '../../components/Sidebar';
 import {
     Container,
@@ -16,7 +16,6 @@ import {
 const GroupPicking = () => {
     return (
         <>
-            <Header />
             {/* <SideBar /> */}
             <Container>
                 <GBanner>
@@ -39,7 +38,6 @@ const GroupPicking = () => {
                         <GroupContent currentMembers={0} maxMembers={'6'} role={'lecturer'} />
                     </GroupListContainer>
                 </GJumbotron>
-                <Footer />
             </Container>
         </>
     );
