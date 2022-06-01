@@ -1,3 +1,4 @@
 import Button from './Button';
+import Particles from './Particles';
 
-export { Button };
+export { Button, Particles };
