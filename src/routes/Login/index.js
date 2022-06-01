@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { GoogleLogin } from 'react-google-login';
+import { useNavigate } from 'react-router-dom';
 
 import smImg1 from '../../assets/LoginHero/image 2.png';
 import smImg2 from '../../assets/LoginHero/image 3.png';
@@ -16,6 +17,8 @@ import {
 } from './style';
 
 const Login = ({ setAuth }) => {
+    const navigate = useNavigate();
+
     document.title = 'Login';
 
     const URL = process.env.REACT_APP_API_URL + '/auth/accounts/';
@@ -28,6 +31,7 @@ const Login = ({ setAuth }) => {
             })
             .then(() => {
                 setAuth(true);
+                navigate('/class-list');
             });
     };
 
