@@ -4,19 +4,19 @@ import NotFound from './NotFound';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 
-export const publicRoute = [
-    {
-        path: 'not-found',
-        name: 'not-found',
-        component: <NotFound />,
-        exact: true,
-        restrict: true,
-    },
-];
-
-export const privateRoute = [];
-
 export const RouterComponent = ({ isAuth }) => {
+    const publicRoute = [
+        {
+            path: 'not-found',
+            name: 'not-found',
+            component: <NotFound />,
+            exact: true,
+            restrict: true,
+        },
+    ];
+
+    const privateRoute = [];
+
     return (
         <BrowserRouter>
             <Routes>
