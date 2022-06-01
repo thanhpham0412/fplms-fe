@@ -12,5 +12,3 @@
 <h2>Branch naming rule:</h2>
 <p>section/{branch-name}</p>
 <p>e.g section/login, section/sutdent-list</p>
-# blank-repo
-# blank-repo
