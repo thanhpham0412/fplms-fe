@@ -6,27 +6,27 @@ import NotFound from './NotFound';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 
-export const publicRoute = [
-    {
-        path: 'login',
-        name: 'login',
-        component: <Login />,
-        exact: true,
-        restrict: true,
-    },
-];
+export const RouterComponent = ({ isAuth, setAuth }) => {
+    const publicRoute = [
+        {
+            path: 'login',
+            name: 'login',
+            component: <Login setAuth={setAuth} />,
+            exact: true,
+            restrict: true,
+        },
+    ];
 
-export const privateRoute = [
-    {
-        path: 'class-list',
-        name: 'class-list',
-        component: <ClassList />,
-        exact: true,
-        restrict: true,
-    },
-];
+    const privateRoute = [
+        {
+            path: 'class-list',
+            name: 'class-list',
+            component: <ClassList />,
+            exact: true,
+            restrict: true,
+        },
+    ];
 
-export const RouterComponent = ({ isAuth }) => {
     return (
         <BrowserRouter>
             <Routes>

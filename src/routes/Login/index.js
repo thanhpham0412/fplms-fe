@@ -15,24 +15,20 @@ import {
     StyledForm,
 } from './style';
 
-const Login = () => {
+const Login = ({ setAuth }) => {
     document.title = 'Login';
 
     const URL = process.env.REACT_APP_API_URL + '/auth/accounts/';
 
     const responseGoogle = (response) => {
-        console.log(response);
-        axios.post(URL, {
-            idToken: response.tokenId,
-            provider: 'GOOGLE',
-        });
-        console.log({
-            url: URL,
-            data: {
+        axios
+            .post(URL, {
                 idToken: response.tokenId,
                 provider: 'GOOGLE',
-            },
-        });
+            })
+            .then(() => {
+                setAuth(true);
+            });
     };
 
     const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
