@@ -2,14 +2,7 @@ import { useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
-import {
-    StyledContainer,
-    StyledJumbotron,
-    StyledLine,
-    StyledUL,
-    StyledSection,
-    StyledBlock,
-} from './style';
+import { StyledContainer, StyledUL, StyledSection, StyledBlock } from './style';
 
 import ForumIcon from '@mui/icons-material/Forum';
 import HomeIcon from '@mui/icons-material/Home';
@@ -54,7 +47,7 @@ const Menu = ({ menu, level, expand, setShow }) => {
             {menu.map((section) => (
                 <Section
                     setShow={setShow}
-                    key={section.path || section.title}
+                    key={section.path + section.title}
                     section={section}
                     level={level}
                 />
@@ -132,11 +125,7 @@ const SideBar = () => {
     };
 
     return (
-        <StyledContainer width="250px" height="100vh" padding="16px 0" shadow position="fixed">
-            <StyledContainer height="fit-content" padding="0 16px">
-                <StyledJumbotron />
-            </StyledContainer>
-            <StyledLine />
+        <StyledContainer width="275px" height="100vh" padding="16px 0" position="fixed" shadow>
             <StyledContainer padding="0px">
                 <Menu menu={menu} level={1} expand={true} setShow={setShow} />
             </StyledContainer>
