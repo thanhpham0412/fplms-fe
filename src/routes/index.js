@@ -1,20 +1,29 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
+import Login from './Login';
 import NotFound from './NotFound';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 
 export const publicRoute = [
     {
-        path: 'not-found',
-        name: 'not-found',
-        component: <NotFound />,
+        path: 'login',
+        name: 'login',
+        component: <Login />,
         exact: true,
         restrict: true,
     },
 ];
 
-export const privateRoute = [];
+export const privateRoute = [
+    {
+        path: 'login',
+        name: 'login',
+        component: <Login />,
+        exact: true,
+        restrict: true,
+    },
+];
 
 export const RouterComponent = ({ isAuth }) => {
     return (
