@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 
 const StyledContainer = styled.div`
-    max-width: 1200px;
+    max-width: 1100px;
     position: relative;
-    padding: 15px;
     * {
         box-sizing: border-box;
     }
