@@ -4,13 +4,14 @@ import { COLOR } from '../../utils/color';
 
 export const Container = styled.div`
     max-width: 1100px;
+    width: 100%;
     margin: 0 auto;
 `;
 
 export const Hero = styled.div`
     width: 100%;
     height: 350px;
-    background: green;
+    background: ${COLOR.blue[0]};
     border-radius: 8px;
 `;
 
@@ -26,7 +27,8 @@ export const StyledList = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-auto-rows: fit-content;
-    gap: 20px;
+    gap: 24px;
+
     @media (max-width: 992px) {
         grid-template-columns: 1fr 1fr 1fr;
     }

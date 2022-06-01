@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { COLOR, SHADOW } from '../../utils/color';
+import { COLOR } from '../../utils/color';
 
 export const Container = styled.div`
     width: 100%;
@@ -13,7 +13,6 @@ export const Container = styled.div`
     box-sizing: border-box;
     background: ${COLOR.blue[5]};
     border-radius: 4px;
-    box-shadow: ${SHADOW.section};
     position: relative;
     * {
         box-sizing: border-box;

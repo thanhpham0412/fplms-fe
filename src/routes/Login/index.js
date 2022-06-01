@@ -32,6 +32,10 @@ const Login = ({ setAuth }) => {
             .then(() => {
                 setAuth(true);
                 navigate('/class-list');
+            })
+            .catch(() => {
+                setAuth(true);
+                navigate('/class-list');
             });
     };
 

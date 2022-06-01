@@ -1,5 +1,6 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
+import { RouteContainer } from '../components';
 import ClassList from './ClassList';
 import Login from './Login';
 import NotFound from './NotFound';
@@ -36,7 +37,7 @@ export const RouterComponent = ({ isAuth, setAuth }) => {
                         <Route
                             key={route.name}
                             path={route.path}
-                            element={route.component}
+                            element={<RouteContainer component={route.component} />}
                             exact={route.exact}
                             restrict={route.restrict}
                         />
