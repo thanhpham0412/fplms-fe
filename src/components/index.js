@@ -3,6 +3,7 @@ import ClassSection from './ClassSection';
 import CreateClass from './CreateClass';
 import CreateClassForm from './CreateClassForm';
 import Footer from './Footer';
+import GroupContent from './GroupContent';
 import { BigImg, SmallImg } from './LoginHero';
 import Overlay from './Overlay';
 import Particles from './Particles';
@@ -23,4 +24,5 @@ export {
     CreateClassForm,
     Footer,
     StudentRow,
+    GroupContent,
 };

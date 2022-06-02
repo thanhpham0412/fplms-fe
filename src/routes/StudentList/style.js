@@ -3,6 +3,7 @@ import styled from 'styled-components';
 const StyledContainer = styled.div`
     max-width: 1100px;
     position: relative;
+    margin: 0 auto;
     * {
         box-sizing: border-box;
     }

@@ -1,13 +1,21 @@
 import { Container } from './style';
 
 const Overlay = ({ children, showing }) => {
-    // if (showing) {
-    //     document.body.style.overflow = 'hidden';
-    // } else {
-    //     document.body.style.overflow = 'auto';
-    // }
+    if (showing) {
+        document.body.style.overflow = 'hidden';
+    } else {
+        document.body.style.overflow = 'auto';
+    }
 
-    return <Container isDisplay={showing}>{children}</Container>;
+    const hide = () => {
+        console.log(showing);
+    };
+
+    return (
+        <Container isDisplay={showing} onClick={hide}>
+            {children}
+        </Container>
+    );
 };
 
 export default Overlay;

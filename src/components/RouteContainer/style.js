@@ -6,7 +6,7 @@ export const StyledContainer = styled.div`
     height: auto;
     width: 100%;
     display: grid;
-    grid-template-columns: 250px 1fr 250px;
+    grid-template-columns: 275px 1fr 275px;
     z-index: 1;
 `;
 

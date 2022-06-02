@@ -67,12 +67,12 @@ const SideBar = () => {
         },
         {
             title: 'Class list',
-            path: '#',
+            path: '/class-list',
             icon: <SchoolIcon />,
             submenu: [
                 {
                     title: 'My classes',
-                    path: '#',
+                    path: '/group-picking',
                     submenu: [],
                 },
                 {

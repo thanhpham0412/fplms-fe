@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
 import { RouteContainer } from '../components';
 import ClassList from './ClassList';
+import GroupPicking from './GroupPicking';
 import Login from './Login';
 import NotFound from './NotFound';
 import PrivateRoute from './PrivateRoute';
@@ -34,6 +35,13 @@ export const RouterComponent = ({ isAuth, setAuth }) => {
             exact: true,
             restrict: true,
         },
+        {
+            path: 'group-picking',
+            name: 'group-picking',
+            component: <GroupPicking />,
+            exact: true,
+            restrict: true,
+        },
     ];
 
     return (
@@ -62,6 +70,7 @@ export const RouterComponent = ({ isAuth, setAuth }) => {
                         />
                     ))}
                 </Route>
+
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
