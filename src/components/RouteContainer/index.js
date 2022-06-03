@@ -1,5 +1,5 @@
 import Header from '../Header';
-import SideBar from '../SideBar';
+import SideBar from '../Sidebar';
 import { StyledContainer, StyledHeader, HeaderContainer, BodyContainer } from './style';
 
 const RouteContainer = ({ component }) => {

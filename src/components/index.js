@@ -8,7 +8,7 @@ import { BigImg, SmallImg } from './LoginHero';
 import Overlay from './Overlay';
 import Particles from './Particles';
 import RouteContainer from './RouteContainer';
-import SideBar from './SideBar';
+import SideBar from './Sidebar';
 import StudentRow from './StudentRow';
 
 export {

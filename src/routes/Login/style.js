@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { COLOR } from '../../utils/color';
+import { COLOR } from '../../utils/style';
 
 const StyledContainer = styled.div`
     user-select: none;

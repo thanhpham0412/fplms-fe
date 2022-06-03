@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { COLOR } from '../../utils/color';
+import { COLOR } from '../../utils/style';
 
 const Particles = () => {
     const canvas = useRef();
