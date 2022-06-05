@@ -9,40 +9,42 @@ import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 import StudentList from './StudentList';
 
-export const RouterComponent = ({ isAuth, setAuth }) => {
-    const publicRoute = [
-        {
-            path: 'login',
-            name: 'login',
-            component: <Login setAuth={setAuth} />,
-            exact: true,
-            restrict: true,
-        },
-    ];
+export const publicRoute = [
+    {
+        path: 'login',
+        name: 'login',
+        component: Login,
+        exact: true,
+        restrict: true,
+    },
+];
 
-    const privateRoute = [
-        {
-            path: 'class-list',
-            name: 'class-list',
-            component: <ClassList />,
-            exact: true,
-            restrict: true,
-        },
-        {
-            path: 'student-list',
-            name: 'student-list',
-            component: <StudentList />,
-            exact: true,
-            restrict: true,
-        },
-        {
-            path: 'group-picking',
-            name: 'group-picking',
-            component: <GroupPicking />,
-            exact: true,
-            restrict: true,
-        },
-    ];
+export const privateRoute = [
+    {
+        path: 'class-list',
+        name: 'class-list',
+        component: ClassList,
+        exact: true,
+        restrict: true,
+    },
+    {
+        path: 'student-list',
+        name: 'student-list',
+        component: StudentList,
+        exact: true,
+        restrict: true,
+    },
+    {
+        path: 'group-picking',
+        name: 'group-picking',
+        component: GroupPicking,
+        exact: true,
+        restrict: true,
+    },
+];
+
+export const RouterComponent = ({ isAuth, setAuth }) => {
+    const routes = publicRoute.concat(privateRoute);
 
     return (
         <BrowserRouter>
@@ -53,7 +55,12 @@ export const RouterComponent = ({ isAuth, setAuth }) => {
                         <Route
                             key={route.name}
                             path={route.path}
-                            element={<RouteContainer component={route.component} />}
+                            element={
+                                <RouteContainer
+                                    routes={routes}
+                                    component={<route.component setAuth={setAuth} />}
+                                />
+                            }
                             exact={route.exact}
                             restrict={route.restrict}
                         />
@@ -64,7 +71,7 @@ export const RouterComponent = ({ isAuth, setAuth }) => {
                         <Route
                             key={route.name}
                             path={route.path}
-                            element={route.component}
+                            element={<route.component />}
                             exact={route.exact}
                             restrict={route.restrict}
                         />

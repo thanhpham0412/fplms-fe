@@ -6,7 +6,7 @@ export const StyledContainer = styled.div`
     height: auto;
     width: 100%;
     display: grid;
-    grid-template-columns: 275px 1fr 275px;
+    grid-template-columns: 275px 1fr;
     z-index: 1;
 `;
 
@@ -30,5 +30,5 @@ export const HeaderContainer = styled.div`
 
 export const BodyContainer = styled.div`
     box-sizing: border-box;
-    margin: 1.5rem;
+    margin: 24px;
 `;

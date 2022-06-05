@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
-import { ClassSection as Section, CreateClass, CreateClassForm } from '../../components';
-import { Container, Hero, Title, StyledList } from './style';
+import { ClassSection as Section, CreateClassForm } from '../../components';
+import { Container, StyledList } from './style';
 
 const ClassList = () => {
     const [classes] = useState(
@@ -18,10 +18,7 @@ const ClassList = () => {
         <>
             <CreateClassForm showing={isCreate} setCreate={setCreate} />
             <Container>
-                <Hero />
-                <Title>CLASS LIST</Title>
                 <StyledList>
-                    <CreateClass setCreate={setCreate} />
                     {classes.map((classData, index) => (
                         <Section key={index} {...classData} />
                     ))}

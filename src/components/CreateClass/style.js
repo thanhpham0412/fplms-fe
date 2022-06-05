@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { COLOR } from '../../utils/style';
 
 export const Container = styled.div`
-    max-width: 300px;
+    max-width: 100%;
     height: auto;
     padding: 16px;
     display: flex;

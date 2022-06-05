@@ -5,14 +5,13 @@ import { COLOR } from '../../utils/style';
 export const Container = styled.div`
     width: 100%;
     height: auto;
-    padding: 16px;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     gap: 16px;
     background: green;
     box-sizing: border-box;
     background: ${COLOR.blue[5]};
-    border-radius: 4px;
     position: relative;
     * {
         box-sizing: border-box;
@@ -39,7 +38,7 @@ export const InputContainer = styled.div`
     width: ${({ open }) => (open ? '100%' : '0')};
     overflow: hidden;
     height: 100%;
-    transition: all 0.5s;
+    transition: all 0.3s;
 `;
 
 export const StyledInput = styled.input`
@@ -71,15 +70,13 @@ export const StyledButton = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 0.5s;
-    transition-delay: 0.2s;
+    transition: all 0.3s;
     span {
         color: white;
         display: block;
         width: ${({ open }) => (!open ? '100%' : '0px')};
         overflow: hidden;
-        transition: all 0.5s;
-        transition-delay: 0.5s;
+        transition: all 0.3s;
         text-align: center;
     }
     svg {
@@ -87,8 +84,7 @@ export const StyledButton = styled.div`
         height: 17px;
         fill: ${COLOR.primary02};
         overflow: hidden;
-        transition: all 0.5s;
-        transition-delay: 0.5s;
+        transition: all 0.3s;
     }
     :active {
         background: ${COLOR.blue[1]};

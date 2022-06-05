@@ -1,3 +1,4 @@
+import Breadcrumbs from './Breadcrumbs';
 import Button from './Button';
 import ClassSection from './ClassSection';
 import CreateClass from './CreateClass';
@@ -25,4 +26,5 @@ export {
     Footer,
     StudentRow,
     GroupContent,
+    Breadcrumbs,
 };

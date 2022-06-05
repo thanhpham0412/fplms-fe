@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { COLOR } from '../../utils/style';
 
 export const Container = styled.div`
-    max-width: 1100px;
+    max-width: 100%;
     width: 100%;
     margin: 0 auto;
 `;
@@ -29,13 +29,13 @@ export const StyledList = styled.div`
     grid-auto-rows: fit-content;
     gap: 24px;
 
-    @media (max-width: 992px) {
+    @media (max-width: 1400px) {
         grid-template-columns: 1fr 1fr 1fr;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 1200px) {
         grid-template-columns: 1fr 1fr;
     }
-    @media (max-width: 576px) {
+    @media (max-width: 992px) {
         grid-template-columns: 1fr;
     }
 `;
