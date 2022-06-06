@@ -18,7 +18,6 @@ export const StyledContainer = styled.div`
     * {
         box-sizing: border-box;
     }
-    grid-area: sidebar;
 `;
 
 export const StyledJumbotron = styled.div`
