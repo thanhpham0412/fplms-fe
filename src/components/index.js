@@ -1,4 +1,3 @@
-import Breadcrumbs from './Breadcrumbs';
 import Button from './Button';
 import ClassSection from './ClassSection';
 import CreateClass from './CreateClass';
@@ -9,6 +8,7 @@ import { BigImg, SmallImg } from './LoginHero';
 import Overlay from './Overlay';
 import Particles from './Particles';
 import RouteContainer from './RouteContainer';
+import Selection from './Selection';
 import SideBar from './Sidebar';
 import StudentRow from './StudentRow';
 
@@ -26,5 +26,5 @@ export {
     Footer,
     StudentRow,
     GroupContent,
-    Breadcrumbs,
+    Selection,
 };

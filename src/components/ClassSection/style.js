@@ -5,14 +5,15 @@ import { COLOR } from '../../utils/style';
 export const Container = styled.div`
     width: 100%;
     height: auto;
-    padding: 2rem;
+    padding: 1.75rem;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 1.5rem;
     background: green;
     box-sizing: border-box;
     background: ${COLOR.blue[5]};
     position: relative;
+    border-radius: 4px;
     * {
         box-sizing: border-box;
         font-size: 1rem;
@@ -31,7 +32,7 @@ export const Row = styled.div`
 `;
 
 export const DetailText = styled.div`
-    color: ${COLOR.gray[0]};
+    color: ${COLOR.primary03};
 `;
 
 export const InputContainer = styled.div`

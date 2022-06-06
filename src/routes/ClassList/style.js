@@ -15,12 +15,16 @@ export const Hero = styled.div`
     border-radius: 8px;
 `;
 
-export const Title = styled.div`
-    margin: 16px 0;
+export const StyledInput = styled.input`
+    margin-bottom: 1.25rem;
     font-size: 1rem;
+    width: 100%;
+    color: ${COLOR.primary03};
+    border: none;
+    outline: none;
+    box-sizing: border-box;
     font-family: Lato;
-    font-weight: bold;
-    color: ${COLOR.gray[0]};
+    font-size: 16px;
 `;
 
 export const StyledList = styled.div`
