@@ -6,8 +6,7 @@ const Container = styled.div`
     * {
         box-sizing: border-box;
     }
-    max-width: 1100px;
-    margin: 0 auto;
+    max-width: 100%;
 `;
 
 const Banner = styled.div`
