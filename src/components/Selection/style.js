@@ -65,7 +65,7 @@ export const StyledItem = styled.li`
 
     transform-origin: top center;
     animation-name: ${scaleZ};
-    animation-duration: 300ms;
+    animation-duration: 350ms;
     animation-delay: ${({ delay }) => delay}ms;
 
     :hover {

@@ -5,7 +5,7 @@ import { COLOR } from '../../utils/style';
 export const Container = styled.div`
     width: 100%;
     height: auto;
-    padding: 1.75rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;

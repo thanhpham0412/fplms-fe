@@ -1,41 +1,50 @@
-import { useState, useEffect } from 'react';
+import { useState, useRef } from 'react';
 
+import { useClickOutside } from '../../hooks';
 import { Container, StyledButton, StyledList, StyledItem } from './style';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const Selection = ({ title, options, placeholder }) => {
     title = title || 'Selection';
-    placeholder = placeholder || 'Pick an option';
+    const [picked, setPicked] = useState(placeholder || 'Pick an option');
 
     const [list] = useState(options || []);
     const [open, setOpen] = useState(false);
 
-    const close = () => setOpen(false);
+    const pick = (item) => {
+        setPicked(item.content);
+        if (item.fn && typeof item.fn == 'function') item.fn(item);
+    };
 
-    useEffect(() => {
-        document.addEventListener('click', close);
-        return () => {
-            document.removeEventListener('click', close);
-        };
-    }, [open]);
+    const ref = useRef();
+
+    useClickOutside(ref, () => {
+        setOpen(false);
+    });
 
     return (
         <Container>
             <small>{title}</small>
             <StyledButton
                 open={open}
-                onClick={(e) => {
-                    e.stopPropagation();
+                ref={ref}
+                onClick={() => {
                     setOpen(!open);
                 }}
             >
-                <span>{placeholder}</span>
+                <span>{picked}</span>
                 <KeyboardArrowDownIcon />
             </StyledButton>
             <StyledList open={open}>
                 {list.map((item, index) => (
-                    <StyledItem key={item.value} delay={index * 50}>
+                    <StyledItem
+                        onClick={() => {
+                            pick(item);
+                        }}
+                        key={item.value}
+                        delay={index * 70}
+                    >
                         {item.content}
                     </StyledItem>
                 ))}
