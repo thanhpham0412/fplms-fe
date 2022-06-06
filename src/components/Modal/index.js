@@ -43,7 +43,7 @@ const Modal = (isOpen) => {
     const handleCloseModal = () => {
         setOpen(false);
     };
-
+    console.info(isDisplayed);
     return (
         <ModalOverlay isDisplayed={isDisplayed}>
             <ModalContainer>

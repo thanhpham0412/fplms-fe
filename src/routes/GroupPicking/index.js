@@ -1,43 +1,27 @@
-import bannerImg from '../../assets/header.png';
-import { GroupContent } from '../../components';
 // import SideBar from '../../components/Sidebar';
-import {
-    Container,
-    GBanner,
-    GBannerTitle,
-    GBannerContent,
-    GBannerImg,
-    GBannerBrief,
-    Title,
-    GroupListContainer,
-    GJumbotron,
-} from './style';
+import { useState } from 'react';
+
+import CreateGroupForm from '../../components/CreateGroupForm';
+import GroupSection from '../../components/GroupSection';
+import { Banner, Container, GroupList, Title, CreateGroupBtn, GroupLabel } from './style';
 
 const GroupPicking = () => {
+    const [isCreate, setCreate] = useState(false);
+
     return (
         <>
-            {/* <SideBar /> */}
+            <CreateGroupForm showing={isCreate} setCreate={setCreate} />
             <Container>
-                <GBanner>
-                    <GBannerContent>
-                        <GBannerTitle>Project-based Learning Management System</GBannerTitle>
-                        <GBannerBrief>Managing course more easily and covenient</GBannerBrief>
-                    </GBannerContent>
-                    <GBannerImg>
-                        <img src={bannerImg} />
-                    </GBannerImg>
-                </GBanner>
-                <GJumbotron>
-                    <Title>GROUPS</Title>
-                    <GroupListContainer>
-                        <GroupContent currentMembers={0} maxMembers={'6'} role={'lecturer'} />
-                        <GroupContent currentMembers={0} maxMembers={'6'} role={'lecturer'} />
-                        <GroupContent currentMembers={0} maxMembers={'6'} role={'lecturer'} />
-                        <GroupContent currentMembers={0} maxMembers={'6'} role={'lecturer'} />
-                        <GroupContent currentMembers={0} maxMembers={'6'} role={'lecturer'} />
-                        <GroupContent currentMembers={0} maxMembers={'6'} role={'lecturer'} />
-                    </GroupListContainer>
-                </GJumbotron>
+                <Banner />
+                <GroupLabel>
+                    <Title>groups</Title>
+                    <CreateGroupBtn onClick={() => setCreate(true)}>Create Groups</CreateGroupBtn>
+                </GroupLabel>
+                <GroupList>
+                    <GroupSection />
+                    <GroupSection />
+                    <GroupSection />
+                </GroupList>
             </Container>
         </>
     );
