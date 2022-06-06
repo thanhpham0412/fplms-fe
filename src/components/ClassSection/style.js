@@ -11,7 +11,7 @@ export const Container = styled.div`
     gap: 1.5rem;
     background: green;
     box-sizing: border-box;
-    background: ${COLOR.blue[5]};
+    background: ${({ isEnroll }) => (isEnroll ? COLOR.green[5] : COLOR.blue[5])};
     position: relative;
     border-radius: 4px;
     * {
@@ -61,7 +61,7 @@ export const StyledButton = styled.div`
     padding: ${({ open }) => (open ? '0.5rem' : '0.5rem 1rem')};
     border-radius: ${({ open }) => (open ? '0 4px 4px 0px' : '4px')};
     border: none;
-    background: ${COLOR.blue[0]};
+    background: ${({ isEnroll }) => (isEnroll ? COLOR.green[0] : COLOR.blue[0])};
     color: ${COLOR.primary02};
     max-width: 100px;
     width: ${({ open }) => (open ? '31px' : '70px')};

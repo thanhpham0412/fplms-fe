@@ -16,7 +16,7 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import BookIcon from '@mui/icons-material/Book';
 
-const ClassSection = ({ className, fullClassName, lecture }) => {
+const ClassSection = ({ className, fullClassName, lecture, isEnroll }) => {
     const [open, setOpen] = useState(false);
     const buttonRef = useRef();
     const inputRef = useRef();
@@ -28,17 +28,21 @@ const ClassSection = ({ className, fullClassName, lecture }) => {
     });
 
     const openEnroll = () => {
-        inputRef.current.select();
-        setOpen(true);
+        if (!isEnroll) {
+            inputRef.current.select();
+            setOpen(true);
+        }
     };
 
     const enroll = () => {
-        error('Wrong enroll key!');
-        inputRef.current.value = '';
+        if (!isEnroll && open) {
+            error('Wrong enroll key!');
+            inputRef.current.value = '';
+        }
     };
 
     return (
-        <Container>
+        <Container isEnroll={isEnroll}>
             <Title>{className}</Title>
             <Row>
                 <BookIcon />
@@ -52,9 +56,9 @@ const ClassSection = ({ className, fullClassName, lecture }) => {
                 <InputContainer open={open}>
                     <StyledInput ref={inputRef} type="password" placeholder="Enroll Key" />
                 </InputContainer>
-                <StyledButton open={open}>
-                    <span>Enroll</span>
-                    <ArrowCircleRightIcon onClick={enroll} />
+                <StyledButton open={open} onClick={enroll} isEnroll={isEnroll}>
+                    <span>{isEnroll ? 'Joined' : 'Enroll'}</span>
+                    <ArrowCircleRightIcon />
                 </StyledButton>
             </Row>
         </Container>
