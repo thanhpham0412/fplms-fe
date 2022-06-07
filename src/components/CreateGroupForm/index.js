@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
+import { Overlay } from '../index';
 import {
-    Overlay,
     FormContainer,
     FormHeader,
     FormBody,
@@ -32,7 +32,7 @@ const CreateGroupForm = ({ showing, setCreate }) => {
 
     return (
         <>
-            <Overlay isDisplay={showing}>
+            <Overlay showing={showing}>
                 <FormContainer onclick={preventPropagation}>
                     <FormHeader>
                         <HeaderJumbotron>
@@ -64,7 +64,9 @@ const CreateGroupForm = ({ showing, setCreate }) => {
                                 </FormInput>
                             </FormColumn>
                         </FormRow>
-                        <CreateBtn>CREATE</CreateBtn>
+                        <CreateBtn type="button" onClick={closeForm}>
+                            CREATE
+                        </CreateBtn>
                     </FormBody>
                 </FormContainer>
             </Overlay>

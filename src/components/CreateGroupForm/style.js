@@ -2,20 +2,6 @@ import styled from 'styled-components';
 
 import { COLOR } from '../../utils/color';
 
-const Overlay = styled.div`
-    width: 100vw;
-    height: 100vh;
-    position: fixed;
-    z-index: 99;
-    background: rgba(0, 0, 0, 0.8);
-    top: 0;
-    left: 0;
-    display: ${({ isDisplay }) => (isDisplay == true ? 'block' : 'none')};
-    * {
-        box-sizing: border-box;
-    }
-`;
-
 const FormContainer = styled.div`
     width: 300px;
     height: auto;
@@ -25,6 +11,9 @@ const FormContainer = styled.div`
     transform: translate(-50%, -50%);
     background: ${COLOR.primary02};
     border-radius: 4px;
+    * {
+        box-sizing: border-box;
+    }
 `;
 
 const FormHeader = styled.div`
@@ -113,7 +102,6 @@ const CreateBtn = styled.button`
 `;
 
 export {
-    Overlay,
     FormContainer,
     FormHeader,
     FormBody,
