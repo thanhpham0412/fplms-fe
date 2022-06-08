@@ -27,6 +27,18 @@ export const privateRoute = [
 ];
 
 export const RouterComponent = ({ isAuth }) => {
+    const publicRoute = [
+        {
+            path: 'not-found',
+            name: 'not-found',
+            component: <NotFound />,
+            exact: true,
+            restrict: true,
+        },
+    ];
+
+    const privateRoute = [];
+
     return (
         <BrowserRouter>
             <Routes>
