@@ -69,17 +69,20 @@ export const Row = styled.div`
 export const StyledInput = styled.input`
     border-radius: 4px;
     background: ${COLOR.blue[5]};
+    border: 2px solid ${COLOR.blue[3]};
     outline: none;
-    border: none;
     padding: 1rem;
+    font-family: Lato;
+    font-size: 1rem;
     width: 100%;
+    box-sizing: border-box;
 `;
 
 export const Col = styled.div`
     display: flex;
     gap: 8px;
     flex-direction: column;
-    height: 100%;
+    min-height: 100%;
     width: 100%;
 `;
 

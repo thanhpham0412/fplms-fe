@@ -5,6 +5,7 @@ import CreateClassForm from './CreateClassForm';
 import Footer from './Footer';
 import GroupSection from './GroupSection';
 import Header from './Header';
+import InputNumber from './InputNumber';
 import { BigImg, SmallImg } from './LoginHero';
 import Overlay from './Overlay';
 import Particles from './Particles';
@@ -29,4 +30,5 @@ export {
     GroupSection,
     Selection,
     Header,
+    InputNumber,
 };

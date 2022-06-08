@@ -16,7 +16,6 @@ export const Hero = styled.div`
 `;
 
 export const StyledInput = styled.input`
-    margin-bottom: 1.25rem;
     font-size: 1rem;
     width: 100%;
     color: ${COLOR.primary03};
@@ -42,4 +41,12 @@ export const StyledList = styled.div`
     @media (max-width: 992px) {
         grid-template-columns: 1fr;
     }
+`;
+
+export const ToolBar = styled.div`
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    align-items: center;
+    gap: 2rem;
 `;

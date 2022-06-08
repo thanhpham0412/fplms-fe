@@ -1,7 +1,13 @@
+import { useContext } from 'react';
+
 import { Outlet, Navigate } from 'react-router-dom';
 
-const PublicRoute = ({ isAuthencated }) => {
-    return isAuthencated ? <Navigate to="/class-list" /> : <Outlet />;
+import AuthContext from '../contexts/auth';
+
+const PublicRoute = () => {
+    const auth = useContext(AuthContext);
+
+    return auth.isAuth ? <Navigate to="/class-list" /> : <Outlet />;
 };
 
 export default PublicRoute;
