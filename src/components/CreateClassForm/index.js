@@ -1,3 +1,6 @@
+import { useState } from 'react';
+
+import InputNumber from '../InputNumber';
 import Overlay from '../Overlay';
 import {
     Container,
@@ -15,17 +18,33 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 
 const CreateClassForm = ({ showing, setCreate }) => {
+    const [form, setForm] = useState({
+        className: '',
+        key: '',
+        code: '',
+        timeout: '',
+        noGroups: 0,
+        minMembers: 0,
+    });
+
     const close = () => {
         setCreate(false);
     };
 
-    const preventPropagation = (e) => {
-        e.preventPropagation();
+    const handleChange = (e, field, parser = String) => {
+        setForm({
+            ...form,
+            [field]: parser(e.target.value),
+        });
+    };
+
+    const submit = () => {
+        console.log(form);
     };
 
     return (
         <Overlay showing={showing} setOpen={setCreate}>
-            <Container onClick={preventPropagation}>
+            <Container onClick={(e) => e.stopPropagation()}>
                 <StyledHeader>
                     <StyledJumbotron>
                         <Title>CREATE NEW CLASS</Title>
@@ -37,36 +56,57 @@ const CreateClassForm = ({ showing, setCreate }) => {
                     <Row>
                         <Col>
                             <small>Classname</small>
-                            <StyledInput />
+                            <StyledInput
+                                onChange={(e) => {
+                                    handleChange(e, 'className');
+                                }}
+                            />
                         </Col>
                     </Row>
                     <Row>
                         <Col>
                             <small>Enroll Key</small>
-                            <StyledInput type="password" />
+                            <StyledInput
+                                type="password"
+                                onChange={(e) => {
+                                    handleChange(e, 'key');
+                                }}
+                            />
                         </Col>
                         <Col>
                             <small>Subject code</small>
-                            <StyledInput />
+                            <StyledInput
+                                onChange={(e) => {
+                                    handleChange(e, 'code');
+                                }}
+                            />
                         </Col>
                         <Col>
                             <small>Close Time</small>
-                            <StyledInput />
+                            <StyledInput
+                                onChange={(e) => {
+                                    handleChange(e, 'timeout');
+                                }}
+                            />
                         </Col>
                     </Row>
                     <Row>
                         <Col>
                             <small>Number of groups</small>
-                            <StyledInput />
+                            <InputNumber />
                         </Col>
                         <Col>
                             <small>Min number of members</small>
-                            <StyledInput />
+                            <StyledInput
+                                onChange={(e) => {
+                                    handleChange(e, 'minMembers', parseInt);
+                                }}
+                            />
                         </Col>
                     </Row>
                     <Row>
                         <Col>
-                            <StyledButton>CREATE CLASS</StyledButton>
+                            <StyledButton onClick={submit}>CREATE CLASS</StyledButton>
                         </Col>
                     </Row>
                 </StyledBody>

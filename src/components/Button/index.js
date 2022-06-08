@@ -1,22 +1,11 @@
-import { useState } from 'react';
-
-import axios from 'axios';
-
 import { StyledButton } from './style.js';
 
-const Button = ({ value }) => {
-    const [username, setUsername] = useState(value);
-
-    const API_PATH = process.env.REACT_APP_API_URL;
-
-    axios.get(API_PATH + '/username').then((response) => {
-        setUsername(response.username);
-    });
-
+const Button = ({ icon, children, size, onClick }) => {
     return (
-        <div>
-            <StyledButton>{username}</StyledButton>
-        </div>
+        <StyledButton size={size} onClick={onClick}>
+            {icon}
+            <div>{children}</div>
+        </StyledButton>
     );
 };
 

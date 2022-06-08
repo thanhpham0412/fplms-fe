@@ -1,3 +1,5 @@
+import { useContext } from 'react';
+
 import axios from 'axios';
 import { GoogleLogin } from 'react-google-login';
 import { useNavigate } from 'react-router-dom';
@@ -5,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import smImg1 from '../../assets/LoginHero/image 2.png';
 import smImg2 from '../../assets/LoginHero/image 3.png';
 import { Particles, BigImg, SmallImg } from '../../components';
+import AuthContext from '../../contexts/auth';
 import {
     GoogleButton,
     StyledContainer,
@@ -16,7 +19,9 @@ import {
     StyledForm,
 } from './style';
 
-const Login = ({ setAuth }) => {
+const Login = () => {
+    const auth = useContext(AuthContext);
+
     const navigate = useNavigate();
 
     document.title = 'Login';
@@ -30,11 +35,11 @@ const Login = ({ setAuth }) => {
                 provider: 'GOOGLE',
             })
             .then(() => {
-                setAuth(true);
+                auth.setAuth(true);
                 navigate('/class-list');
             })
             .catch(() => {
-                setAuth(true);
+                auth.setAuth(true);
                 navigate('/class-list');
             });
     };

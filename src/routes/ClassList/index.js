@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
-import { ClassSection as Section, CreateClassForm } from '../../components';
-import { Container, StyledList, StyledInput } from './style';
+import { ClassSection as Section, CreateClassForm, Button } from '../../components';
+import { Container, StyledList, StyledInput, ToolBar } from './style';
 
 const ClassList = () => {
     const [classes, setClass] = useState(
@@ -20,15 +20,23 @@ const ClassList = () => {
 
     const [isCreate, setCreate] = useState(false);
 
+    const open = () => {
+        console.log(isCreate);
+        setCreate(true);
+    };
+
     return (
         <>
             <CreateClassForm showing={isCreate} setCreate={setCreate} />
             <Container>
-                <StyledInput
-                    type="text"
-                    placeholder="Search for class..."
-                    spellcheck="false"
-                ></StyledInput>
+                <ToolBar>
+                    <StyledInput
+                        type="text"
+                        placeholder="Search for class..."
+                        spellcheck="false"
+                    ></StyledInput>
+                    <Button onClick={open}>Create New Class</Button>
+                </ToolBar>
                 <StyledList>
                     {classes.map((classData, index) => (
                         <Section key={index} {...classData} />
