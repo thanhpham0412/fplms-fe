@@ -21,7 +21,7 @@ const Login = ({ setAuth }) => {
 
     document.title = 'Login';
 
-    const URL = process.env.REACT_APP_API_URL + '/auth/accounts/';
+    const URL = process.env.REACT_APP_API_URL + '/auth/accounts/login';
 
     const responseGoogle = (response) => {
         axios

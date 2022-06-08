@@ -7,7 +7,7 @@ import { RouterComponent } from './routes';
 import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
-    const [isAuth, setAuth] = useState(true);
+    const [isAuth, setAuth] = useState(false);
 
     return (
         <>
