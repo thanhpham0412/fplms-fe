@@ -10,9 +10,9 @@ import { Banner, Container, GroupList, Title, CreateGroupBtn, GroupLabel } from 
 const GroupPicking = () => {
     const [isCreate, setCreate] = useState(false);
     const [data, setData] = useState([]);
-    const URL = process.env.REACT_APP_API_URL + '/management/classes/1/groups';
+    const URL = process.env.REACT_APP_API_URL + '/management/classes/112/groups';
     const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InBodW9uZ210c2UxNjExODdAZnB0LmVkdS52biIsInJvbGUiOiJTdHVkZW50IiwibmJmIjoxNjU0NzAwMDA0LCJleHAiOjE2NTUzMDQ4MDQsImlhdCI6MTY1NDcwMDAwNH0.aDVMfHf3LFOw2yHNRW7XvimCA7PuixsFFjrXIMA9P6g';
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpZW5mcGxtcy5mZUBnbWFpbC5jb20iLCJyb2xlIjoiTGVjdHVyZXIiLCJuYmYiOjE2NTQ3NzczMjQsImV4cCI6MTY1NTM4MjEyNCwiaWF0IjoxNjU0Nzc3MzI0fQ.OMG_xMj91qQ8gYdND4DUyoTwiPWPRvwYv6L__sZCjKI';
 
     useEffect(() => {
         const fetchData = async () => {
@@ -30,7 +30,7 @@ const GroupPicking = () => {
 
     return (
         <>
-            <CreateGroupForm showing={isCreate} setCreate={setCreate} />
+            <CreateGroupForm showing={isCreate} setCreate={setCreate} class_ID={'112'} />
             <Container>
                 <Banner />
                 <GroupLabel>

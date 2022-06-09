@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import axios from 'axios';
+
 import { Overlay } from '../index';
 import {
     FormContainer,
@@ -18,9 +20,28 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import CloseIcon from '@mui/icons-material/Close';
 
-const CreateGroupForm = ({ showing, setCreate }) => {
+const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
     const [groups, setGroups] = useState(5);
     const [members, setMembers] = useState(4);
+    const URL = process.env.REACT_APP_API_URL + `/management/classes/112/groups`;
+    const token =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpZW5mcGxtcy5mZUBnbWFpbC5jb20iLCJyb2xlIjoiTGVjdHVyZXIiLCJuYmYiOjE2NTQ3NzczMjQsImV4cCI6MTY1NTM4MjEyNCwiaWF0IjoxNjU0Nzc3MzI0fQ.OMG_xMj91qQ8gYdND4DUyoTwiPWPRvwYv6L__sZCjKI';
+    const handleCreateBtn = () => {
+        axios
+            .post(
+                URL,
+                {
+                    classId: class_ID,
+                    enrollTime: '2022-06-01 23:22:22.123',
+                    groupQuantity: groups,
+                    memberQuantity: members,
+                },
+                { headers: { Authorization: `${token}` } }
+            )
+            .then(() => {
+                closeForm();
+            });
+    };
 
     const closeForm = () => {
         setCreate(false);
@@ -64,7 +85,7 @@ const CreateGroupForm = ({ showing, setCreate }) => {
                                 </FormInput>
                             </FormColumn>
                         </FormRow>
-                        <CreateBtn type="button" onClick={closeForm}>
+                        <CreateBtn type="button" onClick={handleCreateBtn}>
                             CREATE
                         </CreateBtn>
                     </FormBody>
