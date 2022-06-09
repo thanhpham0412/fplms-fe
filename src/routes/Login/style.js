@@ -1,88 +1,127 @@
-import { useContext } from 'react';
+import styled from 'styled-components';
 
-import axios from 'axios';
-import { GoogleLogin } from 'react-google-login';
-import { useNavigate } from 'react-router-dom';
+import { COLOR } from '../../utils/style';
 
-import smImg1 from '../../assets/LoginHero/image 2.png';
-import smImg2 from '../../assets/LoginHero/image 3.png';
-import { Particles, BigImg, SmallImg } from '../../components';
-import AuthContext from '../../contexts/auth';
-import {
+const StyledContainer = styled.div`
+    user-select: none;
+    position: relative;
+    height: 100vh;
+    overflow: hidden;
+
+    * {
+        line-height: 1;
+        box-sizing: border-box;
+    }
+`;
+
+const StyledForm = styled.div`
+    display: flex;
+    gap: 24px;
+    width: 330px;
+    flex-direction: column;
+    position: absolute;
+    left: 4rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    padding: 32px;
+    box-sizing: border-box;
+    transition: all 0.5s;
+
+    @media (max-width: 992px) {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border-radius: 4px;
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+    }
+`;
+
+const GoogleButton = styled.button`
+    background: ${COLOR.blue[1]};
+    color: ${COLOR.primary02};
+    padding: 16px;
+    width: 100%;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.3s;
+    font-family: Lato;
+    max-width: 310px;
+
+    :hover {
+        background: ${COLOR.blue[0]};
+    }
+`;
+
+const StyledTitle = styled.div`
+    font-family: Montserrat;
+    font-weight: bold;
+    font-size: 2.5rem;
+    color: ${COLOR.primary03};
+
+    span {
+        color: ${COLOR.blue[0]};
+    }
+`;
+
+const StyledTerm = styled.div`
+    font-size: 1px;
+`;
+
+const StyledWelcome = styled.div`
+    font-size: 2rem;
+    color: ${COLOR.gray[0]};
+`;
+
+const StyledParagraph = styled.div`
+    font-size: 1rem;
+    color: ${COLOR.gray[0]};
+    font-weight: ${({ isBold }) => (isBold ? 'bold' : '')};
+    line-height: 1.5;
+
+    span {
+        color: ${COLOR.blue[0]};
+    }
+`;
+
+const ParticlesContainer = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+`;
+
+const ImageGroup = styled.div`
+    width: 633px;
+    height: 633px;
+    position: absolute;
+    right: 3rem;
+    top: 50%;
+    transform: translateY(-50%);
+
+    @media (max-width: 992px) {
+        left: 50%;
+        right: 0;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+`;
+
+export {
     GoogleButton,
     StyledContainer,
     StyledTitle,
+    StyledTerm,
     StyledWelcome,
     StyledParagraph,
     ParticlesContainer,
     ImageGroup,
     StyledForm,
-} from './style';
-
-const Login = () => {
-    const auth = useContext(AuthContext);
-
-    const navigate = useNavigate();
-
-    document.title = 'Login';
-
-    const URL = process.env.REACT_APP_API_URL + '/auth/accounts/';
-
-    const responseGoogle = (response) => {
-        axios
-            .post(URL, {
-                idToken: response.tokenId,
-                provider: 'GOOGLE',
-            })
-            .then(() => {
-                auth.setAuth(true);
-                navigate('/class-list');
-            })
-            .catch(() => {
-                auth.setAuth(true);
-                navigate('/class-list');
-            });
-    };
-
-    const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
-
-    return (
-        <>
-            <StyledContainer>
-                <StyledForm>
-                    <StyledTitle>
-                        <span>F</span>PLMS
-                    </StyledTitle>
-                    <StyledWelcome>Welcome to FPLMS</StyledWelcome>
-                    <StyledParagraph>You are just one step away from your projects</StyledParagraph>
-                    <GoogleLogin
-                        clientId={CLIENT_ID}
-                        buttonText="Login"
-                        onSuccess={responseGoogle}
-                        onFailure={responseGoogle}
-                        cookiePolicy={'single_host_origin'}
-                        disabledStyle
-                        render={(btn) => (
-                            <GoogleButton onClick={btn.onClick}>
-                                Sign in with FPT email
-                            </GoogleButton>
-                        )}
-                    />
-                    <StyledParagraph isBold>
-                        By logging in, you accept with our <span>Terms & Conditions</span>
-                    </StyledParagraph>
-                </StyledForm>
-                <ImageGroup>
-                    <BigImg />
-                    <SmallImg timing={10} bottom={150} left={1} src={smImg2}></SmallImg>
-                    <SmallImg timing={15} bottom={100} right={1} src={smImg1}></SmallImg>
-                </ImageGroup>
-            </StyledContainer>
-            <ParticlesContainer>
-                <Particles />
-            </ParticlesContainer>
-        </>
-    );
 };
-
-export default Login;
