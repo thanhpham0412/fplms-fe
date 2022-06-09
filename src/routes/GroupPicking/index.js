@@ -38,7 +38,7 @@ const GroupPicking = () => {
                 </GroupLabel>
                 <GroupList>
                     {data.map((group) => {
-                        return <GroupSection key={group.id} data={group} />;
+                        return <GroupSection key={group.id} data={group} class_ID={112} />;
                     })}
                 </GroupList>
             </Container>

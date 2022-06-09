@@ -7,9 +7,9 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import BookIcon from '@mui/icons-material/Book';
 import PeopleIcon from '@mui/icons-material/People';
 
-const GroupSection = ({ data }) => {
+const GroupSection = ({ data, class_ID }) => {
     const [isCreate, setCreate] = useState(false);
-    const [group, setData] = useState({
+    const [group, setGroup] = useState({
         id: data.id,
         groupNum: data.number,
         members: data.memberQuantity,
@@ -17,7 +17,13 @@ const GroupSection = ({ data }) => {
     });
     return (
         <>
-            <EditGroupForm showing={isCreate} data={data} setCreate={setCreate} setData={setData} />
+            <EditGroupForm
+                showing={isCreate}
+                group={group}
+                setCreate={setCreate}
+                setGroup={setGroup}
+                class_ID={class_ID}
+            />
             <Container>
                 <Header>GROUP {group.groupNum}</Header>
                 <Row>
