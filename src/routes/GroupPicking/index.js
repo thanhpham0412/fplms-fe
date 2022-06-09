@@ -18,15 +18,15 @@ const GroupPicking = () => {
         const fetchData = async () => {
             try {
                 const res = await axios.get(URL, { headers: { Authorization: `${token}` } });
-                setData(res.data);
+
+                setData(res.data.data);
             } catch (error) {
                 console.log(error);
             }
             fetchData;
         };
         fetchData();
-    }, [URL]);
-    console.log(data);
+    }, [URL, data.length]);
 
     return (
         <>
@@ -38,9 +38,9 @@ const GroupPicking = () => {
                     <CreateGroupBtn onClick={() => setCreate(true)}>Create Groups</CreateGroupBtn>
                 </GroupLabel>
                 <GroupList>
-                    <GroupSection />
-                    <GroupSection />
-                    <GroupSection />
+                    {data.map((group) => {
+                        return <GroupSection key={group.id} data={group} />;
+                    })}
                 </GroupList>
             </Container>
         </>

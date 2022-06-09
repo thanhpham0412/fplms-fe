@@ -16,7 +16,7 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close';
 
-const EditGroupForm = ({ showing, setCreate, data, setData }) => {
+const EditGroupForm = ({ showing, setCreate, data, setGroup }) => {
     const [groupEdit, setGroupEdit] = useState(data.group);
     const [projectEdit, setProjectEdit] = useState(data.project);
     const [slot, setSlot] = useState(data.members);
@@ -31,11 +31,11 @@ const EditGroupForm = ({ showing, setCreate, data, setData }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        setData({
-            group: groupEdit,
+        setGroup({
+            groupNum: groupEdit,
             project: projectEdit,
             members: slot,
-            date: dateEdit,
+            enrollTime: dateEdit,
         });
         closeForm();
     };
