@@ -74,12 +74,12 @@ const StyledTerm = styled.div`
 
 const StyledWelcome = styled.div`
     font-size: 2rem;
-    color: ${COLOR.gray[0]};
+    color: ${COLOR.blue[0]};
 `;
 
 const StyledParagraph = styled.div`
     font-size: 1rem;
-    color: ${COLOR.gray[0]};
+    color: ${COLOR.primary03};
     font-weight: ${({ isBold }) => (isBold ? 'bold' : '')};
     line-height: 1.5;
 

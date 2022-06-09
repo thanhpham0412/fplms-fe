@@ -14,6 +14,8 @@ export const Container = styled.div`
     background: ${({ isEnroll }) => (isEnroll ? COLOR.green[5] : COLOR.blue[5])};
     position: relative;
     border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+
     * {
         box-sizing: border-box;
         font-size: 1rem;

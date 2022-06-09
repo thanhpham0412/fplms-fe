@@ -6,6 +6,7 @@ import Footer from './Footer';
 import GroupSection from './GroupSection';
 import Header from './Header';
 import InputNumber from './InputNumber';
+import LoaderHolder from './LoadHolder';
 import { BigImg, SmallImg } from './LoginHero';
 import Overlay from './Overlay';
 import Particles from './Particles';
@@ -31,4 +32,5 @@ export {
     Selection,
     Header,
     InputNumber,
+    LoaderHolder,
 };
