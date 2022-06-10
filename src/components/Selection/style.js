@@ -1,48 +1,75 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
-import { COLOR } from '../../utils/color';
+import { COLOR } from '../../utils/style';
 
 export const Container = styled.div`
-    min-width: 100px;
-    min-height: 40px;
-    background-color: #eef2ff;
-    border-radius: 4px;
-    border: 1px solid #99b3fb;
-    color: #8b8b8b;
-    font-size: 1rem;
+    width: 100%;
+    height: auto;
     position: relative;
-`;
-export const Selected = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    svg {
-        width: 1.4rem;
-        height: 1.4rem;
-        padding: 1px;
-        margin: 0 5px;
-        background-color: #bbccfd;
-        border-radius: 50%;
+    min-width: 80px;
+    * {
+        box-sizing: border-box;
+        user-select: none;
     }
 `;
-export const OptContainer = styled.div`
-    width: 100%;
-    display: grid;
-    grid-template-rows: repeat(5, 1fr);
-    display: ${({ isDisplay }) => (isDisplay ? 'block' : 'none')};
-    border: 1px solid #99b3fb;
-    position: absolute;
+
+export const StyledButton = styled.div`
+    margin-top: 0.5rem;
+    padding: 1rem;
+    border-radius: 2px;
+    background: ${({ open }) => (open ? COLOR.blue[0] : COLOR.blue[5])};
+    color: ${({ open }) => (open ? COLOR.primary02 : COLOR.primary03)};
+    border: 1px solid ${COLOR.blue[0]};
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 300ms;
 `;
 
-export const Option = styled.div`
+const scaleZ = keyframes`
+    0% {
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    80% {
+        transform: scale(1.07);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+`;
+
+export const StyledList = styled.ul`
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    z-index: 1;
     width: 100%;
-    padding: 5px;
-    font-size: 1rem;
-    color: ${COLOR.gray[0]};
-    max-height: 40px;
-    padding: 0.8rem;
-    background-color: #eef2ff;
-    font-size: 1rem;
-    cursor: pointer;
+    padding: 0.5rem 0 0 0;
+    margin-block-start: -1px;
+    margin-block-end: 0.5em;
+    display: ${({ open }) => (open ? 'flex' : 'none')};
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
+`;
+
+export const StyledItem = styled.li`
+    display: flex;
+    padding: 1rem;
+    background: ${COLOR.blue[5]};
+    transition: all 0.1s;
+
+    transform-origin: top center;
+    animation-name: ${scaleZ};
+    animation-duration: 350ms;
+    animation-delay: ${({ delay }) => delay}ms;
+
+    :hover {
+        background: ${COLOR.blue[0]};
+        color: ${COLOR.primary02};
+    }
 `;

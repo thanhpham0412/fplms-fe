@@ -45,20 +45,21 @@ export const NewTopicBtn = styled.button`
     }
 `;
 
-export const Label = styled.div`
-    font-size: 0.8rem;
-    margin: 10px 0;
-    color: ${COLOR.primary03};
+export const Label = styled.small`
+    margin-bottom: 0.5rem;
 `;
 
 export const InputBox = styled.input`
-    max-height: 40px;
-    padding: 12px;
+    padding: 1rem;
+    width: 300px;
     background-color: #eef2ff;
-    border-radius: 4px;
-    border: 1px solid #99b3fb;
-    color: ${COLOR.gray[0]};
+    border-radius: 2px;
+    border: 1px solid #5680f9;
+    color: ${COLOR.primary03};
     font-size: 1rem;
+    outline: none;
+    display: flex;
+    line-height: 1.5;
 `;
 
 export const StyledBody = styled.div`

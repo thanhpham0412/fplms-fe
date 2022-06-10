@@ -1,11 +1,17 @@
-import { useState } from 'react';
+import { ToastContainer } from 'react-toastify';
 
+import { AuthProvider } from './contexts/auth';
 import { RouterComponent } from './routes';
 
-function App() {
-    const [isAuth, setAuth] = useState(true);
+import 'react-toastify/dist/ReactToastify.css';
 
-    return <RouterComponent isAuth={isAuth} setAuth={setAuth} />;
+function App() {
+    return (
+        <AuthProvider>
+            <ToastContainer />
+            <RouterComponent />
+        </AuthProvider>
+    );
 }
 
 export default App;

@@ -10,16 +10,15 @@ import {
     Row,
     Column,
     NewTopicBtn,
-    Label,
     InputBox,
     StyledBody,
     PostList,
+    Label,
 } from './style';
 
 import AddIcon from '@mui/icons-material/Add';
 
 const DiscussionList = () => {
-    const arr = ['SWP391', 'C#', 'MogoDB'];
     const [search, setSearch] = useState('');
     const topMember = [
         {
@@ -43,6 +42,21 @@ const DiscussionList = () => {
             comments: '102 comments',
         },
     ];
+
+    const options = [
+        {
+            content: 'SWP391',
+            value: 'SWP391',
+        },
+        {
+            content: 'C#',
+            value: 'C#',
+        },
+        {
+            content: 'MogoDB',
+            value: 'MogoDB',
+        },
+    ];
     return (
         <>
             <StyledContainer>
@@ -50,7 +64,7 @@ const DiscussionList = () => {
                 <StyledHeader>
                     <Row style={{ alignItems: 'flex-end' }}>
                         <Column>
-                            <Row>
+                            <Row style={{ alignItems: 'flex-end' }}>
                                 <Column>
                                     <Label>Search for topics</Label>
                                     <InputBox
@@ -61,8 +75,11 @@ const DiscussionList = () => {
                                     />
                                 </Column>
                                 <Column>
-                                    <Label>Type</Label>
-                                    <Selection arr={arr} label={'All'} />
+                                    <Selection
+                                        title={'Type'}
+                                        options={options}
+                                        placeholder={'All'}
+                                    />
                                 </Column>
                             </Row>
                         </Column>
