@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import axios from 'axios';
 
@@ -24,19 +24,21 @@ import CloseIcon from '@mui/icons-material/Close';
 const CreateGroupForm = ({ showing, setCreate, class_ID, data }) => {
     const [groups, setGroups] = useState(5);
     const [members, setMembers] = useState(4);
-    const [enrollTime, setEnrollTime] = useState('12/2/2022 22:22 22');
+    const [date, setDate] = useState('');
+    const [time, setTime] = useState('');
+    const [enrollTime, setEnrollTime] = useState('');
 
     const URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups`;
     const TOKEN =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpZW5mcGxtcy5mZUBnbWFpbC5jb20iLCJyb2xlIjoiTGVjdHVyZXIiLCJuYmYiOjE2NTQ3NzczMjQsImV4cCI6MTY1NTM4MjEyNCwiaWF0IjoxNjU0Nzc3MzI0fQ.OMG_xMj91qQ8gYdND4DUyoTwiPWPRvwYv6L__sZCjKI';
-    console.log(enrollTime);
+
     const handleCreateBtn = () => {
         axios
             .post(
                 URL,
                 {
                     classId: class_ID,
-                    enrollTime: '2022-02-22 11:11:11.123',
+                    enrollTime: enrollTime,
                     groupQuantity: groups,
                     memberQuantity: members,
                 },
@@ -56,6 +58,10 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, data }) => {
     const preventPropagation = (e) => {
         e.preventPropagation();
     };
+
+    useEffect(() => {
+        setEnrollTime(date + ' ' + time);
+    }, [date, time]);
 
     return (
         <>
@@ -93,10 +99,20 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, data }) => {
                         </FormRow>
                         <FormRow>
                             <FormColumn>
+                                <small>Closing date</small>
+                                <TimeInput
+                                    type={'date'}
+                                    onChange={(e) => setDate(e.target.value)}
+                                    placeholder={enrollTime}
+                                />
+                            </FormColumn>
+                        </FormRow>
+                        <FormRow>
+                            <FormColumn>
                                 <small>Closing time</small>
                                 <TimeInput
-                                    type={'datetime-local'}
-                                    onChange={(e) => setEnrollTime(e.target.value)}
+                                    type={'time'}
+                                    onChange={(e) => setTime(e.target.value)}
                                     placeholder={enrollTime}
                                 />
                             </FormColumn>

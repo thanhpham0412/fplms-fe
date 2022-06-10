@@ -21,8 +21,15 @@ const GroupPicking = () => {
             fetchData;
         };
         fetchData();
-    }, [URL, data.length]);
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    const group = {
+        id: 1,
+        groupNum: 1,
+        memberQuantity: 4,
+        enrollTime: '2022-06-01 22:50',
+    };
+    data.push(group);
     return (
         <>
             <CreateGroupForm data={data} showing={isCreate} setCreate={setCreate} class_ID={112} />

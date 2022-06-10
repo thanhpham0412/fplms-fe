@@ -11,7 +11,7 @@ const GroupSection = ({ data, class_ID }) => {
     const [isCreate, setCreate] = useState(false);
     const [group, setGroup] = useState({
         id: data.id,
-        groupNum: data.number,
+        groupNum: data.groupNum,
         members: data.memberQuantity,
         enrollTime: data.enrollTime,
     });
