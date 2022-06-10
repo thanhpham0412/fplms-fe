@@ -65,7 +65,7 @@ const SideBar = () => {
         },
         {
             title: 'Class list',
-            path: '/class-list',
+            path: '/class',
             isExpand: true,
             icon: <SchoolIcon />,
             submenu: [

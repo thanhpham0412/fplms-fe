@@ -39,7 +39,6 @@ const ClassSection = ({ className, fullClassName, lecture, isEnroll }) => {
 
     const enroll = () => {
         if (!isEnroll && open) {
-            // error('Wrong enroll key!');
             inputRef.current.value = '';
         }
     };

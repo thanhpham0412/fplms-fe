@@ -7,30 +7,36 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import BookIcon from '@mui/icons-material/Book';
 import PeopleIcon from '@mui/icons-material/People';
 
-const GroupSection = () => {
+const GroupSection = ({ data, class_ID }) => {
     const [isCreate, setCreate] = useState(false);
-    const [data, setData] = useState({
-        group: 'GROUP 1',
-        project: 'PROJECT BASE LMS',
-        members: 6,
-        date: 'mm-dd-yy',
+    const [group, setGroup] = useState({
+        id: data.id,
+        groupNum: data.number,
+        members: data.memberQuantity,
+        enrollTime: data.enrollTime,
     });
     return (
         <>
-            <EditGroupForm showing={isCreate} data={data} setCreate={setCreate} setData={setData} />
+            <EditGroupForm
+                showing={isCreate}
+                group={group}
+                setCreate={setCreate}
+                setGroup={setGroup}
+                class_ID={class_ID}
+            />
             <Container>
-                <Header>{data.group}</Header>
+                <Header>GROUP {group.groupNum}</Header>
                 <Row>
                     <BookIcon />
-                    <Project>{data.project}</Project>
+                    <Project>Project-based Management System</Project>
                 </Row>
                 <Row>
                     <PeopleIcon />
-                    <Members>{`4/${data.members}Members`}</Members>
+                    <Members>{`4/${group.members}Members`}</Members>
                 </Row>
                 <Row>
                     <AccessTimeIcon />
-                    <Members>{data.date}</Members>
+                    <Members>{group.enrollTime}</Members>
                 </Row>
                 <Row>
                     <GroupBtn>View</GroupBtn>

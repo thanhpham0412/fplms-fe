@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import axios from 'axios';
+
 import {
     Overlay,
     FormContainer,
@@ -16,11 +18,13 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close';
 
-const EditGroupForm = ({ showing, setCreate, data, setData }) => {
-    const [groupEdit, setGroupEdit] = useState(data.group);
-    const [projectEdit, setProjectEdit] = useState(data.project);
-    const [slot, setSlot] = useState(data.members);
-    const [dateEdit, setDateEdit] = useState(data.date);
+const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
+    const [groupNumEdit, setGroupNumEdit] = useState(group.groupNum);
+    const [membersEdit, setMembersEdit] = useState(group.members);
+    const [enrollTimeEdit, setEnrollTimeEdit] = useState(group.enrollTime);
+    const URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups`;
+    const TOKEN =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpZW5mcGxtcy5mZUBnbWFpbC5jb20iLCJyb2xlIjoiTGVjdHVyZXIiLCJuYmYiOjE2NTQ3NzczMjQsImV4cCI6MTY1NTM4MjEyNCwiaWF0IjoxNjU0Nzc3MzI0fQ.OMG_xMj91qQ8gYdND4DUyoTwiPWPRvwYv6L__sZCjKI';
 
     const closeForm = () => {
         setCreate(false);
@@ -29,14 +33,29 @@ const EditGroupForm = ({ showing, setCreate, data, setData }) => {
         e.preventPropagation();
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setData({
-            group: groupEdit,
-            project: projectEdit,
-            members: slot,
-            date: dateEdit,
-        });
+
+        await axios
+            .put(
+                URL,
+                {
+                    enrollTime: enrollTimeEdit,
+                    id: group.id,
+                    memberQuanity: membersEdit,
+                    number: groupNumEdit,
+                },
+                { headers: { Authorization: `${TOKEN}` } }
+            )
+            .then(() => {
+                setGroup({
+                    id: group.id,
+                    enrollTime: enrollTimeEdit,
+                    members: membersEdit,
+                    groupNum: groupNumEdit,
+                });
+            });
+
         closeForm();
     };
 
@@ -47,7 +66,7 @@ const EditGroupForm = ({ showing, setCreate, data, setData }) => {
                     <FormHeader>
                         <HeaderJumbotron>
                             <Title>Edit Group</Title>
-                            <SubTitle>{data.group}</SubTitle>
+                            <SubTitle>GROUP {group.groupNum}</SubTitle>
                         </HeaderJumbotron>
                         <CloseIcon sx={{ fontSize: '2rem' }} onClick={closeForm} />
                     </FormHeader>
@@ -56,26 +75,23 @@ const EditGroupForm = ({ showing, setCreate, data, setData }) => {
                             <FormColumn>
                                 <small>Group name</small>
                                 <EditInput
-                                    defaultValue={groupEdit}
-                                    onChange={(e) => setGroupEdit(e.target.value)}
+                                    defaultValue={`GROUP ${groupNumEdit}`}
+                                    onChange={(e) => setGroupNumEdit(e.target.value)}
                                 />
                             </FormColumn>
                         </FormRow>
                         <FormRow>
                             <FormColumn>
                                 <small>Group Project</small>
-                                <EditInput
-                                    defaultValue={projectEdit}
-                                    onChange={(e) => setProjectEdit(e.target.value)}
-                                />
+                                <EditInput defaultValue={'Project-based Learning'} />
                             </FormColumn>
                         </FormRow>
                         <FormRow>
                             <FormColumn>
                                 <small>Members</small>
                                 <EditInput
-                                    defaultValue={slot}
-                                    onChange={(e) => setSlot(e.target.value)}
+                                    defaultValue={membersEdit}
+                                    onChange={(e) => setMembersEdit(e.target.value)}
                                 />
                             </FormColumn>
                         </FormRow>
@@ -84,8 +100,8 @@ const EditGroupForm = ({ showing, setCreate, data, setData }) => {
                                 <small>Closing Tme</small>
                                 <EditInput
                                     type={'text'}
-                                    defaultValue={dateEdit}
-                                    onChange={(e) => setDateEdit(e.target.value)}
+                                    defaultValue={enrollTimeEdit}
+                                    onChange={(e) => setEnrollTimeEdit(e.target.value)}
                                 />
                             </FormColumn>
                         </FormRow>
