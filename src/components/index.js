@@ -1,4 +1,5 @@
 import Button from './Button';
+import Calendar from './Calendar';
 import ClassSection from './ClassSection';
 import CreateClass from './CreateClass';
 import CreateClassForm from './CreateClassForm';
@@ -31,4 +32,5 @@ export {
     Selection,
     Header,
     InputNumber,
+    Calendar,
 };

@@ -14,9 +14,8 @@ export const Container = styled.div`
 `;
 
 export const StyledButton = styled.div`
-    margin-top: 0.5rem;
     padding: 1rem;
-    border-radius: 2px;
+    border-radius: 4px;
     background: ${({ open }) => (open ? COLOR.blue[0] : COLOR.blue[5])};
     color: ${({ open }) => (open ? COLOR.primary02 : COLOR.primary03)};
     border: 1px solid ${COLOR.blue[0]};
@@ -25,6 +24,11 @@ export const StyledButton = styled.div`
     align-items: center;
     cursor: pointer;
     transition: all 300ms;
+
+    svg {
+        transition: all 300ms;
+        transform: rotate(${({ open }) => (open ? 180 : 0)}deg);
+    }
 `;
 
 const scaleZ = keyframes`
@@ -44,29 +48,30 @@ const scaleZ = keyframes`
 `;
 
 export const StyledList = styled.ul`
+    max-height: 180px;
     list-style-type: none;
-    display: flex;
     flex-direction: column;
     position: absolute;
+    border-radius: 4px;
+    max-height: auto;
     z-index: 1;
     width: 100%;
-    padding: 0.5rem 0 0 0;
+    padding: 0;
+    transform: translateY(0.5rem);
     margin-block-start: -1px;
     margin-block-end: 0.5em;
     display: ${({ open }) => (open ? 'flex' : 'none')};
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 2px 0px;
 `;
 
 export const StyledItem = styled.li`
-    display: flex;
     padding: 1rem;
     background: ${COLOR.blue[5]};
     transition: all 0.1s;
 
+    animation: ${scaleZ} 300ms ${({ delay }) => delay}ms ease-in-out forwards;
+
     transform-origin: top center;
-    animation-name: ${scaleZ};
-    animation-duration: 350ms;
-    animation-delay: ${({ delay }) => delay}ms;
+    opacity: 0;
 
     :hover {
         background: ${COLOR.blue[0]};

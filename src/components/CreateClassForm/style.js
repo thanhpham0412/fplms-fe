@@ -11,7 +11,6 @@ export const Container = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 10;
-    overflow: hidden;
     border-radius: 4px;
     background: ${COLOR.primary02};
     box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
@@ -20,10 +19,20 @@ export const Container = styled.div`
     * {
         box-sizing: border-box;
     }
+`;
+
+export const StyledHeader = styled.div`
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid ${COLOR.gray[2]};
 
     svg {
         box-sizing: border-box;
         padding: 4px;
+        width: 2rem;
+        height: 2rem;
         background: ${COLOR.red[0]};
         border-radius: 4px;
         fill: ${COLOR.primary02};
@@ -31,17 +40,10 @@ export const Container = styled.div`
     }
 `;
 
-export const StyledHeader = styled.div`
-    padding: 12px;
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid ${COLOR.gray[2]};
-`;
-
 export const StyledBody = styled.div`
-    padding: 12px;
+    padding: 1rem;
     flex-direction: column;
-    gap: 16px;
+    gap: 1rem;
     box-sizing: border-box;
     display: flex;
 `;
@@ -68,14 +70,21 @@ export const Row = styled.div`
 
 export const StyledInput = styled.input`
     border-radius: 4px;
-    background: ${COLOR.blue[5]};
-    border: 2px solid ${COLOR.blue[3]};
+    border: 1px solid ${COLOR.blue[0]};
     outline: none;
     padding: 1rem;
     font-family: Lato;
     font-size: 1rem;
     width: 100%;
     box-sizing: border-box;
+    height: 100%;
+    min-height: 51px;
+    transition: all 300ms;
+
+    :focus {
+        border: 1px solid ${COLOR.blue[0]};
+        background: ${COLOR.blue[5]};
+    }
 `;
 
 export const Col = styled.div`
@@ -97,9 +106,13 @@ export const StyledSelection = styled.input`
 
 export const StyledButton = styled.button`
     background: ${COLOR.blue[0]};
+    font-weight: bold;
     color: white;
     border: none;
     padding: 16px;
+    font-family: Lato;
     border-radius: 4px;
-    cursor: pointer;
+    cursor: ${({ disable }) => (disable ? 'not-allowed' : 'pointer')};
+    pointer-events: ${({ disable }) => (disable ? 'none' : 'auto')};
+    opacity: ${({ disable }) => (disable ? 0.5 : 1)};
 `;

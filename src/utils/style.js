@@ -17,3 +17,11 @@ export const FONT_SIZE = {
     xxl: '3rem',
     xxxl: '4rem',
 };
+
+export const FLEX = {
+    center: `
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    `,
+};

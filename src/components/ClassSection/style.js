@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import { COLOR } from '../../utils/style';
 
@@ -14,6 +14,8 @@ export const Container = styled.div`
     background: ${({ isEnroll }) => (isEnroll ? COLOR.green[5] : COLOR.blue[5])};
     position: relative;
     border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+
     * {
         box-sizing: border-box;
         font-size: 1rem;
@@ -105,4 +107,40 @@ export const Overlay = styled.div`
     justify-content: center;
     flex-direction: column;
     gap: 20px;
+`;
+
+const placeHolderShimmer = keyframes`
+    0%{
+        background-position: -468px 0
+    }
+    100%{
+        background-position: 468px 0
+    }
+`;
+
+export const SkeletonContainer = styled.div`
+    background: #f6f7f8;
+    min-height: 195px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 4px;
+    box-sizing: border-box;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    gap: 0.5rem;
+`;
+
+export const HolderItem = styled.div`
+    width: ${({ width }) => width};
+    height: ${({ height }) => height};
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: ${placeHolderShimmer};
+    animation-timing-function: linear;
+    background: #f6f7f8;
+    background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+    background-size: 1000px 104px;
 `;

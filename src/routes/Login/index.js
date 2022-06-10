@@ -34,13 +34,13 @@ const Login = () => {
                 idToken: response.tokenId,
                 provider: 'GOOGLE',
             })
-            .then(() => {
-                auth.setAuth(true);
-                navigate('/class-list');
-            })
-            .catch(() => {
-                auth.setAuth(true);
-                navigate('/class-list');
+            .then((res) => {
+                const data = res.data;
+                if (data.isAuthSuccessful) {
+                    navigate('/class-list');
+                    auth.setAuth(true);
+                    localStorage.setItem('token', data.token);
+                }
             });
     };
 
@@ -68,7 +68,7 @@ const Login = () => {
                             </GoogleButton>
                         )}
                     />
-                    <StyledParagraph isBold>
+                    <StyledParagraph>
                         By logging in, you accept with our <span>Terms & Conditions</span>
                     </StyledParagraph>
                 </StyledForm>
