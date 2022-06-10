@@ -36,7 +36,7 @@ export const privateRoute = [
         restrict: true,
     },
     {
-        path: 'group-picking',
+        path: '/class/:id',
         name: 'group-picking',
         component: GroupPicking,
         exact: true,

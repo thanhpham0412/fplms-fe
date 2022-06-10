@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 import CreateGroupForm from '../../components/CreateGroupForm';
 import GroupSection from '../../components/GroupSection';
@@ -26,6 +27,9 @@ const GroupPicking = () => {
         fetchData();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    const id = useParams();
+    console.log(id);
 
     return (
         <>
