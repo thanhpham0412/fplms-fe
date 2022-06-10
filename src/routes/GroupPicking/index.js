@@ -29,7 +29,12 @@ const GroupPicking = () => {
 
     return (
         <>
-            <CreateGroupForm showing={isCreate} setCreate={setCreate} class_ID={1} />
+            <CreateGroupForm
+                showing={isCreate}
+                setCreate={setCreate}
+                class_ID={1}
+                setGroup={setData}
+            />
             <Container>
                 <Banner />
                 <GroupLabel>

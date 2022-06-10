@@ -51,13 +51,13 @@ const GroupList = styled.div`
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-auto-rows: fix-content;
     gap: 20px;
-    @media (max-width: 992px) {
+    @media (max-width: 1400px) {
         grid-template-columns: 1fr 1fr 1fr;
     }
-    @media (max-width: 768px) {
+    @media (max-width: 1200px) {
         grid-template-columns: 1fr 1fr;
     }
-    @media (max-width: 576px) {
+    @media (max-width: 992px) {
         grid-template-columns: 1fr;
     }
 `;
