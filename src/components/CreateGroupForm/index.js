@@ -23,9 +23,10 @@ import CloseIcon from '@mui/icons-material/Close';
 const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
     const [groups, setGroups] = useState(5);
     const [members, setMembers] = useState(4);
-    const URL = process.env.REACT_APP_API_URL + `/management/classes/112/groups`;
+    const URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups`;
     const token =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpZW5mcGxtcy5mZUBnbWFpbC5jb20iLCJyb2xlIjoiTGVjdHVyZXIiLCJuYmYiOjE2NTQ3NzczMjQsImV4cCI6MTY1NTM4MjEyNCwiaWF0IjoxNjU0Nzc3MzI0fQ.OMG_xMj91qQ8gYdND4DUyoTwiPWPRvwYv6L__sZCjKI';
+
     const handleCreateBtn = () => {
         axios
             .post(
