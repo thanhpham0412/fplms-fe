@@ -1,14 +1,20 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
-import { ClassSection as Section, CreateClassForm, Button, LoaderHolder } from '../../components';
+import { ClassSection as Section, CreateClassForm, Button } from '../../components';
+import ClassSectionHolder from '../../components/ClassSection/holder';
 import { Container, StyledList, StyledInput, ToolBar } from './style';
 
 const ClassList = () => {
-    const [classes, setClass] = useState(new Array(10).fill(<LoaderHolder />));
+    const [classes, setClass] = useState();
+    const [loadAnim] = useState(
+        new Array(10).fill(ClassSectionHolder).map((Load, i) => <Load key={i} />)
+    );
     const [filter, setFilter] = useState('');
-    const [isLoading, setLoading] = useState(false);
+    const [isLoading, setLoading] = useState(true);
+    const [isCreate, setCreate] = useState(false);
 
     useEffect(() => {
         const API = process.env.REACT_APP_API_URL + '/management/classes';
@@ -25,24 +31,15 @@ const ClassList = () => {
                 },
             })
             .then((res) => {
+                console.log(res);
                 const data = res.data;
                 setClass(data.data);
                 setLoading(false);
-                console.log(filtedList);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    useEffect(() => {
-        setClass((prev) => prev.map((c) => ({ isEnroll: Math.random() < 0.2, ...c })));
-        setClass((prev) => prev.sort((c) => (!c.isEnroll ? 1 : -1)));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
-    const [isCreate, setCreate] = useState(false);
-
     const open = () => {
-        console.log(isCreate);
         setCreate(true);
     };
 
@@ -50,9 +47,9 @@ const ClassList = () => {
         setFilter(e.target.value);
     };
 
-    const filtedList = () => {
+    const test = () => {
         return classes
-            .filter((classData) => classData.name.toLowerCase().includes(filter.toLowerCase()))
+            .filter((classData) => classData.name?.toLowerCase().includes(filter.toLowerCase()))
             .map((classData, index) => (
                 <Section
                     key={index}
@@ -77,7 +74,7 @@ const ClassList = () => {
                     ></StyledInput>
                     <Button onClick={open}>Create New Class</Button>
                 </ToolBar>
-                <StyledList>{isLoading ? filtedList() : classes}</StyledList>
+                <StyledList>{isLoading ? loadAnim : test()}</StyledList>
             </Container>
         </>
     );

@@ -1,4 +1,5 @@
 import Button from './Button';
+import Calendar from './Calendar';
 import ClassSection from './ClassSection';
 import CreateClass from './CreateClass';
 import CreateClassForm from './CreateClassForm';
@@ -6,7 +7,6 @@ import Footer from './Footer';
 import GroupSection from './GroupSection';
 import Header from './Header';
 import InputNumber from './InputNumber';
-import LoaderHolder from './LoadHolder';
 import { BigImg, SmallImg } from './LoginHero';
 import Overlay from './Overlay';
 import Particles from './Particles';
@@ -32,5 +32,5 @@ export {
     Selection,
     Header,
     InputNumber,
-    LoaderHolder,
+    Calendar,
 };
