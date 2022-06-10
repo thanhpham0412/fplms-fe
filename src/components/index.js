@@ -1,3 +1,4 @@
+import AvatarGroup from './AvatarGroup';
 import Button from './Button';
 import Footer from './Footer';
 import GroupContent from './GroupSection';
@@ -19,4 +20,5 @@ export {
     SmallImg,
     Particles,
     RouteContainer,
+    AvatarGroup,
 };

@@ -3,18 +3,22 @@ import { useEffect, useState } from 'react';
 import { Container, Avatar, HiddenAvatar } from './style';
 
 const AvatarGroup = (props) => {
-    const [currentMembers, setCurrentMembers] = useState(props.members);
-
+    const [slot, setSlot] = useState(props.members - props.slot);
+    // var arr = ['#BBCCFD', '#BAECCA', '#D0D0D0'];
     useEffect(() => {
-        setCurrentMembers(currentMembers);
-    }, [currentMembers]);
+        setSlot(props.members - props.slot);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.slot]);
+    const rows = [];
+    for (let i = 0; i < props.slot; i++) {
+        rows.push(<Avatar key={i} bg={'#BBCCFD'}></Avatar>);
+    }
     return (
         <div>
             <Container>
-                <Avatar bg="#BBCCFD"></Avatar>
-                <Avatar bg="#BAECCA"></Avatar>
-                <Avatar bg="#D0D0D0"></Avatar>
-                <HiddenAvatar>+5</HiddenAvatar>
+                {rows}
+                <HiddenAvatar>+{slot}</HiddenAvatar>
             </Container>
         </div>
     );
