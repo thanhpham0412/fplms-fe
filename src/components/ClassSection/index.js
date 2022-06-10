@@ -1,7 +1,9 @@
 import { useState, useRef } from 'react';
 
+import { useNavigate } from 'react-router-dom';
+
 import { useClickOutside } from '../../hooks';
-import { error } from '../../utils/toaster';
+// import { error } from '../../utils/toaster';
 import {
     Container,
     Title,
@@ -20,6 +22,7 @@ const ClassSection = ({ className, fullClassName, lecture, isEnroll }) => {
     const [open, setOpen] = useState(false);
     const buttonRef = useRef();
     const inputRef = useRef();
+    const navigate = useNavigate();
 
     useClickOutside(buttonRef, () => {
         if (open == true) {
@@ -36,7 +39,7 @@ const ClassSection = ({ className, fullClassName, lecture, isEnroll }) => {
 
     const enroll = () => {
         if (!isEnroll && open) {
-            error('Wrong enroll key!');
+            // error('Wrong enroll key!');
             inputRef.current.value = '';
         }
     };
@@ -58,7 +61,7 @@ const ClassSection = ({ className, fullClassName, lecture, isEnroll }) => {
                 </InputContainer>
                 <StyledButton open={open} onClick={enroll} isEnroll={isEnroll}>
                     <span>{isEnroll ? 'Joined' : 'Enroll'}</span>
-                    <ArrowCircleRightIcon />
+                    <ArrowCircleRightIcon onClick={() => navigate('/group-view')} />
                 </StyledButton>
             </Row>
         </Container>

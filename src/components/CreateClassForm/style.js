@@ -112,5 +112,7 @@ export const StyledButton = styled.button`
     padding: 16px;
     font-family: Lato;
     border-radius: 4px;
-    cursor: pointer;
+    cursor: ${({ disable }) => (disable ? 'not-allowed' : 'pointer')};
+    pointer-events: ${({ disable }) => (disable ? 'none' : 'auto')};
+    opacity: ${({ disable }) => (disable ? 0.5 : 1)};
 `;

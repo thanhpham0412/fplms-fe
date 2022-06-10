@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 
 import axios from 'axios';
@@ -47,7 +46,7 @@ const ClassList = () => {
         setFilter(e.target.value);
     };
 
-    const test = () => {
+    const realData = () => {
         return classes
             .filter((classData) => classData.name?.toLowerCase().includes(filter.toLowerCase()))
             .map((classData, index) => (
@@ -74,7 +73,7 @@ const ClassList = () => {
                     ></StyledInput>
                     <Button onClick={open}>Create New Class</Button>
                 </ToolBar>
-                <StyledList>{isLoading ? loadAnim : test()}</StyledList>
+                <StyledList>{isLoading ? loadAnim : realData()}</StyledList>
             </Container>
         </>
     );

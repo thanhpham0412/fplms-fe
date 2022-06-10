@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import axios from 'axios';
 
-import { error } from '../../utils/toaster';
+import { error, success } from '../../utils/toaster';
 import Overlay from '../Overlay';
 import Selection from '../Selection';
 import {
@@ -34,6 +34,8 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
         setCreate(false);
     };
 
+    const [disable, setDisable] = useState(false);
+
     const handleChange = (e, field, parser = String) => {
         setForm({
             ...form,
@@ -42,6 +44,8 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
     };
 
     const submit = () => {
+        setDisable(true);
+
         const header = {
             Authorization: `${localStorage.getItem('token')}`,
         };
@@ -62,10 +66,16 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
                             semester: form.semester,
                         })
                     );
+                    setDisable(false);
+                    success(`Class ${form.name} created successfully`);
                     close();
                 } else {
                     error(data.message);
                 }
+            })
+            .catch(() => {
+                error(`An error occured!`);
+                setDisable(false);
             });
     };
 
@@ -158,15 +168,6 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
                                 }}
                             />
                         </Col>
-                        <Col>
-                            <small>Close Time</small>
-                            <StyledInput
-                                placeholder={`${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`}
-                                onChange={(e) => {
-                                    handleChange(e, 'timeout');
-                                }}
-                            />
-                        </Col>
                     </Row>
                     <Row>
                         <Col>
@@ -188,7 +189,9 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
                     </Row>
                     <Row>
                         <Col>
-                            <StyledButton onClick={submit}>Create Class</StyledButton>
+                            <StyledButton onClick={submit} disable={disable}>
+                                Create Class
+                            </StyledButton>
                         </Col>
                     </Row>
                 </StyledBody>
