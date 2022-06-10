@@ -15,13 +15,9 @@ const GroupPicking = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const res = await axios.get(URL, { headers: { Authorization: `${token}` } });
-
-                setData(res.data.data);
-            } catch (error) {
-                console.log(error);
-            }
+            await axios
+                .get(URL, { headers: { Authorization: `${token}` } })
+                .then((res) => setData(res.data.data));
             fetchData;
         };
         fetchData();
@@ -29,12 +25,18 @@ const GroupPicking = () => {
 
     return (
         <>
-            <CreateGroupForm showing={isCreate} setCreate={setCreate} class_ID={112} />
+            <CreateGroupForm data={data} showing={isCreate} setCreate={setCreate} class_ID={112} />
             <Container>
                 <Banner />
                 <GroupLabel>
                     <Title>groups</Title>
-                    <CreateGroupBtn onClick={() => setCreate(true)}>Create Groups</CreateGroupBtn>
+                    <CreateGroupBtn
+                        onClick={() => {
+                            setCreate(true);
+                        }}
+                    >
+                        Create Groups
+                    </CreateGroupBtn>
                 </GroupLabel>
                 <GroupList>
                     {data.map((group) => {

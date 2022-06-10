@@ -11,7 +11,7 @@ const Container = styled.div`
 
 const Banner = styled.div`
     width: 100%;
-    height: 350px;
+    height: 250px;
     background-color: ${COLOR.blue[2]};
     border-radius: 8px;
 `;

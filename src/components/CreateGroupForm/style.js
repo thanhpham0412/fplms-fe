@@ -76,6 +76,18 @@ const FormInput = styled.div`
     }
 `;
 
+export const TimeInput = styled.input`
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    background: ${COLOR.blue[5]};
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+`;
+
 const Title = styled.div`
     font-size: 1rem;
     font-weight: bold;

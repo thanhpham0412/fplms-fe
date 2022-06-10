@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { COLOR } from '../../utils/color';
+import { COLOR } from '../../utils/style';
 import { isNumber } from '../../utils/valid';
 
 export const StyledContainer = styled.div`
@@ -12,9 +12,13 @@ export const StyledContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 16px;
-    box-shadow: ${({ shadow }) => (shadow ? 'rgba(0, 0, 0, 0.16) 0px 1px 4px' : null)};
+    box-shadow: ${({ shadow }) => (shadow ? 'rgba(0, 0, 0, 0.1) 0px 4px 12px' : null)};
     font-family: Segoe UI;
-    z-index: 10;
+    z-index: -1;
+    background: ${COLOR.primary02};
+    border: ${({ border }) => (isNumber(border) ? `1px solid ${COLOR.gray[3]}` : null)};
+    top: 80px;
+
     * {
         box-sizing: border-box;
     }

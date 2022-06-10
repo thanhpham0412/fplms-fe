@@ -33,24 +33,28 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
         e.preventPropagation();
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setGroup({
-            id: group.id,
-            enrollTime: enrollTimeEdit,
-            members: membersEdit,
-            groupNum: groupNumEdit,
-        });
-        axios.put(
-            URL,
-            {
-                enrollTime: enrollTimeEdit,
-                id: group.id,
-                memberQuanity: membersEdit,
-                number: groupNumEdit,
-            },
-            { headers: { Authorization: `${TOKEN}` } }
-        );
+
+        await axios
+            .put(
+                URL,
+                {
+                    enrollTime: enrollTimeEdit,
+                    id: group.id,
+                    memberQuanity: membersEdit,
+                    number: groupNumEdit,
+                },
+                { headers: { Authorization: `${TOKEN}` } }
+            )
+            .then(() => {
+                setGroup({
+                    id: group.id,
+                    enrollTime: enrollTimeEdit,
+                    members: membersEdit,
+                    groupNum: groupNumEdit,
+                });
+            });
 
         closeForm();
     };
