@@ -31,7 +31,7 @@ const GroupSection = ({ data }) => {
                 </Row>
                 <Row>
                     <PeopleIcon />
-                    <Members>{`4/${group.members}Members`}</Members>
+                    <Members>{`0/${group.members}Members`}</Members>
                 </Row>
                 <Row>
                     <AccessTimeIcon />

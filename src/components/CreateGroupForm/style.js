@@ -99,6 +99,7 @@ const CreateBtn = styled.button`
     padding: 16px;
     font-weight: bold;
     font-family: Lato;
+    pointer-events: ${({ disable }) => (disable ? 'none' : 'auto')};
 `;
 
 export {

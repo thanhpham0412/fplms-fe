@@ -23,11 +23,13 @@ import CloseIcon from '@mui/icons-material/Close';
 const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
     const [groups, setGroups] = useState(5);
     const [members, setMembers] = useState(4);
+    const [disable, setDisable] = useState(false);
     const URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups`;
     const token =
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpZW5mcGxtcy5mZUBnbWFpbC5jb20iLCJyb2xlIjoiTGVjdHVyZXIiLCJuYmYiOjE2NTQ3NzczMjQsImV4cCI6MTY1NTM4MjEyNCwiaWF0IjoxNjU0Nzc3MzI0fQ.OMG_xMj91qQ8gYdND4DUyoTwiPWPRvwYv6L__sZCjKI';
 
     const handleCreateBtn = () => {
+        setDisable(true);
         axios
             .post(
                 URL,
@@ -40,6 +42,7 @@ const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
                 { headers: { Authorization: `${token}` } }
             )
             .then(() => {
+                setDisable(false);
                 closeForm();
             });
     };
@@ -86,7 +89,7 @@ const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
                                 </FormInput>
                             </FormColumn>
                         </FormRow>
-                        <CreateBtn type="button" onClick={handleCreateBtn}>
+                        <CreateBtn type="button" onClick={handleCreateBtn} disable={disable}>
                             CREATE
                         </CreateBtn>
                     </FormBody>
