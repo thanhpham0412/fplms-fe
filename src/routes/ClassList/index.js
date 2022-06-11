@@ -37,7 +37,6 @@ const ClassList = () => {
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
     const open = () => {
         setCreate(true);
     };

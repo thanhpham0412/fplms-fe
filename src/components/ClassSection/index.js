@@ -18,12 +18,12 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import BookIcon from '@mui/icons-material/Book';
 
-const ClassSection = ({ className, fullClassName, lecture, isEnroll }) => {
+const ClassSection = ({ className, fullClassName, lecture, isEnroll, id }) => {
     const [open, setOpen] = useState(false);
     const buttonRef = useRef();
     const inputRef = useRef();
     const navigate = useNavigate();
-
+    console.log(id);
     useClickOutside(buttonRef, () => {
         if (open == true) {
             setOpen(false);
@@ -61,7 +61,7 @@ const ClassSection = ({ className, fullClassName, lecture, isEnroll }) => {
                 </InputContainer>
                 <StyledButton open={open} onClick={enroll} isEnroll={isEnroll}>
                     <span>{isEnroll ? 'Joined' : 'Enroll'}</span>
-                    <ArrowCircleRightIcon onClick={() => navigate('/group-view')} />
+                    <ArrowCircleRightIcon onClick={() => navigate(`/class/:${id}`)} />
                 </StyledButton>
             </Row>
         </Container>

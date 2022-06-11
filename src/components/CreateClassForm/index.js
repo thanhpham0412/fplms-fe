@@ -58,7 +58,6 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
             })
             .then((res) => {
                 const data = res.data;
-
                 if (data.code == 200) {
                     setClass((classes) =>
                         classes.concat({
