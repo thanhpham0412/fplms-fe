@@ -13,7 +13,8 @@ import PeopleIcon from '@mui/icons-material/People';
 const GroupSection = ({ data, class_ID, role, isJoined, setJoin, groupId }) => {
     const [isCreate, setCreate] = useState(false);
     const [disable, setDisable] = useState(false);
-    const [slot, setSlot] = useState(2);
+    const [btnStyle, setBtnStyle] = useState(false);
+    const [slot, setSlot] = useState(3);
     const [group, setGroup] = useState({
         id: data.id,
         groupNum: data.groupNum,
@@ -33,17 +34,20 @@ const GroupSection = ({ data, class_ID, role, isJoined, setJoin, groupId }) => {
             .post(URL, { headers: header })
             .then(() => {
                 setJoin(true);
+                setBtnStyle(true);
                 setSlot((prev) => prev + 1);
             })
             .catch(() => {
                 setJoin(true);
+                setBtnStyle(true);
                 setSlot((prev) => prev + 1);
             });
     };
-
     //Disable Join button base on slot an time
     useEffect(() => {
-        if (isJoined || currentDate > new Date(group.enrollTime) || slot == group.members) {
+        if (slot == group.members) {
+            setDisable(true);
+        } else if (isJoined || currentDate > new Date(group.enrollTime)) {
             setDisable(true);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,8 +84,8 @@ const GroupSection = ({ data, class_ID, role, isJoined, setJoin, groupId }) => {
                 ) : (
                     <Row style={{ justifyContent: 'space-between' }}>
                         <AvatarGroup slot={slot} members={group.members} />
-                        <JoinBtn onClick={handleJoinBtn} disable={disable}>
-                            {isJoined ? 'Joined' : slot == group.members ? 'Full' : 'Join'}
+                        <JoinBtn onClick={handleJoinBtn} disable={disable} btnStyle={btnStyle}>
+                            {btnStyle ? 'Joined' : slot == group.members ? 'Full' : 'Join'}
                         </JoinBtn>
                     </Row>
                 )}

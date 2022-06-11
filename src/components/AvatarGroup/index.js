@@ -4,7 +4,7 @@ import { Container, Avatar, HiddenAvatar } from './style';
 
 const AvatarGroup = (props) => {
     const [slot, setSlot] = useState(props.members - props.slot);
-    // var arr = ['#BBCCFD', '#BAECCA', '#D0D0D0'];
+    var arr = ['#BBCCFD', '#BAECCA', '#D0D0D0'];
     useEffect(() => {
         setSlot(props.members - props.slot);
 
@@ -12,7 +12,7 @@ const AvatarGroup = (props) => {
     }, [props.slot]);
     const rows = [];
     for (let i = 0; i < props.slot; i++) {
-        rows.push(<Avatar key={i} bg={'#BBCCFD'}></Avatar>);
+        rows.push(<Avatar key={i} bg={arr[Math.floor(Math.random() * arr.length)]}></Avatar>);
     }
     return (
         <div>

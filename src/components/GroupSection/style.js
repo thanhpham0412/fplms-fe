@@ -60,7 +60,7 @@ export const JoinBtn = styled.button`
     padding: 4px 16px;
     border: none;
     border-radius: 4px;
-    background-color: ${COLOR.blue[1]};
+    background-color: ${({ btnStyle }) => (btnStyle ? COLOR.red[1] : COLOR.blue[1])};
     text-transform: uppercase;
     font-size: 1rem;
     margin-right: 10px;
