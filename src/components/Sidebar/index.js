@@ -84,7 +84,7 @@ const SideBar = () => {
         },
         {
             title: 'Discussion',
-            path: '/dicussion-list',
+            path: '/discussion-list',
             icon: <ForumIcon />,
             submenu: [
                 {
