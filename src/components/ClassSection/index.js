@@ -3,6 +3,7 @@ import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useClickOutside } from '../../hooks';
+import { error } from '../../utils/toaster';
 // import { error } from '../../utils/toaster';
 import {
     Container,
@@ -18,12 +19,11 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import BookIcon from '@mui/icons-material/Book';
 
-const ClassSection = ({ className, fullClassName, lecture, isEnroll, id }) => {
+const ClassSection = ({ className, fullClassName, lecture, isEnroll, id, enrollKey }) => {
     const [open, setOpen] = useState(false);
     const buttonRef = useRef();
     const inputRef = useRef();
     const navigate = useNavigate();
-    console.log(id);
     useClickOutside(buttonRef, () => {
         if (open == true) {
             setOpen(false);
@@ -44,6 +44,14 @@ const ClassSection = ({ className, fullClassName, lecture, isEnroll, id }) => {
         }
     };
 
+    const handleEnroll = () => {
+        if (inputRef.current.value == enrollKey) {
+            navigate(`/class/${id}`);
+        } else {
+            error(`Enroll key is incorrect!`);
+        }
+    };
+
     return (
         <Container isEnroll={isEnroll}>
             <Title>{className}</Title>
@@ -61,7 +69,7 @@ const ClassSection = ({ className, fullClassName, lecture, isEnroll, id }) => {
                 </InputContainer>
                 <StyledButton open={open} onClick={enroll} isEnroll={isEnroll}>
                     <span>{isEnroll ? 'Joined' : 'Enroll'}</span>
-                    <ArrowCircleRightIcon onClick={() => navigate(`/class/:${id}`)} />
+                    <ArrowCircleRightIcon onClick={handleEnroll} />
                 </StyledButton>
             </Row>
         </Container>

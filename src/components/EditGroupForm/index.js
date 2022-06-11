@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import axios from 'axios';
+
+import { error, success } from '../../utils/toaster';
 import {
     Overlay,
     FormContainer,
@@ -16,12 +19,18 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close';
 
-const EditGroupForm = ({ showing, setCreate, data, setGroup }) => {
-    const [groupEdit, setGroupEdit] = useState(data.group);
-    const [projectEdit, setProjectEdit] = useState(data.project);
-    const [slot, setSlot] = useState(data.members);
-    const [dateEdit, setDateEdit] = useState(data.date);
-
+const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
+    const myDate = group.enrollTime.split(' ');
+    const [groupNumEdit, setGroupNumEdit] = useState(group.number);
+    const [membersEdit, setMembersEdit] = useState(group.maxMemberQuantity);
+    const [date, setDate] = useState(myDate[0]);
+    const [time, setTime] = useState(myDate[1]);
+    const [enrollTime, setEnrollTime] = useState(group.enrollTime);
+    const URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups`;
+    const TOKEN = localStorage.getItem('token');
+    const header = {
+        Authorization: TOKEN,
+    };
     const closeForm = () => {
         setCreate(false);
     };
@@ -29,16 +38,41 @@ const EditGroupForm = ({ showing, setCreate, data, setGroup }) => {
         e.preventPropagation();
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setGroup({
-            groupNum: groupEdit,
-            project: projectEdit,
-            members: slot,
-            enrollTime: dateEdit,
-        });
-        closeForm();
+        await axios
+            .put(
+                URL,
+                {
+                    enrollTime: enrollTime,
+                    id: group.id,
+                    memberQuanity: membersEdit,
+                    number: groupNumEdit,
+                },
+                { headers: header }
+            )
+            .then((res) => {
+                if (res.data.code == 200) {
+                    setGroup({
+                        id: group.id,
+                        enrollTime: enrollTime,
+                        members: membersEdit,
+                        groupNum: groupNumEdit,
+                    });
+                    success(`Edit group ${group.number} successfully`);
+                } else {
+                    error(res.data.message);
+                }
+            })
+            .catch(() => {
+                error(`An error occured`);
+            })
+            .finally(closeForm);
     };
+
+    useEffect(() => {
+        setEnrollTime(date + ' ' + time);
+    }, [date, time]);
 
     return (
         <>
@@ -47,35 +81,42 @@ const EditGroupForm = ({ showing, setCreate, data, setGroup }) => {
                     <FormHeader>
                         <HeaderJumbotron>
                             <Title>Edit Group</Title>
-                            <SubTitle>{data.group}</SubTitle>
+                            <SubTitle>GROUP {group.number}</SubTitle>
                         </HeaderJumbotron>
                         <CloseIcon sx={{ fontSize: '2rem' }} onClick={closeForm} />
                     </FormHeader>
                     <FormBody onSubmit={handleSubmit}>
                         <FormRow>
                             <FormColumn>
-                                <small>Group name</small>
+                                <small>Group number</small>
                                 <EditInput
-                                    defaultValue={groupEdit}
-                                    onChange={(e) => setGroupEdit(e.target.value)}
+                                    defaultValue={groupNumEdit}
+                                    onChange={(e) => setGroupNumEdit(e.target.value)}
                                 />
                             </FormColumn>
                         </FormRow>
                         <FormRow>
                             <FormColumn>
                                 <small>Group Project</small>
-                                <EditInput
-                                    defaultValue={projectEdit}
-                                    onChange={(e) => setProjectEdit(e.target.value)}
-                                />
+                                <EditInput defaultValue={'Project-based Learning'} />
                             </FormColumn>
                         </FormRow>
                         <FormRow>
                             <FormColumn>
                                 <small>Members</small>
                                 <EditInput
-                                    defaultValue={slot}
-                                    onChange={(e) => setSlot(e.target.value)}
+                                    defaultValue={membersEdit}
+                                    onChange={(e) => setMembersEdit(e.target.value)}
+                                />
+                            </FormColumn>
+                        </FormRow>
+                        <FormRow>
+                            <FormColumn>
+                                <small>Closing date</small>
+                                <EditInput
+                                    type={'date'}
+                                    defaultValue={date}
+                                    onChange={(e) => setDate(e.target.value)}
                                 />
                             </FormColumn>
                         </FormRow>
@@ -83,9 +124,9 @@ const EditGroupForm = ({ showing, setCreate, data, setGroup }) => {
                             <FormColumn>
                                 <small>Closing Tme</small>
                                 <EditInput
-                                    type={'text'}
-                                    defaultValue={dateEdit}
-                                    onChange={(e) => setDateEdit(e.target.value)}
+                                    type={'time'}
+                                    defaultValue={time}
+                                    onChange={(e) => setTime(e.target.value + ':00.000')}
                                 />
                             </FormColumn>
                         </FormRow>

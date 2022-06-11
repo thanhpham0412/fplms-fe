@@ -1,3 +1,4 @@
+import AvatarGroup from './AvatarGroup';
 import Button from './Button';
 import Calendar from './Calendar';
 import ClassSection from './ClassSection';
@@ -33,4 +34,5 @@ export {
     Header,
     InputNumber,
     Calendar,
+    AvatarGroup,
 };

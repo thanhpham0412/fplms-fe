@@ -43,7 +43,7 @@ export const privateRoute = [
         restrict: true,
     },
     {
-        path: 'group-view',
+        path: 'group-view/:id',
         name: 'group-view',
         component: GroupView,
         exact: true,

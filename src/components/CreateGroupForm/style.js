@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { COLOR } from '../../utils/color';
 
 const FormContainer = styled.div`
-    width: 300px;
+    width: 400px;
     height: auto;
     position: fixed;
     top: 50%;

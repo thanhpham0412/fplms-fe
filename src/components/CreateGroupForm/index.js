@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import axios from 'axios';
 
+import { error, success } from '../../utils/toaster';
 import { Overlay } from '../index';
 import {
     FormContainer,
@@ -14,6 +15,7 @@ import {
     FormColumn,
     FormInput,
     CreateBtn,
+    TimeInput,
 } from './style';
 
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
@@ -21,30 +23,39 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import CloseIcon from '@mui/icons-material/Close';
 
 const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
-    const [groups, setGroups] = useState(5);
-    const [members, setMembers] = useState(4);
-    const [disable, setDisable] = useState(false);
+    const [groups, setGroups] = useState(1);
+    const [members, setMembers] = useState(1);
+    const [date, setDate] = useState('');
+    const [time, setTime] = useState('');
+    const [enrollTime, setEnrollTime] = useState('');
     const URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups`;
-    const token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpZW5mcGxtcy5mZUBnbWFpbC5jb20iLCJyb2xlIjoiTGVjdHVyZXIiLCJuYmYiOjE2NTQ3NzczMjQsImV4cCI6MTY1NTM4MjEyNCwiaWF0IjoxNjU0Nzc3MzI0fQ.OMG_xMj91qQ8gYdND4DUyoTwiPWPRvwYv6L__sZCjKI';
-
-    const handleCreateBtn = () => {
-        setDisable(true);
-        axios
+    const TOKEN = localStorage.getItem('token');
+    const header = {
+        Authorization: TOKEN,
+    };
+    const handleCreateBtn = async () => {
+        await axios
             .post(
                 URL,
                 {
                     classId: class_ID,
-                    enrollTime: '2022-06-01 23:22:22.123',
+                    enrollTime: enrollTime,
                     groupQuantity: groups,
                     memberQuantity: members,
                 },
-                { headers: { Authorization: `${token}` } }
+                { headers: header }
             )
-            .then(() => {
-                setDisable(false);
-                closeForm();
-            });
+            .then((res) => {
+                if (res.data.code == 200) {
+                    success(`Create ${groups} group(s) successfully!`);
+                } else {
+                    error(res.data.message);
+                }
+            })
+            .catch(() => {
+                error(`An error occured!`);
+            })
+            .finally(closeForm);
     };
 
     const closeForm = () => {
@@ -54,6 +65,10 @@ const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
     const preventPropagation = (e) => {
         e.preventPropagation();
     };
+
+    useEffect(() => {
+        setEnrollTime(date + ' ' + time);
+    }, [date, time]);
 
     return (
         <>
@@ -89,7 +104,26 @@ const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
                                 </FormInput>
                             </FormColumn>
                         </FormRow>
-                        <CreateBtn type="button" onClick={handleCreateBtn} disable={disable}>
+                        <FormRow>
+                            <FormColumn>
+                                <small>Closing date</small>
+                                <TimeInput
+                                    type={'date'}
+                                    onChange={(e) => setDate(e.target.value)}
+                                />
+                            </FormColumn>
+                        </FormRow>
+                        <FormRow>
+                            <FormColumn>
+                                <small>Closing time</small>
+                                <TimeInput
+                                    type={'time'}
+                                    onChange={(e) => setTime(e.target.value + ':00.000')}
+                                    defaultValue="00:00"
+                                />
+                            </FormColumn>
+                        </FormRow>
+                        <CreateBtn type="button" onClick={handleCreateBtn}>
                             CREATE
                         </CreateBtn>
                     </FormBody>
