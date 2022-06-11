@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { RouteContainer } from '../components';
 import ClassList from './ClassList';
 import DiscussionList from './DiscussionList';
+import DiscussionView from './DiscussionView';
 import GroupPicking from './GroupPicking';
 import GroupView from './GroupView';
 import Login from './Login';
@@ -54,6 +55,13 @@ export const privateRoute = [
         path: 'discussion-list',
         name: 'discussion-list',
         component: DiscussionList,
+        exact: true,
+        restrict: true,
+    },
+    {
+        path: 'discussion-view',
+        name: 'discussion-view',
+        component: DiscussionView,
         exact: true,
         restrict: true,
     },
