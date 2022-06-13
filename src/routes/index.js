@@ -9,6 +9,7 @@ import NotFound from './NotFound';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 import StudentList from './StudentList';
+import Topic from './Topic';
 
 export const publicRoute = [
     {
@@ -46,6 +47,13 @@ export const privateRoute = [
         path: 'group/:id',
         name: 'group detail',
         component: GroupView,
+        exact: true,
+        restrict: true,
+    },
+    {
+        path: 'topic',
+        name: 'topic',
+        component: Topic,
         exact: true,
         restrict: true,
     },

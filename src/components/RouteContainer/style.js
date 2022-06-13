@@ -5,8 +5,10 @@ import { COLOR } from '../../utils/style';
 export const StyledContainer = styled.div`
     height: auto;
     width: 100%;
+    height: 100%;
     display: grid;
     grid-template-columns: 275px 1fr;
+    grid-template-rows: 80px 1fr;
     z-index: 1;
 `;
 
@@ -22,6 +24,7 @@ export const StyledHeader = styled.div`
     z-index: 10;
     border-bottom: 1px solid ${COLOR.gray[3]};
     box-sizing: border-box;
+    grid-column: 1 / -1;
 `;
 
 export const HeaderContainer = styled.div`
@@ -30,5 +33,5 @@ export const HeaderContainer = styled.div`
 
 export const BodyContainer = styled.div`
     box-sizing: border-box;
-    margin: 24px;
+    padding: 24px;
 `;
