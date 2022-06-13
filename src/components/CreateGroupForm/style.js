@@ -105,13 +105,19 @@ const CreateBtn = styled.button`
     width: 100%;
     border: none;
     background: ${COLOR.blue[0]};
-    color: white;
+    color: ${COLOR.primary02};
     border-radius: 4px;
     cursor: pointer;
     padding: 16px;
     font-weight: bold;
     font-family: Lato;
     pointer-events: ${({ disable }) => (disable ? 'none' : 'auto')};
+    display: grid;
+    place-content: center;
+
+    span {
+        display: ${({ isLoading }) => (isLoading ? 'none' : 'inline')};
+    }
 `;
 
 export {

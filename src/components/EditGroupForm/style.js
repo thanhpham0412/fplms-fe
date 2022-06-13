@@ -102,8 +102,11 @@ const SaveButton = styled.button`
     padding: 16px;
     font-weight: bold;
     font-family: Lato;
-    display: flex;
-    justify-content: center;
+    display: grid;
+    place-content: center;
+    span {
+        display: ${({ isLoading }) => (isLoading ? 'none' : 'inline')};
+    }
 `;
 
 export {

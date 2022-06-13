@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { error, success } from '../../utils/toaster';
+import ButtonLoader from '../ButtonLoader';
 import {
     Overlay,
     FormContainer,
@@ -26,6 +27,7 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
     const [date, setDate] = useState(myDate[0]);
     const [time, setTime] = useState(myDate[1]);
     const [enrollTime, setEnrollTime] = useState(group.enrollTime);
+    const [isLoading, setLoading] = useState(false);
 
     const URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups`;
     const TOKEN = localStorage.getItem('token');
@@ -40,6 +42,7 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
     };
 
     const handleSubmit = async (e) => {
+        setLoading(true);
         e.preventDefault();
         await axios
             .put(
@@ -69,7 +72,10 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
             .catch(() => {
                 error(`An error occured`);
             })
-            .finally(closeForm);
+            .finally(() => {
+                setLoading(false);
+                closeForm;
+            });
     };
 
     useEffect(() => {
@@ -132,7 +138,10 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
                                 />
                             </FormColumn>
                         </FormRow>
-                        <SaveButton type="submit">SAVE</SaveButton>
+                        <SaveButton isLoading={isLoading} type="submit">
+                            <ButtonLoader isLoading={isLoading} />
+                            <span>SAVE</span>
+                        </SaveButton>
                     </FormBody>
                 </FormContainer>
             </Overlay>

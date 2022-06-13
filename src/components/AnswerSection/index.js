@@ -1,6 +1,6 @@
 import { Avatar, Container, CommentInput } from './style';
 
-const PostAnswer = () => {
+const AnswerSection = () => {
     return (
         <Container>
             <Avatar />
@@ -14,4 +14,4 @@ const PostAnswer = () => {
     );
 };
 
-export default PostAnswer;
+export default AnswerSection;

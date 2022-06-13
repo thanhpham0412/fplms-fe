@@ -51,7 +51,7 @@ const GroupPicking = () => {
                 <Banner />
                 <GroupLabel>
                     <Title>groups</Title>
-                    {user.role == 'Lecturer' ? (
+                    {user.role != 'Lecturer' ? (
                         <CreateGroupBtn
                             onClick={() => {
                                 setCreate(true);
