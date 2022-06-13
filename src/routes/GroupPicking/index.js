@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 import axios from 'axios';
 import jwt_decode from 'jwt-decode';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import CreateGroupForm from '../../components/CreateGroupForm';
 import GroupSection from '../../components/GroupSection';
@@ -13,19 +13,32 @@ const GroupPicking = () => {
     const [isCreate, setCreate] = useState(false);
     const [groups, setGroups] = useState([]);
     const [isJoined, setJoin] = useState(false);
+    const navigate = useNavigate();
+
     const URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups`;
+    const UNENROLL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/unenroll`;
+    // const DELETE_URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/unenroll`;
     const TOKEN = localStorage.getItem('token');
     const header = {
         Authorization: TOKEN,
     };
-    var role = jwt_decode(TOKEN).role;
+    var user = jwt_decode(TOKEN);
     useEffect(() => {
-        const fetchData = async () => {
-            await axios.get(URL, { headers: header }).then((res) => setGroups(res.data.data));
-        };
-        fetchData();
+        axios
+            .get(URL, {
+                headers: header,
+                params: {
+                    userEmail: user.email,
+                },
+            })
+            .then((res) => setGroups(res.data.data));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+
+    const handleUnenroll = () => {
+        axios.delete(UNENROLL, { headers: header }).then(navigate('/class-list'));
+    };
+
     return (
         <>
             <CreateGroupForm
@@ -38,7 +51,7 @@ const GroupPicking = () => {
                 <Banner />
                 <GroupLabel>
                     <Title>groups</Title>
-                    {role == 'Lecturer' && (
+                    {user.role == 'Lecturer' ? (
                         <CreateGroupBtn
                             onClick={() => {
                                 setCreate(true);
@@ -46,23 +59,26 @@ const GroupPicking = () => {
                         >
                             Create Groups
                         </CreateGroupBtn>
+                    ) : (
+                        <CreateGroupBtn onClick={handleUnenroll}>Unenroll</CreateGroupBtn>
                     )}
                 </GroupLabel>
                 <GroupList>
-                    {groups
-                        .sort((a, b) => a.number - b.number)
-                        .map((group) => {
-                            return (
-                                <GroupSection
-                                    key={group.id}
-                                    data={group}
-                                    class_ID={class_ID}
-                                    role={role}
-                                    isJoined={isJoined}
-                                    setJoin={setJoin}
-                                />
-                            );
-                        })}
+                    {groups != null &&
+                        groups
+                            .sort((a, b) => a.number - b.number)
+                            .map((group) => {
+                                return (
+                                    <GroupSection
+                                        key={group.id}
+                                        data={group}
+                                        class_ID={class_ID}
+                                        role={user.role}
+                                        isJoined={isJoined}
+                                        setJoin={setJoin}
+                                    />
+                                );
+                            })}
                 </GroupList>
             </Container>
         </>

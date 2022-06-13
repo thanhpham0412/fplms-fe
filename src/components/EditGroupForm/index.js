@@ -22,10 +22,11 @@ import CloseIcon from '@mui/icons-material/Close';
 const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
     const myDate = group.enrollTime.split(' ');
     const [groupNumEdit, setGroupNumEdit] = useState(group.number);
-    const [membersEdit, setMembersEdit] = useState(group.maxMemberQuantity);
+    const [membersEdit, setMembersEdit] = useState(group.memberQuantity);
     const [date, setDate] = useState(myDate[0]);
     const [time, setTime] = useState(myDate[1]);
     const [enrollTime, setEnrollTime] = useState(group.enrollTime);
+
     const URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups`;
     const TOKEN = localStorage.getItem('token');
     const header = {
@@ -46,8 +47,9 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
                 {
                     enrollTime: enrollTime,
                     id: group.id,
-                    memberQuanity: membersEdit,
+                    memberQuantity: membersEdit,
                     number: groupNumEdit,
+                    projectDTIO: {},
                 },
                 { headers: header }
             )

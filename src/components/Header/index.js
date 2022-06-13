@@ -24,7 +24,7 @@ const Header = () => {
                             }}
                         />
                     </HLink>
-                    <HLink to={'/studentInfo'}>
+                    <HLink to={'/discussion-list'}>
                         <ForumIcon
                             style={{
                                 fontSize: 24,

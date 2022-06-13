@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import axios from 'axios';
 
 import { StudentRow } from '../../components';
 import {
@@ -44,6 +46,19 @@ const StudentList = () => {
         createData('Nguyen Duc Thien', 'SE161107', 'Group 2', 'Member', 32, 'Remove'),
         createData('Duong Chi Khang', 'SE161108', 'Group 2', 'Member', 32, 'Remove'),
     ]);
+
+    const API = process.env.REACT_APP_API_URL + `/management/classes/2/student`;
+    const header = {
+        Authorization: `${localStorage.getItem('token')}`,
+    };
+
+    useEffect(() => {
+        axios.get(API, { headers: header }).then((res) => {
+            const data = res.data;
+            console.log(data);
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const [search, setSearch] = useState('');
 
