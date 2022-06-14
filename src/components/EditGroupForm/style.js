@@ -49,7 +49,7 @@ const HeaderJumbotron = styled.div`
     flex-direction: column;
 `;
 
-const FormBody = styled.form`
+const FormBody = styled.div`
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -58,6 +58,8 @@ const FormBody = styled.form`
 
 const FormRow = styled.div`
     display: flex;
+    gap: ${({ gap }) => gap || '0px'};
+    justify-content: ${({ justifyContent }) => justifyContent || 'none'};
 `;
 
 const FormColumn = styled.div`
@@ -92,14 +94,13 @@ const EditInput = styled.input`
     color: ${COLOR.gray[0]};
 `;
 
-const SaveButton = styled.button`
-    width: 100%;
+const StyledButton = styled.button`
     border: none;
     background: ${COLOR.blue[0]};
     color: white;
     border-radius: 4px;
     cursor: pointer;
-    padding: 16px;
+    padding: 10px 20px;
     font-weight: bold;
     font-family: Lato;
     display: grid;
@@ -120,5 +121,5 @@ export {
     FormRow,
     FormColumn,
     EditInput,
-    SaveButton,
+    StyledButton,
 };

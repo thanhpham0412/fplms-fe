@@ -15,12 +15,12 @@ import {
     FormRow,
     FormColumn,
     EditInput,
-    SaveButton,
+    StyledButton,
 } from './style';
 
 import CloseIcon from '@mui/icons-material/Close';
 
-const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
+const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID, email }) => {
     const myDate = group.enrollTime.split(' ');
     const [groupNumEdit, setGroupNumEdit] = useState(group.number);
     const [membersEdit, setMembersEdit] = useState(group.memberQuantity);
@@ -30,21 +30,20 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
     const [isLoading, setLoading] = useState(false);
 
     const URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups`;
+    const URL_DELETE =
+        process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups/${group.id}`;
     const TOKEN = localStorage.getItem('token');
     const header = {
         Authorization: TOKEN,
     };
+
     const closeForm = () => {
         setCreate(false);
     };
-    const preventPropagation = (e) => {
-        e.preventPropagation();
-    };
 
-    const handleSubmit = async (e) => {
+    const handleSaveBtn = () => {
         setLoading(true);
-        e.preventDefault();
-        await axios
+        axios
             .put(
                 URL,
                 {
@@ -52,7 +51,6 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
                     id: group.id,
                     memberQuantity: membersEdit,
                     number: groupNumEdit,
-                    projectDTIO: {},
                 },
                 { headers: header }
             )
@@ -61,8 +59,8 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
                     setGroup({
                         id: group.id,
                         enrollTime: enrollTime,
-                        members: membersEdit,
-                        groupNum: groupNumEdit,
+                        memberQuantity: membersEdit,
+                        number: groupNumEdit,
                     });
                     success(`Edit group ${group.number} successfully`);
                 } else {
@@ -73,9 +71,29 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
                 error(`An error occured`);
             })
             .finally(() => {
+                closeForm();
                 setLoading(false);
-                closeForm;
             });
+    };
+
+    const handleRemoveBtn = () => {
+        setLoading(true);
+        if (group.currentNumber == 0) {
+            axios
+                .put(URL_DELETE, { userEmail: email }, { headers: header })
+                .then((res) => {
+                    if (res.data.code == 200) success(`Remove group${group.number} successfully!`);
+                    else error(`${res.data.message}`);
+                })
+                .finally(() => {
+                    closeForm();
+                    setLoading(false);
+                });
+        } else {
+            error(`Group ${group.number} is having ${group.currentNumber} member(s)!`);
+            closeForm();
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -85,7 +103,7 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
     return (
         <>
             <Overlay isDisplay={showing}>
-                <FormContainer onclick={preventPropagation}>
+                <FormContainer>
                     <FormHeader>
                         <HeaderJumbotron>
                             <Title>Edit Group</Title>
@@ -93,7 +111,7 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
                         </HeaderJumbotron>
                         <CloseIcon sx={{ fontSize: '2rem' }} onClick={closeForm} />
                     </FormHeader>
-                    <FormBody onSubmit={handleSubmit}>
+                    <FormBody>
                         <FormRow>
                             <FormColumn>
                                 <small>Group number</small>
@@ -138,10 +156,16 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID }) => {
                                 />
                             </FormColumn>
                         </FormRow>
-                        <SaveButton isLoading={isLoading} type="submit">
-                            <ButtonLoader isLoading={isLoading} />
-                            <span>SAVE</span>
-                        </SaveButton>
+                        <FormRow gap={'10px'} justifyContent={'flex-end'}>
+                            <StyledButton isLoading={isLoading} onClick={handleSaveBtn}>
+                                <ButtonLoader isLoading={isLoading} />
+                                <span>SAVE</span>
+                            </StyledButton>
+                            <StyledButton isLoading={isLoading} onClick={handleRemoveBtn}>
+                                <ButtonLoader isLoading={isLoading} />
+                                <span>Remove</span>
+                            </StyledButton>
+                        </FormRow>
                     </FormBody>
                 </FormContainer>
             </Overlay>

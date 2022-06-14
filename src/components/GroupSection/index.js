@@ -12,7 +12,7 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import BookIcon from '@mui/icons-material/Book';
 import PeopleIcon from '@mui/icons-material/People';
 
-const GroupSection = ({ data, class_ID, role, isJoined, setJoin }) => {
+const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin }) => {
     const group_Id = data.id;
     const [isCreate, setCreate] = useState(false);
     const [disable, setDisable] = useState(false);
@@ -59,6 +59,7 @@ const GroupSection = ({ data, class_ID, role, isJoined, setJoin }) => {
                 setCreate={setCreate}
                 setGroup={setGroup}
                 class_ID={class_ID}
+                email={email}
             />
             <Container>
                 <Header>GROUP {group.number}</Header>

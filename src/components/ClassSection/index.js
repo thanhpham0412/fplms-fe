@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useClickOutside } from '../../hooks';
 import { error } from '../../utils/toaster';
+import EditClassForm from '../EditClassForm';
 // import { error } from '../../utils/toaster';
 import {
     Container,
@@ -20,12 +21,30 @@ import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import BookIcon from '@mui/icons-material/Book';
 
-const ClassSection = ({ className, fullClassName, lecture, join, id, enrollKey, user }) => {
+const ClassSection = ({
+    className,
+    fullClassName,
+    lecture,
+    join,
+    id,
+    enrollKey,
+    user,
+    subjectId,
+}) => {
     const isEnroll = join;
     const [open, setOpen] = useState(false);
+    const [isCreate, setCreate] = useState(false);
     const buttonRef = useRef();
     const inputRef = useRef();
     const navigate = useNavigate();
+    const classItem = {
+        className: className,
+        lecture: lecture,
+        fullClassName: fullClassName,
+        enrollKey: enrollKey,
+        subjectId: subjectId,
+        id: id,
+    };
 
     useClickOutside(buttonRef, () => {
         if (open == true) {
@@ -81,38 +100,41 @@ const ClassSection = ({ className, fullClassName, lecture, join, id, enrollKey, 
     };
 
     const handleEditBtn = () => {
-        console.log('Edit class');
+        setCreate(true);
     };
 
     return (
-        <Container isEnroll={isEnroll}>
-            <Title>{className}</Title>
-            <Row>
-                <BookIcon />
-                <DetailText>{fullClassName}</DetailText>
-            </Row>
-            <Row>
-                <AccountBoxIcon />
-                <DetailText>{lecture}</DetailText>
-            </Row>
-            {user.role == 'Lecturer' ? (
-                <Row gap="10px">
-                    <StyledButton onClick={handleViewBtn}>View</StyledButton>
-                    <StyledButton onClick={handleEditBtn}>Edit</StyledButton>
+        <>
+            <EditClassForm showing={isCreate} setCreate={setCreate} classItem={classItem} />
+            <Container isEnroll={isEnroll}>
+                <Title>{className}</Title>
+                <Row>
+                    <BookIcon />
+                    <DetailText>{fullClassName}</DetailText>
                 </Row>
-            ) : (
-                <Row onClick={openEnroll} ref={buttonRef}>
-                    <InputContainer open={open}>
-                        <StyledInput ref={inputRef} type="password" placeholder="Enroll Key" />
-                    </InputContainer>
+                <Row>
+                    <AccountBoxIcon />
+                    <DetailText>{lecture}</DetailText>
+                </Row>
+                {user.role == 'Lecturer' ? (
+                    <Row gap="10px">
+                        <StyledButton onClick={handleViewBtn}>View</StyledButton>
+                        <StyledButton onClick={handleEditBtn}>Edit</StyledButton>
+                    </Row>
+                ) : (
+                    <Row onClick={openEnroll} ref={buttonRef}>
+                        <InputContainer open={open}>
+                            <StyledInput ref={inputRef} type="password" placeholder="Enroll Key" />
+                        </InputContainer>
 
-                    <StyledButton open={open} onClick={enroll} isEnroll={isEnroll}>
-                        <span>{isEnroll ? 'Joined' : 'Enroll'}</span>
-                        <ArrowCircleRightIcon />
-                    </StyledButton>
-                </Row>
-            )}
-        </Container>
+                        <StyledButton open={open} onClick={enroll} isEnroll={isEnroll}>
+                            <span>{isEnroll ? 'Joined' : 'Enroll'}</span>
+                            <ArrowCircleRightIcon />
+                        </StyledButton>
+                    </Row>
+                )}
+            </Container>
+        </>
     );
 };
 

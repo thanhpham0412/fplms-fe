@@ -51,7 +51,7 @@ const GroupPicking = () => {
                 <Banner />
                 <GroupLabel>
                     <Title>groups</Title>
-                    {user.role != 'Lecturer' ? (
+                    {user.role == 'Lecturer' ? (
                         <CreateGroupBtn
                             onClick={() => {
                                 setCreate(true);
@@ -64,21 +64,20 @@ const GroupPicking = () => {
                     )}
                 </GroupLabel>
                 <GroupList>
-                    {groups != null &&
-                        groups
-                            .sort((a, b) => a.number - b.number)
-                            .map((group) => {
-                                return (
-                                    <GroupSection
-                                        key={group.id}
-                                        data={group}
-                                        class_ID={class_ID}
-                                        role={user.role}
-                                        isJoined={isJoined}
-                                        setJoin={setJoin}
-                                    />
-                                );
-                            })}
+                    {groups
+                        ?.sort((a, b) => a.number - b.number)
+                        .map((group) => {
+                            return (
+                                <GroupSection
+                                    key={group.id}
+                                    data={group}
+                                    class_ID={class_ID}
+                                    {...user}
+                                    isJoined={isJoined}
+                                    setJoin={setJoin}
+                                />
+                            );
+                        })}
                 </GroupList>
             </Container>
         </>

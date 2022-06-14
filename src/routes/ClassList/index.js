@@ -109,7 +109,9 @@ const ClassList = () => {
                     className={classData.name.toUpperCase()}
                     lecture="huongntc2@fpt.edu.vn"
                     fullClassName={classData.semester}
+                    subjectId={classData.subjectId}
                     user={user}
+                    id={classData.id}
                 />
             ));
     };
