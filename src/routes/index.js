@@ -11,6 +11,7 @@ import NotFound from './NotFound';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
 import StudentList from './StudentList';
+import Topic from './Topic';
 
 export const publicRoute = [
     {
@@ -24,8 +25,8 @@ export const publicRoute = [
 
 export const privateRoute = [
     {
-        path: 'class-list',
-        name: 'class-list',
+        path: 'class',
+        name: 'class',
         component: ClassList,
         exact: true,
         restrict: true,
@@ -45,8 +46,8 @@ export const privateRoute = [
         restrict: true,
     },
     {
-        path: 'group-view/:id',
-        name: 'group-view',
+        path: 'group/:id',
+        name: 'group',
         component: GroupView,
         exact: true,
         restrict: true,
@@ -65,6 +66,13 @@ export const privateRoute = [
         exact: true,
         restrict: true,
     },
+    {
+        path: 'topic',
+        name: 'topic',
+        component: Topic,
+        exact: true,
+        restrict: true,
+    },
 ];
 
 export const RouterComponent = () => {
@@ -73,7 +81,7 @@ export const RouterComponent = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route exact path="/" element={<Navigate to="/class-list" />} />
+                <Route exact path="/" element={<Navigate to="/class" />} />
                 <Route exact path="/" element={<PrivateRoute />}>
                     {privateRoute.map((route) => (
                         <Route

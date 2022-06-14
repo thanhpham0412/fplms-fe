@@ -40,6 +40,15 @@ export const StyledHeader = styled.div`
     }
 `;
 
+export const DataHeader = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
+export const Error = styled.small`
+    color: ${COLOR.red[0]};
+`;
+
 export const StyledBody = styled.div`
     padding: 1rem;
     flex-direction: column;

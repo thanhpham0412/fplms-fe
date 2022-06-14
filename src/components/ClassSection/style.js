@@ -8,7 +8,7 @@ export const Container = styled.div`
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
     background: green;
     box-sizing: border-box;
     background: ${({ isEnroll }) => (isEnroll ? COLOR.green[5] : COLOR.blue[5])};
@@ -92,21 +92,6 @@ export const StyledButton = styled.div`
     :active {
         background: ${COLOR.blue[1]};
     }
-`;
-
-export const Overlay = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: ${COLOR.blue[5]};
-    display: none;
-    padding: 16px;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 20px;
 `;
 
 const placeHolderShimmer = keyframes`

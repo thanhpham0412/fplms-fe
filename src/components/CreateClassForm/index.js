@@ -16,6 +16,8 @@ import {
     StyledInput,
     StyledBody,
     StyledButton,
+    DataHeader,
+    Error,
 } from './style';
 
 import CloseIcon from '@mui/icons-material/Close';
@@ -28,6 +30,11 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
         id: 1,
         timeout: '',
         semester: 'SPRING',
+    });
+
+    const [validError, setError] = useState({
+        name: '',
+        enrollKey: '',
     });
 
     const close = () => {
@@ -44,6 +51,20 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
     };
 
     const submit = () => {
+        let errors = 0;
+
+        if (form.enrollKey.trim().length < 3) {
+            setError((err) => ({ ...err, enrollKey: 'Enroll Key length must be longer than 3!' }));
+            errors++;
+        }
+
+        if (form.name.trim().length < 5) {
+            setError((err) => ({ ...err, name: 'Class Name length must be longer than 5!' }));
+            errors++;
+        }
+
+        if (errors > 0) return;
+
         setDisable(true);
 
         const header = {
@@ -148,7 +169,10 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
                 <StyledBody>
                     <Row>
                         <Col>
-                            <small>Classname</small>
+                            <DataHeader>
+                                <small>Classname</small>
+                                <Error>{validError.name}</Error>
+                            </DataHeader>
                             <StyledInput
                                 placeholder="Software Development"
                                 onChange={(e) => {
@@ -159,7 +183,10 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
                     </Row>
                     <Row>
                         <Col>
-                            <small>Enroll Key</small>
+                            <DataHeader>
+                                <small>Enroll Key</small>
+                                <Error>{validError.enrollKey}</Error>
+                            </DataHeader>
                             <StyledInput
                                 type="password"
                                 onChange={(e) => {
