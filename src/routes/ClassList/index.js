@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { ClassSection as Section, CreateClassForm, Button } from '../../components';
 import ClassSectionHolder from '../../components/ClassSection/holder';
+import { getTokenInfo } from '../../utils/account';
 import { Container, StyledList, StyledInput, ToolBar } from './style';
 
 const ClassList = () => {
@@ -15,26 +16,45 @@ const ClassList = () => {
     const [isLoading, setLoading] = useState(true);
     const [isCreate, setCreate] = useState(false);
 
-    useEffect(() => {
-        const API = process.env.REACT_APP_API_URL + '/management/classes';
+    const token = getTokenInfo();
 
+    useEffect(() => {
         const header = {
             Authorization: `${localStorage.getItem('token')}`,
         };
 
-        axios
-            .get(API, {
-                headers: header,
-                params: {
-                    userEmail: 'kienfplms.fe@gmail.com',
-                },
-            })
-            .then((res) => {
-                console.log(res);
-                const data = res.data;
-                setClass(data.data);
-                setLoading(false);
-            });
+        if (token.role == 'Student') {
+            const API = process.env.REACT_APP_API_URL + '/management/classes/student';
+            axios
+                .get(API, {
+                    headers: header,
+                    params: {
+                        search: '',
+                    },
+                })
+                .then((res) => {
+                    console.log(res);
+                    const data = res.data;
+                    setClass(data.data);
+                    setLoading(false);
+                });
+        } else if (token.role == 'Lecturer') {
+            console.log(token);
+            const API = process.env.REACT_APP_API_URL + '/management/classes';
+            axios
+                .get(API, {
+                    headers: header,
+                    params: {
+                        userEmail: token.email,
+                    },
+                })
+                .then((res) => {
+                    console.log(res);
+                    const data = res.data;
+                    setClass(data.data);
+                    setLoading(false);
+                });
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -54,7 +74,7 @@ const ClassList = () => {
                     key={index}
                     {...classData}
                     className={classData.name.toUpperCase()}
-                    lecture="huongntc2@fpt.edu.vn"
+                    lecture={classData?.lecturerDto?.email || token.email}
                     fullClassName={classData.semester}
                 />
             ));

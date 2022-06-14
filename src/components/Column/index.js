@@ -1,13 +1,10 @@
-/* eslint-disable no-unused-vars */
 import { useState } from 'react';
 
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 
 import { Container, Header, Item, DropContainer, ItemContainer, Details, Title } from './style';
 
-const MAX_LENGTH = 140;
-
-const Column = ({ list, droppableId, name }) => {
+const Column = ({ list, droppableId, name, type }) => {
     const [isScroll, setScroll] = useState(false);
 
     const scroll = (e) => {
@@ -18,7 +15,7 @@ const Column = ({ list, droppableId, name }) => {
         }
     };
     return (
-        <Container>
+        <Container type={type}>
             <Header isScroll={isScroll}>
                 {name} - {list.length} TOPICS
             </Header>

@@ -4,7 +4,7 @@ import { COLOR } from '../../utils/style';
 
 export const Container = styled.div`
     padding: 1rem;
-    background: ${COLOR.blue[5]};
+    background: ${({ type }) => (type == 0 ? COLOR.green[5] : COLOR.blue[5])};
     border-radius: 4px;
     box-sizing: border-box;
     height: fit-content;

@@ -1,10 +1,10 @@
-/* eslint-disable no-unused-vars */
 import { useState } from 'react';
 
 import { DragDropContext } from 'react-beautiful-dnd';
 
 import { Column } from '../../components';
-import { Container, StyledGrid } from './style';
+import { get } from '../../utils/request';
+import { Container } from './style';
 
 const lorem =
     'Lorem ipsum dolor sit amet, consectetur adipiscing' +
@@ -24,9 +24,10 @@ const getItems = (count, hash = Math.random()) =>
 
 const Topic = () => {
     const [columns, setColumns] = useState({
-        ['Backlog']: {
-            name: 'Concept',
-            items: getItems(3, 'backlog'),
+        ['Temporary']: {
+            name: 'Temporary',
+            items: getItems(3, 'Temporary'),
+            type: 0,
         },
         ['mas-202']: {
             name: 'MAS 202',
@@ -41,6 +42,9 @@ const Topic = () => {
             items: getItems(10, 'prj'),
         },
     });
+
+    get('/management/projects', {});
+
     const onDragEnd = (result) => {
         if (!result.destination) return;
 
@@ -85,7 +89,13 @@ const Topic = () => {
         <Container>
             <DragDropContext onDragEnd={(result) => onDragEnd(result, columns, setColumns)}>
                 {Object.entries(columns).map(([id, data]) => (
-                    <Column name={data.name} list={data.items} key={id} droppableId={id}></Column>
+                    <Column
+                        type={data.type}
+                        name={data.name}
+                        list={data.items}
+                        key={id}
+                        droppableId={id}
+                    ></Column>
                 ))}
             </DragDropContext>
         </Container>
