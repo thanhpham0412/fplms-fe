@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 
 import { Column } from '../../components';
-import { get } from '../../utils/request';
 import { Container } from './style';
 
 const lorem =
@@ -26,24 +25,22 @@ const Topic = () => {
     const [columns, setColumns] = useState({
         ['Temporary']: {
             name: 'Temporary',
-            items: getItems(3, 'Temporary'),
+            items: getItems(10, 'Temporary'),
             type: 0,
         },
         ['mas-202']: {
             name: 'MAS 202',
-            items: getItems(5, 'mas'),
+            items: getItems(1, 'mas'),
         },
         ['swr-123']: {
             name: 'SWR 123',
-            items: getItems(2, 'jpd'),
+            items: getItems(1, 'jpd'),
         },
         ['prj-301']: {
             name: 'PRJ 301',
-            items: getItems(10, 'prj'),
+            items: getItems(1, 'prj'),
         },
     });
-
-    get('/management/projects', {});
 
     const onDragEnd = (result) => {
         if (!result.destination) return;
@@ -94,6 +91,7 @@ const Topic = () => {
                         name={data.name}
                         list={data.items}
                         key={id}
+                        setColumns={setColumns}
                         droppableId={id}
                     ></Column>
                 ))}

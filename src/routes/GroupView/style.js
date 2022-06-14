@@ -108,3 +108,8 @@ export const Round = styled.span`
     justify-content: center;
     align-items: center;
 `;
+
+export const Select = styled.div`
+    margin-bottom: 1rem;
+    max-width: 200px;
+`;

@@ -46,6 +46,7 @@ export const HighLight = styled.div`
 
 export const Name = styled.div`
     font-size: 12px;
+    color: ${COLOR.gray[1]};
 `;
 
 export const Header = styled.div`
@@ -55,7 +56,7 @@ export const Header = styled.div`
     display: flex;
     padding: 1rem;
     box-sizing: border-box;
-    border-bottom: 2px solid ${COLOR.gray[3]};
+    border-bottom: 2px solid ${COLOR.gray[4]};
     align-items: center;
     justify-content: space-between;
 `;

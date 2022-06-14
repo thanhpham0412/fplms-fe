@@ -13,7 +13,7 @@ const Overlay = ({ children, showing, setOpen }) => {
 
     return (
         <Container isDisplay={showing} onClick={hide}>
-            <div onClick={(e) => e.stopPropagation()}>{showing ? children : null}</div>
+            <div onClick={(e) => e.stopPropagation()}>{children}</div>
         </Container>
     );
 };

@@ -14,8 +14,8 @@ export const Container = styled.div`
 
 export const StyledButton = styled.div`
     padding: 1rem;
-    border-radius: 4px;
-    background: ${({ open }) => (open ? COLOR.blue[0] : COLOR.blue[5])};
+    border-radius: 2px;
+    background: ${({ open }) => (open ? COLOR.blue[0] : COLOR.primary02)};
     color: ${({ open }) => (open ? COLOR.primary02 : COLOR.primary03)};
     border: 1px solid ${COLOR.blue[0]};
     display: flex;
@@ -47,7 +47,7 @@ const scaleZ = keyframes`
 `;
 
 export const StyledList = styled.ul`
-    max-height: 180px;
+    color: #fff;
     list-style-type: none;
     flex-direction: column;
     position: absolute;
@@ -58,22 +58,25 @@ export const StyledList = styled.ul`
     padding: 0;
     transform: translateY(0.5rem);
     margin-block-start: -1px;
+    border-radius: 2px;
+    overflow: hidden;
     margin-block-end: 0.5em;
     display: ${({ open }) => (open ? 'flex' : 'none')};
 `;
 
 export const StyledItem = styled.li`
     padding: 1rem;
-    background: ${COLOR.blue[5]};
+    background: ${COLOR.blue[0]};
     transition: all 0.1s;
 
     animation: ${scaleZ} 300ms ${({ delay }) => delay}ms ease-in-out forwards;
 
     transform-origin: top center;
     opacity: 0;
+    cursor: pointer;
 
     :hover {
-        background: ${COLOR.blue[0]};
+        background: ${COLOR.blue[1]};
         color: ${COLOR.primary02};
     }
 `;

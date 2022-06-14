@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Calendar, DraftEditor, Overlay } from '../../components';
+import { Calendar, DraftEditor, Overlay, Selection } from '../../components';
 import {
     Container,
     StyledList,
@@ -16,6 +16,7 @@ import {
     CommingTitle,
     Status,
     Round,
+    Select,
 } from './style';
 
 import ArticleIcon from '@mui/icons-material/Article';
@@ -44,6 +45,17 @@ const GroupView = () => {
 
     const [draftIsShow, setDraftShow] = useState(true);
 
+    const [reportType] = useState([
+        {
+            value: 1,
+            content: 'Daily report',
+        },
+        {
+            value: 2,
+            content: 'Cycle report',
+        },
+    ]);
+
     const events = [
         {
             icon: <ArticleIcon />,
@@ -65,8 +77,18 @@ const GroupView = () => {
         },
     ];
 
+    const onChange = () => setDraftShow(true);
+
     return (
         <>
+            <Select>
+                <Selection
+                    options={reportType}
+                    placeholder="Write Report"
+                    fixed
+                    onChange={onChange}
+                ></Selection>
+            </Select>
             <Overlay showing={draftIsShow}>
                 <DraftEditor setShow={setDraftShow} />
             </Overlay>
