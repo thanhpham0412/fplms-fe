@@ -58,8 +58,7 @@ const Column = ({ list, droppableId, name, type, setColumns }) => {
     const save = () => {
         const updates = list.filter((item) => item.needUpdate);
         updates.forEach((item) => {
-            const clone = list;
-            const index = list.findIndex((i) => i.id === item.id);
+            post()
         });
     };
 
