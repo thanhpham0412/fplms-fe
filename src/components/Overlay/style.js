@@ -20,4 +20,8 @@ export const Container = styled.div`
     left: 0;
     animation: ${show} 300ms;
     display: ${({ isDisplay }) => (isDisplay == true ? 'block' : 'none')};
+
+    > div {
+        height: 100%;
+    }
 `;

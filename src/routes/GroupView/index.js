@@ -1,4 +1,6 @@
-import { Calendar } from '../../components';
+import { useState } from 'react';
+
+import { Calendar, DraftEditor, Overlay } from '../../components';
 import {
     Container,
     StyledList,
@@ -40,6 +42,8 @@ const GroupView = () => {
         console.log(date);
     };
 
+    const [draftIsShow, setDraftShow] = useState(true);
+
     const events = [
         {
             icon: <ArticleIcon />,
@@ -62,35 +66,40 @@ const GroupView = () => {
     ];
 
     return (
-        <Container>
-            <StyledList>
-                {list.map(({ content, type }, index) => (
-                    <StyledItem feedback={type} key={index}>
-                        <Title feedback={type}>
-                            {(type ? 'FEEDBACK' : 'REPORT') + ' #' + index}
-                        </Title>
-                        <Content>{content}</Content>
-                    </StyledItem>
-                ))}
-            </StyledList>
-            <SideBar>
-                <Calendar onChange={test} />
-                <StyledH4>
-                    UP COMMING TASKS <Round>3</Round>
-                </StyledH4>
-                <CommingContainer>
-                    {events.map(({ icon, title, status, time }, index) => (
-                        <CommingSection key={index}>
-                            <Icon>{icon}</Icon>
-                            <RightSide>
-                                <CommingTitle>{title}</CommingTitle>
-                                <Status status={status}>{time}</Status>
-                            </RightSide>
-                        </CommingSection>
+        <>
+            <Overlay showing={draftIsShow}>
+                <DraftEditor setShow={setDraftShow} />
+            </Overlay>
+            <Container>
+                <StyledList>
+                    {list.map(({ content, type }, index) => (
+                        <StyledItem feedback={type} key={index}>
+                            <Title feedback={type}>
+                                {(type ? 'FEEDBACK' : 'REPORT') + ' #' + index}
+                            </Title>
+                            <Content>{content}</Content>
+                        </StyledItem>
                     ))}
-                </CommingContainer>
-            </SideBar>
-        </Container>
+                </StyledList>
+                <SideBar>
+                    <Calendar onChange={test} />
+                    <StyledH4>
+                        UP COMMING TASKS <Round>3</Round>
+                    </StyledH4>
+                    <CommingContainer>
+                        {events.map(({ icon, title, status, time }, index) => (
+                            <CommingSection key={index}>
+                                <Icon>{icon}</Icon>
+                                <RightSide>
+                                    <CommingTitle>{title}</CommingTitle>
+                                    <Status status={status}>{time}</Status>
+                                </RightSide>
+                            </CommingSection>
+                        ))}
+                    </CommingContainer>
+                </SideBar>
+            </Container>
+        </>
     );
 };
 

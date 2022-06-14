@@ -5,6 +5,7 @@ import ClassSection from './ClassSection';
 import Column from './Column';
 import CreateClass from './CreateClass';
 import CreateClassForm from './CreateClassForm';
+import DraftEditor from './DraftEditor';
 import Footer from './Footer';
 import GroupSection from './GroupSection';
 import Header from './Header';
@@ -21,6 +22,7 @@ import TopActivities from './TopActivities';
 
 export {
     TopActivities,
+    DraftEditor,
     Jumbotron,
     Button,
     Particles,
