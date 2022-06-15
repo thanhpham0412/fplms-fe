@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { useParams } from 'react-router-dom';
+
 import { Calendar, DraftEditor, Overlay, Selection } from '../../components';
 import {
     Container,
@@ -24,6 +26,8 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 
 const GroupView = () => {
+    const { groupId } = useParams();
+
     const list = new Array(7)
         .fill({
             title: 'REPORT',
@@ -90,7 +94,7 @@ const GroupView = () => {
                 ></Selection>
             </Select>
             <Overlay showing={draftIsShow}>
-                <DraftEditor setShow={setDraftShow} />
+                <DraftEditor groupId={groupId} setShow={setDraftShow} />
             </Overlay>
             <Container>
                 <StyledList>

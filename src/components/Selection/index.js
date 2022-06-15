@@ -8,7 +8,6 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 const Selection = ({ options, placeholder, onChange }) => {
     const [picked, setPicked] = useState(placeholder || 'Pick an option');
 
-    const [list] = useState(options || []);
     const [open, setOpen] = useState(false);
 
     const pick = (item) => {
@@ -36,7 +35,7 @@ const Selection = ({ options, placeholder, onChange }) => {
                 <KeyboardArrowDownIcon />
             </StyledButton>
             <StyledList open={open}>
-                {list.map((item, index) => (
+                {options.map((item, index) => (
                     <StyledItem
                         onClick={() => {
                             pick(item);

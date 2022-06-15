@@ -4,7 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { v4 as uuidv4 } from 'uuid';
 
-import { post } from '../../utils/request';
+import { post, get } from '../../utils/request';
+import { success, error } from '../../utils/toaster';
 import {
     Container,
     Header,
@@ -58,9 +59,13 @@ const Column = ({ list, droppableId, name, type, setColumns }) => {
     };
 
     const save = () => {
+        // get('/management/subjects', {
+        //     classId: 1,
+        // }).then((res) => {
+        //     console.log(res);
+        // });
         const updates = list.filter((item) => item.needUpdate);
         updates.forEach((item) => {
-            saveItem(item.id);
             post('/management/projects', {
                 actors: 'string',
                 context: 'string',
@@ -68,12 +73,20 @@ const Column = ({ list, droppableId, name, type, setColumns }) => {
                 name: item.title,
                 problem: item.content,
                 requirements: item.content,
-                subjectId: 0,
+                subjectId: 3,
                 theme: 'string',
-            }).then((res) => {
-                console.log(res);
-                saveItem(item.id);
-            });
+            })
+                .then((res) => {
+                    const data = res.data;
+                    console.log(data);
+                    if (data.code == 200) {
+                        success(`Topic \`${item.title}\` added`);
+                        saveItem(item.id);
+                    }
+                })
+                .catch(() => {
+                    error(`Topic \`${item.title}\` save error`);
+                });
         });
     };
 
