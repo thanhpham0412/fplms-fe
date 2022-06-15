@@ -18,13 +18,27 @@ export const Avatar = styled.div`
     border-radius: 50%;
 `;
 
+export const Comment = styled.div`
+    height: auto;
+    padding: 16px;
+    background-color: ${COLOR.blue[4]};
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: Lato;
+    color: ${COLOR.primary03};
+    display: grid;
+    align-items: end;
+    grid-template-columns: auto 30px 30px;
+    svg {
+    }
+`;
+
 export const CommentInput = styled(TextareaAutosize)`
-    max-width: 100%;
-    min-height: 40px;
+    width: 100%;
+    height: auto;
     outline: none;
     border: none;
     resize: none;
-    padding: 16px;
     background-color: ${COLOR.blue[4]};
     border-radius: 4px;
     font-size: 1rem;
