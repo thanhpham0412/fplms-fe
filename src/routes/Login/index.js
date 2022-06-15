@@ -37,7 +37,7 @@ const Login = () => {
             .then((res) => {
                 const data = res.data;
                 if (data.isAuthSuccessful) {
-                    navigate('/class-list');
+                    navigate('/class');
                     auth.setAuth(true);
                     localStorage.setItem('token', data.token);
                 }

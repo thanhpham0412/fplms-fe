@@ -1,4 +1,8 @@
-import { Calendar } from '../../components';
+import { useState } from 'react';
+
+import { useParams } from 'react-router-dom';
+
+import { Calendar, DraftEditor, Overlay, Selection } from '../../components';
 import {
     Container,
     StyledList,
@@ -14,6 +18,7 @@ import {
     CommingTitle,
     Status,
     Round,
+    Select,
 } from './style';
 
 import ArticleIcon from '@mui/icons-material/Article';
@@ -21,6 +26,8 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 
 const GroupView = () => {
+    const { groupId } = useParams();
+
     const list = new Array(7)
         .fill({
             title: 'REPORT',
@@ -39,6 +46,19 @@ const GroupView = () => {
     const test = (date) => {
         console.log(date);
     };
+
+    const [draftIsShow, setDraftShow] = useState(false);
+
+    const [reportType] = useState([
+        {
+            value: 1,
+            content: 'Daily report',
+        },
+        {
+            value: 2,
+            content: 'Cycle report',
+        },
+    ]);
 
     const events = [
         {
@@ -61,36 +81,51 @@ const GroupView = () => {
         },
     ];
 
+    const onChange = () => setDraftShow(true);
+
     return (
-        <Container>
-            <StyledList>
-                {list.map(({ content, type }, index) => (
-                    <StyledItem feedback={type} key={index}>
-                        <Title feedback={type}>
-                            {(type ? 'FEEDBACK' : 'REPORT') + ' #' + index}
-                        </Title>
-                        <Content>{content}</Content>
-                    </StyledItem>
-                ))}
-            </StyledList>
-            <SideBar>
-                <Calendar onChange={test} />
-                <StyledH4>
-                    UP COMMING TASKS <Round>3</Round>
-                </StyledH4>
-                <CommingContainer>
-                    {events.map(({ icon, title, status, time }, index) => (
-                        <CommingSection key={index}>
-                            <Icon>{icon}</Icon>
-                            <RightSide>
-                                <CommingTitle>{title}</CommingTitle>
-                                <Status status={status}>{time}</Status>
-                            </RightSide>
-                        </CommingSection>
+        <>
+            <Select>
+                <Selection
+                    options={reportType}
+                    placeholder="Write Report"
+                    fixed
+                    onChange={onChange}
+                ></Selection>
+            </Select>
+            <Overlay showing={draftIsShow}>
+                <DraftEditor groupId={groupId} setShow={setDraftShow} />
+            </Overlay>
+            <Container>
+                <StyledList>
+                    {list.map(({ content, type }, index) => (
+                        <StyledItem feedback={type} key={index}>
+                            <Title feedback={type}>
+                                {(type ? 'FEEDBACK' : 'REPORT') + ' #' + index}
+                            </Title>
+                            <Content>{content}</Content>
+                        </StyledItem>
                     ))}
-                </CommingContainer>
-            </SideBar>
-        </Container>
+                </StyledList>
+                <SideBar>
+                    <Calendar onChange={test} />
+                    <StyledH4>
+                        UP COMMING TASKS <Round>3</Round>
+                    </StyledH4>
+                    <CommingContainer>
+                        {events.map(({ icon, title, status, time }, index) => (
+                            <CommingSection key={index}>
+                                <Icon>{icon}</Icon>
+                                <RightSide>
+                                    <CommingTitle>{title}</CommingTitle>
+                                    <Status status={status}>{time}</Status>
+                                </RightSide>
+                            </CommingSection>
+                        ))}
+                    </CommingContainer>
+                </SideBar>
+            </Container>
+        </>
     );
 };
 

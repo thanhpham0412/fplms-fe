@@ -5,10 +5,10 @@ import { StyledContainer, StyledHeader, HeaderContainer, BodyContainer } from '.
 const RouteContainer = ({ component }) => {
     return (
         <>
-            <StyledHeader>
-                <Header />
-            </StyledHeader>
             <StyledContainer>
+                <StyledHeader>
+                    <Header />
+                </StyledHeader>
                 <HeaderContainer>
                     <SideBar />
                 </HeaderContainer>

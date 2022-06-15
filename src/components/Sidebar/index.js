@@ -8,6 +8,7 @@ import ForumIcon from '@mui/icons-material/Forum';
 import HomeIcon from '@mui/icons-material/Home';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SchoolIcon from '@mui/icons-material/School';
+import TopicIcon from '@mui/icons-material/Topic';
 
 const Section = ({ section, level, setShow }) => {
     const navigate = useNavigate();
@@ -65,7 +66,7 @@ const SideBar = () => {
         },
         {
             title: 'Class list',
-            path: '/class-list',
+            path: '/class',
             isExpand: true,
             icon: <SchoolIcon />,
             submenu: [
@@ -77,7 +78,7 @@ const SideBar = () => {
                 },
                 {
                     title: 'All classes',
-                    path: '/class-list',
+                    path: '/class',
                     submenu: [],
                 },
             ],
@@ -98,6 +99,12 @@ const SideBar = () => {
                     submenu: [],
                 },
             ],
+        },
+        {
+            title: 'Topics',
+            path: '/topic',
+            icon: <TopicIcon />,
+            submenu: [],
         },
     ]);
 

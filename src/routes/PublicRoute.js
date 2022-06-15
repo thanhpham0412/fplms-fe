@@ -7,7 +7,7 @@ import AuthContext from '../contexts/auth';
 const PublicRoute = () => {
     const auth = useContext(AuthContext);
 
-    return auth.isAuth ? <Navigate to="/class-list" /> : <Outlet />;
+    return auth.isAuth ? <Navigate to="/class" /> : <Outlet />;
 };
 
 export default PublicRoute;

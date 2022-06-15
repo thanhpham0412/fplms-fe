@@ -16,6 +16,7 @@ export const FONT_SIZE = {
     xl: '2rem',
     xxl: '3rem',
     xxxl: '4rem',
+    read: '16px',
 };
 
 export const FLEX = {

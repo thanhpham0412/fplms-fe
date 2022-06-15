@@ -1,9 +1,5 @@
 import { Container } from './style';
 
-const OverlayContainer = () => {
-    return <div></div>;
-};
-
 const Overlay = ({ children, showing, setOpen }) => {
     if (showing) {
         document.body.style.overflow = 'hidden';
@@ -17,11 +13,9 @@ const Overlay = ({ children, showing, setOpen }) => {
 
     return (
         <Container isDisplay={showing} onClick={hide}>
-            <div onClick={(e) => e.stopPropagation()}>{showing ? children : null}</div>
+            <div onClick={(e) => e.stopPropagation()}>{children}</div>
         </Container>
     );
 };
-
-export { OverlayContainer };
 
 export default Overlay;

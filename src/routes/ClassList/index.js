@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 
 import axios from 'axios';
-import jwt_decode from 'jwt-decode';
 
 import { ClassSection as Section, CreateClassForm, Button } from '../../components';
 import ClassSectionHolder from '../../components/ClassSection/holder';
+import { getTokenInfo } from '../../utils/account';
+import { get } from '../../utils/request';
 import { Container, StyledList, StyledInput, ToolBar } from './style';
 
 const ClassList = () => {
@@ -16,8 +17,9 @@ const ClassList = () => {
     const [isLoading, setLoading] = useState(true);
     const [isCreate, setCreate] = useState(false);
     const [searchClass, setSearch] = useState('');
+    const [subjects, setSubjects] = useState([]);
 
-    const user = jwt_decode(localStorage.getItem('token'));
+    const user = getTokenInfo();
 
     const API_LECTURER = process.env.REACT_APP_API_URL + '/management/classes';
     const API_STUDENT = process.env.REACT_APP_API_URL + `/management/classes/student`;
@@ -106,8 +108,9 @@ const ClassList = () => {
                 <Section
                     key={index}
                     {...classData}
+                    subjectsCode={subjects}
                     className={classData.name.toUpperCase()}
-                    lecture="huongntc2@fpt.edu.vn"
+                    lecture={classData?.lecturerDto?.email || user.email}
                     fullClassName={classData.semester}
                     subjectId={classData.subjectId}
                     user={user}
@@ -116,9 +119,25 @@ const ClassList = () => {
             ));
     };
 
+    useEffect(() => {
+        get('/management/subjects', {}).then((res) => {
+            const data = res.data.data;
+            const sub = data.map((subject) => ({
+                value: subject.id,
+                content: subject.name,
+            }));
+            setSubjects(sub);
+        });
+    }, []);
+
     return (
         <>
-            <CreateClassForm showing={isCreate} setCreate={setCreate} setClass={setClass} />
+            <CreateClassForm
+                showing={isCreate}
+                setCreate={setCreate}
+                setClass={setClass}
+                subjects={subjects}
+            />
             <Container>
                 <ToolBar>
                     <StyledInput
