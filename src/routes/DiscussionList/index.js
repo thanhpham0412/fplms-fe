@@ -60,7 +60,7 @@ const DiscussionList = () => {
     return (
         <>
             <StyledContainer>
-                <Jumbotron title={'discussion'} subtitle={'se1633'} />
+                <Jumbotron title={'discussion'} subtitle={'SWP391'} />
                 <StyledHeader>
                     <Row style={{ alignItems: 'flex-end' }}>
                         <Column>
