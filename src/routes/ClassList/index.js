@@ -5,6 +5,7 @@ import axios from 'axios';
 import { ClassSection as Section, CreateClassForm, Button } from '../../components';
 import ClassSectionHolder from '../../components/ClassSection/holder';
 import { getTokenInfo } from '../../utils/account';
+import { get } from '../../utils/request';
 import { Container, StyledList, StyledInput, ToolBar } from './style';
 
 const ClassList = () => {
@@ -16,6 +17,7 @@ const ClassList = () => {
     const [isLoading, setLoading] = useState(true);
     const [isCreate, setCreate] = useState(false);
     const [searchClass, setSearch] = useState('');
+    const [subjects, setSubjects] = useState([]);
 
     const user = getTokenInfo();
 
@@ -106,6 +108,7 @@ const ClassList = () => {
                 <Section
                     key={index}
                     {...classData}
+                    subjectsCode={subjects}
                     className={classData.name.toUpperCase()}
                     lecture={classData?.lecturerDto?.email || user.email}
                     fullClassName={classData.semester}
@@ -116,9 +119,25 @@ const ClassList = () => {
             ));
     };
 
+    useEffect(() => {
+        get('/management/subjects', {}).then((res) => {
+            const data = res.data.data;
+            const sub = data.map((subject) => ({
+                value: subject.id,
+                content: subject.name,
+            }));
+            setSubjects(sub);
+        });
+    }, []);
+
     return (
         <>
-            <CreateClassForm showing={isCreate} setCreate={setCreate} setClass={setClass} />
+            <CreateClassForm
+                showing={isCreate}
+                setCreate={setCreate}
+                setClass={setClass}
+                subjects={subjects}
+            />
             <Container>
                 <ToolBar>
                     <StyledInput

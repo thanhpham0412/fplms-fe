@@ -22,7 +22,7 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close';
 
-const CreateClassForm = ({ showing, setCreate, setClass }) => {
+const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
     const [form, setForm] = useState({
         name: '',
         enrollKey: '',
@@ -105,37 +105,6 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
             subjectId: val.value,
         });
     };
-
-    const [subjects] = useState([
-        {
-            value: 1,
-            content: 'OSG202',
-        },
-        {
-            value: 2,
-            content: 'PRN211',
-        },
-        {
-            value: 3,
-            content: 'SWP391',
-        },
-        {
-            value: 4,
-            content: 'SWR302',
-        },
-        {
-            value: 5,
-            content: 'SWT301',
-        },
-        {
-            value: 6,
-            content: 'PRJ301',
-        },
-        {
-            value: 7,
-            content: 'DBI202',
-        },
-    ]);
 
     const [semester] = useState([
         {

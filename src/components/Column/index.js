@@ -4,7 +4,8 @@ import { useState, useRef, useEffect } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { v4 as uuidv4 } from 'uuid';
 
-import { post } from '../../utils/request';
+import { post, get } from '../../utils/request';
+import { success, error } from '../../utils/toaster';
 import {
     Container,
     Header,
@@ -13,6 +14,7 @@ import {
     ItemContainer,
     Details,
     Title,
+    Status,
     Plus,
 } from './style';
 
@@ -30,6 +32,7 @@ const Column = ({ list, droppableId, name, type, setColumns }) => {
             const clone = col[droppableId].items;
             const index = clone.findIndex((item) => item.id === id);
             clone[index].title = e.target.value;
+            clone[index].needUpdate = true;
             return {
                 ...col,
                 [droppableId]: {
@@ -56,8 +59,35 @@ const Column = ({ list, droppableId, name, type, setColumns }) => {
     };
 
     const save = () => {
+        // get('/management/subjects', {
+        //     classId: 1,
+        // }).then((res) => {
+        //     console.log(res);
+        // });
         const updates = list.filter((item) => item.needUpdate);
-        updates.forEach((item) => {});
+        updates.forEach((item) => {
+            post('/management/projects', {
+                actors: 'string',
+                context: 'string',
+                id: 0,
+                name: item.title,
+                problem: item.content,
+                requirements: item.content,
+                subjectId: 3,
+                theme: 'string',
+            })
+                .then((res) => {
+                    const data = res.data;
+                    console.log(data);
+                    if (data.code == 200) {
+                        success(`Topic \`${item.title}\` added`);
+                        saveItem(item.id);
+                    }
+                })
+                .catch(() => {
+                    error(`Topic \`${item.title}\` save error`);
+                });
+        });
     };
 
     useEffect(() => {
@@ -132,6 +162,7 @@ const Column = ({ list, droppableId, name, type, setColumns }) => {
                                                 onChange={(e) => changeTitle(e, item.id)}
                                             ></Title>
                                             <Details>{item.content}</Details>
+                                            {item.needUpdate ? <Status>Unsaved</Status> : null}
                                         </Item>
                                     </ItemContainer>
                                 )}
@@ -141,7 +172,7 @@ const Column = ({ list, droppableId, name, type, setColumns }) => {
                         <Plus type={type} isBot={isBot} bottom={47} onClick={add}>
                             <AddIcon />
                         </Plus>
-                        <Plus type={type} isBot={isBot} bottom={0}>
+                        <Plus type={type} isBot={isBot} bottom={0} onClick={save}>
                             <SaveIcon />
                         </Plus>
                     </DropContainer>
