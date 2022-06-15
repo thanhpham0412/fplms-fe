@@ -15,54 +15,88 @@ const ClassList = () => {
     const [filter, setFilter] = useState('');
     const [isLoading, setLoading] = useState(true);
     const [isCreate, setCreate] = useState(false);
+    const [searchClass, setSearch] = useState('');
 
-    const token = getTokenInfo();
+    const user = getTokenInfo();
+
+    const API_LECTURER = process.env.REACT_APP_API_URL + '/management/classes';
+    const API_STUDENT = process.env.REACT_APP_API_URL + `/management/classes/student`;
+    const header = {
+        Authorization: `${localStorage.getItem('token')}`,
+    };
 
     useEffect(() => {
-        const header = {
-            Authorization: `${localStorage.getItem('token')}`,
-        };
-
-        if (token.role == 'Student') {
-            const API = process.env.REACT_APP_API_URL + '/management/classes/student';
+        if (user.role == 'Lecturer') {
             axios
-                .get(API, {
-                    headers: header,
-                    params: {
-                        search: '',
+                .get(
+                    API_LECTURER,
+                    {
+                        headers: header,
                     },
-                })
+                    {
+                        userEmail: user.email,
+                    }
+                )
                 .then((res) => {
-                    console.log(res);
                     const data = res.data;
                     setClass(data.data);
                     setLoading(false);
                 });
-        } else if (token.role == 'Lecturer') {
-            console.log(token);
-            const API = process.env.REACT_APP_API_URL + '/management/classes';
+        } else {
             axios
-                .get(API, {
-                    headers: header,
-                    params: {
-                        userEmail: token.email,
+                .get(
+                    API_STUDENT,
+                    {
+                        headers: header,
+                        params: {
+                            search: searchClass,
+                        },
                     },
-                })
+                    {
+                        userEmail: user.email,
+                    }
+                )
                 .then((res) => {
-                    console.log(res);
+                    const data = res.data;
+                    console.log(data);
+                    setClass(data.data);
+                    setLoading(false);
+                });
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const handleSearch = (e) => {
+        if (e.key === 'Enter') {
+            axios
+                .get(
+                    API_STUDENT,
+                    {
+                        headers: header,
+                        params: {
+                            search: searchClass,
+                        },
+                    },
+                    {
+                        userEmail: user.email,
+                    }
+                )
+                .then((res) => {
                     const data = res.data;
                     setClass(data.data);
                     setLoading(false);
                 });
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    };
+
     const open = () => {
         setCreate(true);
     };
 
     const search = (e) => {
         setFilter(e.target.value);
+        setSearch(e.target.value);
     };
 
     const realData = () => {
@@ -73,8 +107,11 @@ const ClassList = () => {
                     key={index}
                     {...classData}
                     className={classData.name.toUpperCase()}
-                    lecture={classData?.lecturerDto?.email || token.email}
+                    lecture={classData?.lecturerDto?.email || user.email}
                     fullClassName={classData.semester}
+                    subjectId={classData.subjectId}
+                    user={user}
+                    id={classData.id}
                 />
             ));
     };
@@ -89,8 +126,9 @@ const ClassList = () => {
                         placeholder="Search for class..."
                         spellcheck="false"
                         onChange={search}
+                        onKeyUp={handleSearch}
                     ></StyledInput>
-                    <Button onClick={open}>Create New Class</Button>
+                    {user.role == 'Lecturer' && <Button onClick={open}>Create New Class</Button>}
                 </ToolBar>
                 <StyledList>{isLoading ? loadAnim : realData()}</StyledList>
             </Container>

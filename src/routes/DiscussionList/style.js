@@ -15,6 +15,8 @@ export const StyledHeader = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 10px;
+    margin: 10px 0 30px 0;
 `;
 export const Row = styled.div`
     width: 100%;

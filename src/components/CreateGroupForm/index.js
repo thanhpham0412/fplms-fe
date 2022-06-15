@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 
 import { error, success } from '../../utils/toaster';
+import ButtonLoader from '../ButtonLoader';
 import { Overlay } from '../index';
 import {
     FormContainer,
@@ -28,12 +29,15 @@ const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
     const [date, setDate] = useState('');
     const [time, setTime] = useState('');
     const [enrollTime, setEnrollTime] = useState('');
+    const [isLoading, setLoading] = useState(false);
+
     const URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups`;
     const TOKEN = localStorage.getItem('token');
     const header = {
         Authorization: TOKEN,
     };
     const handleCreateBtn = async () => {
+        setLoading(true);
         await axios
             .post(
                 URL,
@@ -55,7 +59,10 @@ const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
             .catch(() => {
                 error(`An error occured!`);
             })
-            .finally(closeForm);
+            .finally(() => {
+                setLoading(false);
+                closeForm();
+            });
     };
 
     const closeForm = () => {
@@ -123,8 +130,9 @@ const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
                                 />
                             </FormColumn>
                         </FormRow>
-                        <CreateBtn type="button" onClick={handleCreateBtn}>
-                            CREATE
+                        <CreateBtn type="button" onClick={handleCreateBtn} isLoading={isLoading}>
+                            <ButtonLoader isLoading={isLoading} />
+                            <span>CREATE</span>
                         </CreateBtn>
                     </FormBody>
                 </FormContainer>

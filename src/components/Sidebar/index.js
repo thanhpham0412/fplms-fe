@@ -78,7 +78,7 @@ const SideBar = () => {
                 },
                 {
                     title: 'All classes',
-                    path: '#',
+                    path: '/class-list',
                     submenu: [],
                 },
             ],

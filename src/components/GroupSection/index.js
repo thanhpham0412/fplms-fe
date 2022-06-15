@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+import { error } from '../../utils/toaster';
 import AvatarGroup from '../AvatarGroup';
 import EditGroupForm from '../EditGroupForm';
 import { Container, Header, Row, Project, Members, GroupBtn, JoinBtn } from './style';
@@ -11,17 +12,17 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import BookIcon from '@mui/icons-material/Book';
 import PeopleIcon from '@mui/icons-material/People';
 
-const GroupSection = ({ data, class_ID, role, isJoined, setJoin, group_Id }) => {
+const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin }) => {
+    const group_Id = data.id;
     const [isCreate, setCreate] = useState(false);
     const [disable, setDisable] = useState(false);
     const [btnStyle, setBtnStyle] = useState(false);
-    const [slot, setSlot] = useState(data.currentMemberQuantity);
+    const [slot, setSlot] = useState(data.currentNumber);
     const [group, setGroup] = useState(data);
-
+    const currentDate = new Date();
     const navigate = useNavigate();
 
-    const TOKEN = process.env.REACT_APP_TOKEN;
-    const currentDate = new Date();
+    const TOKEN = localStorage.getItem('token');
     const URL =
         process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups/${group_Id}/join`;
     const header = {
@@ -29,22 +30,20 @@ const GroupSection = ({ data, class_ID, role, isJoined, setJoin, group_Id }) => 
     };
 
     const handleJoinBtn = async () => {
-        await axios
-            .post(URL, { headers: header })
-            .then(() => {
+        await axios.post(URL, { groupId: group_Id }, { headers: header }).then((res) => {
+            if (res.data.code == 200) {
                 setJoin(true);
                 setBtnStyle(true);
                 setSlot((prev) => prev + 1);
-            })
-            .catch(() => {
-                setJoin(true);
-                setBtnStyle(true);
-                setSlot((prev) => prev + 1);
-            });
+                navigate(`/group-view/${group_Id}`);
+            } else {
+                error(`An error occured!`);
+            }
+        });
     };
     //Disable Join button base on slot an time
     useEffect(() => {
-        if (slot == group.maxMemberQuantity) {
+        if (slot == group.memberQuantity) {
             setDisable(true);
         } else if (isJoined || currentDate > new Date(group.enrollTime)) {
             setDisable(true);
@@ -60,6 +59,7 @@ const GroupSection = ({ data, class_ID, role, isJoined, setJoin, group_Id }) => 
                 setCreate={setCreate}
                 setGroup={setGroup}
                 class_ID={class_ID}
+                email={email}
             />
             <Container>
                 <Header>GROUP {group.number}</Header>
@@ -69,7 +69,7 @@ const GroupSection = ({ data, class_ID, role, isJoined, setJoin, group_Id }) => 
                 </Row>
                 <Row>
                     <PeopleIcon />
-                    <Members>{`${slot}/${group.maxMemberQuantity}Members`}</Members>
+                    <Members>{`${slot}/${group.memberQuantity}Members`}</Members>
                 </Row>
                 <Row>
                     <AccessTimeIcon />
@@ -88,13 +88,9 @@ const GroupSection = ({ data, class_ID, role, isJoined, setJoin, group_Id }) => 
                     </Row>
                 ) : (
                     <Row style={{ justifyContent: 'space-between' }}>
-                        <AvatarGroup slot={slot} members={group.maxMemberQuantity} />
+                        <AvatarGroup slot={slot} members={group.memberQuantity} />
                         <JoinBtn onClick={handleJoinBtn} disable={disable} btnStyle={btnStyle}>
-                            {btnStyle
-                                ? 'Joined'
-                                : slot == group.maxMemberQuantity
-                                ? 'Full'
-                                : 'Join'}
+                            {slot == group.memberQuantity ? 'Full' : 'Join'}
                         </JoinBtn>
                     </Row>
                 )}

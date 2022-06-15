@@ -57,9 +57,7 @@ const Column = ({ list, droppableId, name, type, setColumns }) => {
 
     const save = () => {
         const updates = list.filter((item) => item.needUpdate);
-        updates.forEach((item) => {
-            post()
-        });
+        updates.forEach((item) => {});
     };
 
     useEffect(() => {

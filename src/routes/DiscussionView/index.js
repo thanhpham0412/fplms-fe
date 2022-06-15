@@ -1,5 +1,5 @@
 import { Jumbotron, TopActivities } from '../../components';
-import PostAnswer from '../../components/PostAnswer';
+import AnswerSection from '../../components/AnswerSection';
 import {
     StyledContainer,
     StyledHeader,
@@ -71,7 +71,7 @@ const DiscussionView = () => {
 
                                 <Divider />
                             </PostMain>
-                            <PostAnswer />
+                            <AnswerSection />
                         </PostView>
                     </Column>
                     <Column>
