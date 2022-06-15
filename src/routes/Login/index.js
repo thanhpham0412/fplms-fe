@@ -26,7 +26,7 @@ const Login = () => {
 
     document.title = 'Login';
 
-    const URL = 'https://whole-foxes-laugh-14-169-34-149.loca.lt/api' + '/auth/accounts/login';
+    const URL = process.env.REACT_APP_AUTH_URL + '/auth/accounts/login';
 
     const responseGoogle = (response) => {
         axios
