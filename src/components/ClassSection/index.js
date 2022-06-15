@@ -92,8 +92,19 @@ const ClassSection = ({ className, fullClassName, lecture, join, id, subjectId, 
     };
 
     const joinClass = () => {
+        const header = {
+            Authorization: `${localStorage.getItem('token')}`,
+        };
         if (join) {
-            navigate(`/class/${id}`);
+            const API = process.env.REACT_APP_API_URL + `/management/classes/${id}/groups/details`;
+            axios.get(API, { headers: header }).then((res) => {
+                const data = res.data.data;
+                if (data) {
+                    navigate(`/group/${data.id}`);
+                } else {
+                    navigate(`/class/${id}`);
+                }
+            });
         }
     }
 
