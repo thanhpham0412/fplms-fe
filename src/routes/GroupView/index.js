@@ -43,7 +43,7 @@ const GroupView = () => {
         console.log(date);
     };
 
-    const [draftIsShow, setDraftShow] = useState(true);
+    const [draftIsShow, setDraftShow] = useState(false);
 
     const [reportType] = useState([
         {

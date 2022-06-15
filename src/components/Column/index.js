@@ -13,6 +13,7 @@ import {
     ItemContainer,
     Details,
     Title,
+    Status,
     Plus,
 } from './style';
 
@@ -30,6 +31,7 @@ const Column = ({ list, droppableId, name, type, setColumns }) => {
             const clone = col[droppableId].items;
             const index = clone.findIndex((item) => item.id === id);
             clone[index].title = e.target.value;
+            clone[index].needUpdate = true;
             return {
                 ...col,
                 [droppableId]: {
@@ -58,7 +60,20 @@ const Column = ({ list, droppableId, name, type, setColumns }) => {
     const save = () => {
         const updates = list.filter((item) => item.needUpdate);
         updates.forEach((item) => {
-            post()
+            saveItem(item.id);
+            post('/management/projects', {
+                actors: 'string',
+                context: 'string',
+                id: 0,
+                name: item.title,
+                problem: item.content,
+                requirements: item.content,
+                subjectId: 0,
+                theme: 'string',
+            }).then((res) => {
+                console.log(res);
+                saveItem(item.id);
+            });
         });
     };
 
@@ -134,6 +149,7 @@ const Column = ({ list, droppableId, name, type, setColumns }) => {
                                                 onChange={(e) => changeTitle(e, item.id)}
                                             ></Title>
                                             <Details>{item.content}</Details>
+                                            {item.needUpdate ? <Status>Unsaved</Status> : null}
                                         </Item>
                                     </ItemContainer>
                                 )}
@@ -143,7 +159,7 @@ const Column = ({ list, droppableId, name, type, setColumns }) => {
                         <Plus type={type} isBot={isBot} bottom={47} onClick={add}>
                             <AddIcon />
                         </Plus>
-                        <Plus type={type} isBot={isBot} bottom={0}>
+                        <Plus type={type} isBot={isBot} bottom={0} onClick={save}>
                             <SaveIcon />
                         </Plus>
                     </DropContainer>

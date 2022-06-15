@@ -28,6 +28,7 @@ export const Header = styled.div`
 export const Title = styled.input`
     color: ${COLOR.blue[0]};
     font-weight: bold;
+    width: 100%;
     outline: none;
     border: none;
     padding: 0;
@@ -35,6 +36,14 @@ export const Title = styled.input`
 
 export const ItemContainer = styled.div`
     padding: 0.5rem 0;
+`;
+
+export const Status = styled.div`
+    color: ${COLOR.red[0]};
+    outline: none;
+    border: none;
+    padding: 0;
+    margin-top: 0.5rem;
 `;
 
 export const Item = styled.div`
