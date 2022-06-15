@@ -28,8 +28,10 @@ export const Comment = styled.div`
     color: ${COLOR.primary03};
     display: grid;
     align-items: end;
-    grid-template-columns: auto 30px 30px;
+    grid-template-columns: 1fr auto auto;
     svg {
+        width: 30px;
+        cursor: pointer;
     }
 `;
 

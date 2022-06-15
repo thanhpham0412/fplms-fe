@@ -16,7 +16,21 @@ const AnswerSection = () => {
             <Comment>
                 <CommentInput
                     disabled
-                    defaultValue="Lorem ipsum dolor sit amet, dolore magna aliqua. sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                    defaultValue="Lorem ipsum dolor sit amet, dolore magna aliqua. sit amet, Lorem ipsum dolor sit amet, dolore magna aliqua. sit amet, Lorem ipsum dolor sit amet, dolore magna aliqua. sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                />
+            </Comment>
+            <Avatar />
+            <Comment>
+                <CommentInput
+                    disabled
+                    defaultValue="Lorem ipsum dolor sit amet, dolore magna aliqua. sit amet, Lorem ipsum dolor sit amet, dolore magna aliqua. sit amet, Lorem ipsum dolor sit amet, dolore magna aliqua. sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+                />
+            </Comment>
+            <Avatar />
+            <Comment>
+                <CommentInput
+                    disabled
+                    defaultValue="Lorem ipsum dolor sit amet, dolore magna aliqua. sit amet, Lorem ipsum dolor sit amet, dolore magna aliqua. sit amet, Lorem ipsum dolor sit amet, dolore magna aliqua. sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
                 />
             </Comment>
         </Container>
