@@ -18,7 +18,7 @@ function DraftEditor({ setShow, groupId }) {
         const blocks = convertToRaw(editorState.getCurrentContent()).blocks;
         const value = blocks.map((block) => (!block.text.trim() && '\n') || block.text).join('\n');
         post(
-            '/management/cycle-reports',
+            '/management/progress-reports',
             {
                 title: 'DRAFT',
                 content: value,
