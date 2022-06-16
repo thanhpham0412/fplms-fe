@@ -36,7 +36,7 @@ const GroupPicking = () => {
     }, []);
 
     const handleUnenroll = () => {
-        axios.delete(UNENROLL, { headers: header }).then(navigate('/class-list'));
+        axios.delete(UNENROLL, { headers: header }).then(navigate('/class'));
     };
 
     return (
