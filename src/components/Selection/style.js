@@ -6,7 +6,6 @@ export const Container = styled.div`
     width: 100%;
     height: auto;
     position: relative;
-    min-width: 80px;
     * {
         box-sizing: border-box;
         user-select: none;

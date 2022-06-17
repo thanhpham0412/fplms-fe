@@ -7,11 +7,18 @@ export const Container = styled.div`
     align-items: center;
 `;
 
-export const Avatar = styled.div`
+export const Logo = styled.div`
     width: 50px;
     height: 50px;
-    background: ${COLOR.blue[0]};
-    border-radius: 4px;
+    border-top: 1px solid ${COLOR.blue[0]};
+    border-bottom: 1px solid ${COLOR.blue[0]};
+    border-radius: 50%;
+    padding: 10px;
+    img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
 `;
 
 export const Content = styled.div`
