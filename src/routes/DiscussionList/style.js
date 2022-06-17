@@ -28,6 +28,7 @@ export const Row = styled.div`
 export const Column = styled.div`
     display: flex;
     flex-direction: column;
+    position: relative;
 `;
 
 export const NewTopicBtn = styled.button`
@@ -81,7 +82,7 @@ export const InputBox = styled.input`
 export const StyledBody = styled.div`
     width: 100%;
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto auto;
     gap: 30px;
     margin: 15px 0;
     @media (max-width: 1250px) {
@@ -95,6 +96,7 @@ export const StyledBody = styled.div`
 
 export const PostList = styled.div`
     width: 100%;
+    max-width: 700px;
     display: flex;
     flex-direction: column;
     gap: 10px;

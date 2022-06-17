@@ -1,10 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import axios from 'axios';
+
+import { Pagination } from '../../components';
 import Jumbotron from '../../components/Jumbotron';
 import PostSection from '../../components/PostSection';
 import PostLoader from '../../components/PostSection/loader';
 import Selection from '../../components/Selection';
 import TopActivities from '../../components/TopActivities';
+// import { getTokenInfo } from '../../utils/account';
+import { error, success } from '../../utils/toaster';
 import {
     StyledContainer,
     StyledHeader,
@@ -59,6 +64,56 @@ const DiscussionList = () => {
             value: 'MogoDB',
         },
     ];
+    const [loadAnim] = useState(
+        new Array(3).fill(PostLoader).map((Load, i) => <PostLoader key={i} />)
+    );
+    const [isLoading, setLoading] = useState(true);
+    const [posts, setPost] = useState();
+    const [pageNum, setPageNum] = useState(1);
+    const [pageSize] = useState(5);
+
+    const URL =
+        process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions?PageNumber=1&PageSize=1`;
+    // const user = getTokenInfo();
+    const header = {
+        Authorization: `${localStorage.getItem('token')}`,
+    };
+
+    useEffect(() => {
+        try {
+            const fetchData = async () => {
+                axios
+                    .get(URL, {
+                        headers: header,
+                        params: { PageNumber: pageNum, PageSize: pageSize },
+                    })
+                    .then((res) => {
+                        if (res.status == 200) {
+                            setPost(res.data);
+                            console.log(res);
+                            success(`Fetch success`);
+                            setLoading(false);
+                        } else {
+                            setLoading(false);
+                        }
+                    });
+            };
+            fetchData();
+        } catch (err) {
+            error(err);
+            setLoading(false);
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [pageNum]);
+
+    // const fetchMorePosts = async () => {
+    //     const res = await axios.get(URL, {
+    //         headers: header,
+    //         params: { PageNumber: pageNum, PageSize: pageSize },
+    //     });
+    // };
+
     return (
         <>
             <StyledContainer>
@@ -98,14 +153,12 @@ const DiscussionList = () => {
                 <StyledBody>
                     <Column>
                         <PostList>
-                            Newest Post
-                            <PostLoader />
-                            <PostLoader />
-                            <PostLoader />
-                            <PostSection />
-                            <PostSection />
-                            <PostSection />
+                            <span>New posts</span>
+                            {isLoading
+                                ? loadAnim
+                                : posts?.map((post) => <PostSection key={post.id} post={post} />)}
                         </PostList>
+                        <Pagination pageSize={pageSize} totalPosts={10} setPageNum={setPageNum} />
                     </Column>
                     <Column>
                         <TopActivities arr={topMember} />

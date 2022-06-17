@@ -60,8 +60,8 @@ export const privateRoute = [
         restrict: true,
     },
     {
-        path: 'discussion-view',
-        name: 'discussion-view',
+        path: 'discussion-view/:questionId',
+        name: 'discussion-view/:questionId',
         component: DiscussionView,
         exact: true,
         restrict: true,
