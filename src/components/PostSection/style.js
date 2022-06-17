@@ -14,7 +14,6 @@ export const Container = styled.div`
 `;
 
 export const Row = styled.div`
-    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -50,6 +49,11 @@ export const PostFeature = styled.div`
     background-color: ${COLOR.blue[4]};
     padding: 2px;
     border-radius: 4px;
+    :hover {
+        cursor: pointer;
+        transform: scale(1.1);
+        transition: 0.1s ease-in-out;
+    }
 `;
 
 export const Divider = styled.div`
@@ -63,11 +67,15 @@ export const Author = styled.div`
     align-items: center;
     font-size: 10px;
     cursor: pointer;
+    color: ${COLOR.primary03};
     p {
         margin: 0 8px;
     }
     span {
-        color: ${COLOR.blue[0]};
+        color: ${COLOR.blue[2]};
+        :hover {
+            color: ${COLOR.blue[0]};
+        }
     }
 `;
 

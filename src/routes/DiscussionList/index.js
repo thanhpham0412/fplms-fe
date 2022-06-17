@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import Jumbotron from '../../components/Jumbotron';
 import PostSection from '../../components/PostSection';
+import PostLoader from '../../components/PostSection/loader';
 import Selection from '../../components/Selection';
 import TopActivities from '../../components/TopActivities';
 import {
@@ -14,6 +15,7 @@ import {
     StyledBody,
     PostList,
     Label,
+    TypeSelection,
 } from './style';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -75,11 +77,13 @@ const DiscussionList = () => {
                                     />
                                 </Column>
                                 <Column>
-                                    <Selection
-                                        title={'Type'}
-                                        options={options}
-                                        placeholder={'All'}
-                                    />
+                                    <TypeSelection>
+                                        <Selection
+                                            title={'Type'}
+                                            options={options}
+                                            placeholder={'All'}
+                                        />
+                                    </TypeSelection>
                                 </Column>
                             </Row>
                         </Column>
@@ -95,6 +99,9 @@ const DiscussionList = () => {
                     <Column>
                         <PostList>
                             Newest Post
+                            <PostLoader />
+                            <PostLoader />
+                            <PostLoader />
                             <PostSection />
                             <PostSection />
                             <PostSection />

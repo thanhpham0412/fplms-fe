@@ -9,10 +9,11 @@ import {
     PostFeature,
     Divider,
     Author,
-    Answers,
-    AuthorAva,
+    Answers, // AuthorAva,
     FeatureList,
 } from './style';
+
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 
 const PostSection = () => {
     const navigate = useNavigate();
@@ -48,7 +49,7 @@ const PostSection = () => {
                 <Divider />
                 <Row>
                     <Author>
-                        <AuthorAva />
+                        <AccountCircleOutlinedIcon />
                         <p>
                             Posted by <span>phuongmtse161187</span> 2 days ago
                         </p>

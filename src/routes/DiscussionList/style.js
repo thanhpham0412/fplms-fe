@@ -39,7 +39,21 @@ export const NewTopicBtn = styled.button`
     border: none;
     display: flex;
     align-items: flex-end;
-    cursor: pointer;
+    :hover {
+        cursor: pointer;
+        transform: scale(1.05);
+        transition: 0.3s ease-in-out;
+        svg {
+            transform: rotate(0.5turn);
+            transition: 1s ease;
+        }
+    }
+    :not(:hover) {
+        svg {
+            transform: rotate(-0.5turn);
+            transition: 1s ease;
+        }
+    }
     svg {
         width: 16px;
         height: 16px;
@@ -84,4 +98,8 @@ export const PostList = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
+`;
+
+export const TypeSelection = styled.div`
+    max-width: 200px;
 `;
