@@ -5,11 +5,11 @@ import { useParams } from 'react-router-dom';
 
 import { Jumbotron, TopActivities } from '../../components';
 import AnswerSection from '../../components/AnswerSection';
+import PostLoader from '../../components/PostSection/loader';
 import { error, success } from '../../utils/toaster';
 import {
     StyledContainer,
     StyledHeader,
-    Avatar,
     Title,
     Subtitle,
     Column,
@@ -45,9 +45,11 @@ const DiscussionView = () => {
         },
     ];
     const [post, setPost] = useState();
+    const [isLoading, setLoading] = useState();
 
-    const id = useParams();
-    const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${id}/answers`;
+    const questionId = useParams().id;
+    const URL =
+        process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${questionId}/answers`;
     // const user = getTokenInfo();
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
@@ -64,8 +66,10 @@ const DiscussionView = () => {
                             setPost(res.data);
                             console.log(res);
                             success(`Fetch success`);
+                            setLoading(false);
                         } else {
                             error(`An error occured!`);
+                            setLoading(false);
                         }
                     });
             };
@@ -81,28 +85,34 @@ const DiscussionView = () => {
             <StyledContainer>
                 <Jumbotron title={'discussion'} subtitle={'What does the fox say?'} />
 
-                <StyledHeader>
-                    <Avatar />
-                    <Column>
-                        <Title>{post.title}</Title>
-                        <Subtitle>{post.createdDate}</Subtitle>
-                    </Column>
-                </StyledHeader>
-                <StyledBody>
-                    <Column>
-                        <PostView>
-                            <PostMain>
-                                <PostTitle>{post.title}</PostTitle>
-                                <PostText>{post.content}</PostText>
-                                <Divider />
-                            </PostMain>
-                            <AnswerSection />
-                        </PostView>
-                    </Column>
-                    <Column>
-                        <TopActivities arr={topMember} />
-                    </Column>
-                </StyledBody>
+                {isLoading ? (
+                    <PostLoader />
+                ) : (
+                    <>
+                        <StyledHeader>
+                            <img src={post?.student.picture} alt="Student Avatar" />
+                            <Column>
+                                <Title>{post?.student.email}</Title>
+                                <Subtitle>{post?.createdDate}</Subtitle>
+                            </Column>
+                        </StyledHeader>
+                        <StyledBody>
+                            <Column>
+                                <PostView>
+                                    <PostMain>
+                                        <PostTitle>{post?.title}</PostTitle>
+                                        <PostText>{post?.content}</PostText>
+                                        <Divider />
+                                    </PostMain>
+                                    <AnswerSection questionId={questionId} />
+                                </PostView>
+                            </Column>
+                            <Column>
+                                <TopActivities arr={topMember} />
+                            </Column>
+                        </StyledBody>
+                    </>
+                )}
             </StyledContainer>
         </>
     );

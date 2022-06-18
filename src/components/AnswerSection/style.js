@@ -7,7 +7,6 @@ import { TextareaAutosize } from '@mui/material';
 export const Container = styled.div`
     width: 100%;
     display: grid;
-    grid-template-columns: auto 1fr;
     gap: 24px;
 `;
 
@@ -46,4 +45,11 @@ export const CommentInput = styled(TextareaAutosize)`
     font-size: 1rem;
     font-family: Lato;
     color: ${COLOR.primary03};
+`;
+
+export const Answers = styled.div`
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
 `;
