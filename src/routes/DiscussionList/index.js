@@ -106,7 +106,20 @@ const DiscussionList = () => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pageNum]);
-
+    const addNewPost = () => {
+        axios
+            .post(
+                'https://843f-171-235-33-106.ngrok.io/api/discussion/questions',
+                {
+                    title: 'What should we do 2?',
+                    content:
+                        'We should bla bla bla blaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+                    subjectName: 'SWP391',
+                },
+                { headers: header }
+            )
+            .catch((err) => error(err));
+    };
     // const fetchMorePosts = async () => {
     //     const res = await axios.get(URL, {
     //         headers: header,
@@ -143,7 +156,7 @@ const DiscussionList = () => {
                             </Row>
                         </Column>
                         <Column>
-                            <NewTopicBtn>
+                            <NewTopicBtn onClick={addNewPost}>
                                 <AddIcon />
                                 Start new topic
                             </NewTopicBtn>
