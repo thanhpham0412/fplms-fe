@@ -1,27 +1,56 @@
-import React from 'react';
+import { useState } from 'react';
 
-import { Editor, EditorState } from 'draft-js';
+import { EditorState } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+
+import { Container, SubTitle, Wrapper, TitleBlock, Title } from './style';
+
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 const TextEditor = () => {
-    const [editorState, setEditorState] = React.useState(() => EditorState.createEmpty());
+    const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const [content, setContent] = useState('');
 
-    const editor = React.useRef(null);
-    function focusEditor() {
-        editor.current.focus();
-    }
+    const onEditorStateChange = (textState) => {
+        setEditorState({
+            textState,
+        });
+        setContent(textState.getCurrentContent().getPlainText('\u000A'));
+    };
+    const { textState } = editorState;
+    console.log(content);
 
     return (
-        <div
-            style={{ border: '1px solid black', minHeight: '6em', cursor: 'text' }}
-            onClick={focusEditor}
-        >
-            <Editor
-                ref={editor}
-                editorState={editorState}
-                onChange={setEditorState}
-                placeholder="Write something!"
-            />
-        </div>
+        <Container>
+            <div>
+                <Title sz={'28px'} mg={`0 0 20px 20px`}>
+                    Adding new post
+                </Title>
+                <Wrapper>
+                    <Title>Title</Title>
+                    <SubTitle>Main idea of the question which it describes for</SubTitle>
+                    <TitleBlock placeholder="Lorem ipsum" />
+                    <Title>Body</Title>
+                    <SubTitle>Describe the issue</SubTitle>
+                    <div className="editor">
+                        <Editor
+                            editorState={textState}
+                            toolbar={{
+                                inline: { inDropdown: true },
+                                list: { inDropdown: true },
+                                textAlign: { inDropdown: true },
+                                link: { inDropdown: true },
+                                history: { inDropdown: true },
+                            }}
+                            toolbarClassName="toolbarClassName"
+                            wrapperClassName="wrapperClassName"
+                            editorClassName="editorClassName"
+                            onEditorStateChange={onEditorStateChange}
+                        />
+                    </div>
+                </Wrapper>
+            </div>
+        </Container>
     );
 };
 

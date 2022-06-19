@@ -72,8 +72,7 @@ const DiscussionList = () => {
     const [pageNum, setPageNum] = useState(1);
     const [pageSize] = useState(5);
 
-    const URL =
-        process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions?PageNumber=1&PageSize=1`;
+    const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions`;
     // const user = getTokenInfo();
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
@@ -111,10 +110,10 @@ const DiscussionList = () => {
             .post(
                 'https://843f-171-235-33-106.ngrok.io/api/discussion/questions',
                 {
-                    title: 'What should we do 2?',
-                    content:
-                        'We should bla bla bla blaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-                    subjectName: 'SWP391',
+                    title: 'How to BBB?',
+                    content: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+                    subjectName: 'OSG202',
+                    // studentId: 'c4adbfb0-4090-4177-8e28-5c0842a7c618',
                 },
                 { headers: header }
             )
