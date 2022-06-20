@@ -1,72 +1,52 @@
 import { useEffect, useState } from 'react';
 
+import axios from 'axios';
+
+import { getTokenInfo } from '../../utils/account';
+import { error, success } from '../../utils/toaster';
 // import axios from 'axios';
 // import { getTokenInfo } from '../../utils/account';
 // import { success } from '../../utils/toaster';
-import { Avatar, Container, CommentInput, Comment, Answers } from './style';
+import { Container, CommentInput, Comment, Answers } from './style';
 
 import AttachmentIcon from '@mui/icons-material/Attachment';
 import SendIcon from '@mui/icons-material/Send';
 
-const AnswerSection = () => {
+const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
     const [answer, setAnswer] = useState();
 
-    // const user = getTokenInfo();
-    const [answers, setAnswers] = useState([
-        {
-            component: (
-                <>
-                    <Avatar />
-                    <Comment>
-                        <CommentInput disabled defaultValue="loremipsum" />
-                    </Comment>
-                </>
-            ),
-        },
-    ]);
-    const handleAnswer = () => {
-        setAnswers((answers) =>
-            answers.concat({
-                component: (
-                    <>
-                        <Avatar />
-                        <Comment>
-                            <CommentInput disabled defaultValue={answer} />
-                        </Comment>
-                    </>
-                ),
-            })
-        );
+    const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/answers`;
+    const user = getTokenInfo();
+    console.log(user);
+    const header = {
+        Authorization: `${localStorage.getItem('token')}`,
     };
-    // const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/answers`;
-    // // const user = getTokenInfo();
-    // const header = {
-    //     Authorization: `${localStorage.getItem('token')}`,
-    // };
+    const handleAnswer = () => {
+        axios
+            .post(
+                URL,
+                {
+                    content: answer,
+                    questionId: questionId,
+                },
+                { headers: header }
+            )
+            .then(() => {
+                setRefresh((prev) => prev + 1);
+                success(`Post answer successfully!`);
+            })
+            .catch((err) => {
+                error(`${err}`);
+            });
+    };
     useEffect(() => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    // axios
-    //     .post(
-    //         URL,
-    //         {
-    //             content: answer,
-    //             questionId: questionId,
-    //             studentId: `adddafd5-db41-4ee8-b427-0e63e5504f07`,
-    //         },
-    //         { headers: header }
-    //     )
-    //     .then((res) => {
-    //         console.log(res);
-    //         setListen(true);
-    //         success(`Post answer successfully!`);
-    //     });
-
     return (
         <Container>
             <Answers>
-                <Avatar />
+                <img src={student?.picture} />
                 <Comment>
                     <CommentInput
                         onChange={(e) => setAnswer(e.target.value)}
@@ -78,7 +58,12 @@ const AnswerSection = () => {
             </Answers>
 
             {answers?.map((data, index) => (
-                <Answers key={index}>{data.component}</Answers>
+                <Answers key={index}>
+                    <img src={data.student.picture} />
+                    <Comment>
+                        <CommentInput disabled defaultValue={data.content} />
+                    </Comment>
+                </Answers>
             ))}
         </Container>
     );

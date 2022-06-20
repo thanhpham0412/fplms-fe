@@ -10,13 +10,6 @@ export const Container = styled.div`
     gap: 24px;
 `;
 
-export const Avatar = styled.div`
-    width: 40px;
-    height: 40px;
-    background-color: ${COLOR.blue[3]};
-    border-radius: 50%;
-`;
-
 export const Comment = styled.div`
     height: auto;
     padding: 16px;
@@ -52,4 +45,10 @@ export const Answers = styled.div`
     display: grid;
     grid-template-columns: auto 1fr;
     gap: 24px;
+    img {
+        width: 40px;
+        height: auto;
+        object-fit: cover;
+        border-radius: 50%;
+    }
 `;

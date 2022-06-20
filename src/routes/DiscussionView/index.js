@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 import { Jumbotron, TopActivities } from '../../components';
 import AnswerSection from '../../components/AnswerSection';
 import PostLoader from '../../components/PostSection/loader';
-import { error, success } from '../../utils/toaster';
+import { error } from '../../utils/toaster';
 import {
     StyledContainer,
     StyledHeader,
@@ -44,12 +44,12 @@ const DiscussionView = () => {
             comments: '102 comments',
         },
     ];
-    const [post, setPost] = useState();
+    const [question, setQuestion] = useState();
     const [isLoading, setLoading] = useState();
+    const [refresh, setRefresh] = useState(0);
 
     const questionId = useParams().id;
-    const URL =
-        process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${questionId}/answers`;
+    const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${questionId}`;
     // const user = getTokenInfo();
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
@@ -63,9 +63,8 @@ const DiscussionView = () => {
                     })
                     .then((res) => {
                         if (res.status == 200) {
-                            setPost(res.data);
+                            setQuestion(res.data);
                             console.log(res);
-                            success(`Fetch success`);
                             setLoading(false);
                         } else {
                             error(`An error occured!`);
@@ -77,9 +76,8 @@ const DiscussionView = () => {
         } catch (err) {
             error(err);
         }
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [refresh]);
     return (
         <>
             <StyledContainer>
@@ -90,21 +88,27 @@ const DiscussionView = () => {
                 ) : (
                     <>
                         <StyledHeader>
-                            <img src={post?.student.picture} alt="Student Avatar" />
+                            <img src={question?.student.picture} alt="Student Avatar" />
                             <Column>
-                                <Title>{post?.student.email}</Title>
-                                <Subtitle>{post?.createdDate}</Subtitle>
+                                <Title>{question?.student.email}</Title>
+                                <Subtitle>{question?.createdDate}</Subtitle>
                             </Column>
                         </StyledHeader>
                         <StyledBody>
                             <Column>
                                 <PostView>
                                     <PostMain>
-                                        <PostTitle>{post?.title}</PostTitle>
-                                        <PostText>{post?.content}</PostText>
+                                        <PostTitle>{question?.title}</PostTitle>
+                                        <PostText>{question?.content}</PostText>
                                         <Divider />
                                     </PostMain>
-                                    <AnswerSection questionId={questionId} />
+                                    <AnswerSection
+                                        questionId={questionId}
+                                        answers={question?.answers}
+                                        refresh={refresh}
+                                        student={question?.student}
+                                        setRefresh={setRefresh}
+                                    />
                                 </PostView>
                             </Column>
                             <Column>

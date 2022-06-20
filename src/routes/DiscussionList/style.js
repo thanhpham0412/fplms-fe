@@ -28,7 +28,6 @@ export const Row = styled.div`
 export const Column = styled.div`
     display: flex;
     flex-direction: column;
-    position: relative;
 `;
 
 export const NewTopicBtn = styled.button`
@@ -104,4 +103,11 @@ export const PostList = styled.div`
 
 export const TypeSelection = styled.div`
     max-width: 200px;
+`;
+
+export const PaginateContainer = styled.div`
+    width: 100%;
+    max-width: 700px;
+    height: 40px;
+    position: relative;
 `;

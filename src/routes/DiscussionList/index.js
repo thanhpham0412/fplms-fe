@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 import { Pagination } from '../../components';
 import Jumbotron from '../../components/Jumbotron';
@@ -21,6 +22,7 @@ import {
     PostList,
     Label,
     TypeSelection,
+    PaginateContainer,
 } from './style';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -70,7 +72,10 @@ const DiscussionList = () => {
     const [isLoading, setLoading] = useState(true);
     const [posts, setPost] = useState();
     const [pageNum, setPageNum] = useState(1);
-    const [pageSize] = useState(5);
+    const [pageSize] = useState(10);
+    // eslint-disable-next-line no-unused-vars
+    const [totalPosts, setTotalPosts] = useState();
+    const navigate = useNavigate();
 
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions`;
     // const user = getTokenInfo();
@@ -90,6 +95,7 @@ const DiscussionList = () => {
                         if (res.status == 200) {
                             setPost(res.data);
                             console.log(res);
+                            setTotalPosts(JSON.parse(res.headers['x-pagination']).TotalCount);
                             success(`Fetch success`);
                             setLoading(false);
                         } else {
@@ -105,26 +111,6 @@ const DiscussionList = () => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pageNum]);
-    const addNewPost = () => {
-        axios
-            .post(
-                'https://843f-171-235-33-106.ngrok.io/api/discussion/questions',
-                {
-                    title: 'How to BBB?',
-                    content: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-                    subjectName: 'OSG202',
-                    // studentId: 'c4adbfb0-4090-4177-8e28-5c0842a7c618',
-                },
-                { headers: header }
-            )
-            .catch((err) => error(err));
-    };
-    // const fetchMorePosts = async () => {
-    //     const res = await axios.get(URL, {
-    //         headers: header,
-    //         params: { PageNumber: pageNum, PageSize: pageSize },
-    //     });
-    // };
 
     return (
         <>
@@ -155,7 +141,7 @@ const DiscussionList = () => {
                             </Row>
                         </Column>
                         <Column>
-                            <NewTopicBtn onClick={addNewPost}>
+                            <NewTopicBtn onClick={() => navigate('/add-question')}>
                                 <AddIcon />
                                 Start new topic
                             </NewTopicBtn>
@@ -170,7 +156,13 @@ const DiscussionList = () => {
                                 ? loadAnim
                                 : posts?.map((post) => <PostSection key={post.id} post={post} />)}
                         </PostList>
-                        <Pagination pageSize={pageSize} totalPosts={10} setPageNum={setPageNum} />
+                        <PaginateContainer>
+                            <Pagination
+                                pageSize={pageSize}
+                                totalPosts={10}
+                                setPageNum={setPageNum}
+                            />
+                        </PaginateContainer>
                     </Column>
                     <Column>
                         <TopActivities arr={topMember} />

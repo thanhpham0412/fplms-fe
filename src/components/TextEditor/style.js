@@ -91,3 +91,19 @@ export const TitleBlock = styled.input`
     padding: 5px 15px 5px 15px;
     margin-bottom: 25px;
 `;
+
+export const CreateBtn = styled.div`
+    width: fit-content;
+    font-size: 1rem;
+    color: ${COLOR.primary02};
+    padding: 12px 16px;
+    background: ${COLOR.blue[0]};
+    border-radius: 4px;
+    border: none;
+    display: flex;
+    align-self: flex-end;
+    :hover {
+        cursor: pointer;
+        transform: scale(1.05);
+    }
+`;
