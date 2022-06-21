@@ -6,14 +6,10 @@ export const Container = styled.div`
     width: 600px;
     height: auto;
     background: green;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     z-index: 10;
     border-radius: 4px;
     background: ${COLOR.primary02};
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    box-shadow: ${COLOR.blue[3]} 0px 4px 12px;
     display: block;
 
     * {
@@ -60,16 +56,17 @@ export const StyledBody = styled.div`
 export const StyledJumbotron = styled.div`
     display: flex;
     flex-direction: column;
+    gap: 2px;
 `;
 
 export const Title = styled.div`
-    font-weight: bold;
+    font-weight: 900;
+    letter-spacing: 0.05rem;
     color: ${COLOR.primary03};
 `;
 
 export const SubTitle = styled.div`
-    font-weight: bold;
-    color: ${COLOR.gray[1]};
+    color: ${COLOR.gray[0]};
 `;
 
 export const Row = styled.div`
@@ -78,7 +75,7 @@ export const Row = styled.div`
 `;
 
 export const StyledInput = styled.input`
-    border-radius: 4px;
+    border-radius: 2px;
     border: 1px solid ${COLOR.blue[0]};
     outline: none;
     padding: 1rem;
@@ -115,13 +112,17 @@ export const StyledSelection = styled.input`
 
 export const StyledButton = styled.button`
     background: ${COLOR.blue[0]};
-    font-weight: bold;
+    font-weight: 900;
     color: white;
     border: none;
-    padding: 16px;
+    padding: ${({ disable }) => (disable ? '8px' : '16px')};
+    letter-spacing: 0.05px;
     font-family: Lato;
     border-radius: 4px;
     cursor: ${({ disable }) => (disable ? 'not-allowed' : 'pointer')};
-    pointer-events: ${({ disable }) => (disable ? 'none' : 'auto')};
-    opacity: ${({ disable }) => (disable ? 0.5 : 1)};
+    opacity: ${({ disable }) => (disable ? 0.8 : 1)};
+
+    div {
+        margin: 0 auto;
+    }
 `;

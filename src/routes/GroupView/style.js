@@ -113,3 +113,9 @@ export const Select = styled.div`
     margin-bottom: 1rem;
     max-width: 200px;
 `;
+
+export const PickContainer = styled.div`
+    width: 100%;
+    height: 100%;
+    background: green;
+`;

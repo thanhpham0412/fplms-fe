@@ -29,35 +29,19 @@ const ClassList = () => {
 
     useEffect(() => {
         if (user.role == 'Lecturer') {
-            axios
-                .get(
-                    API_LECTURER,
-                    {
-                        headers: header,
-                    },
-                    {
-                        userEmail: user.email,
-                    }
-                )
-                .then((res) => {
-                    const data = res.data;
-                    setClass(data.data);
-                    setLoading(false);
-                });
+            axios.get(API_LECTURER, { headers: header }).then((res) => {
+                const data = res.data;
+                setClass(data.data);
+                setLoading(false);
+            });
         } else {
             axios
-                .get(
-                    API_STUDENT,
-                    {
-                        headers: header,
-                        params: {
-                            search: searchClass,
-                        },
+                .get(API_STUDENT, {
+                    headers: header,
+                    params: {
+                        search: searchClass,
                     },
-                    {
-                        userEmail: user.email,
-                    }
-                )
+                })
                 .then((res) => {
                     const data = res.data;
                     console.log(data);
@@ -65,25 +49,18 @@ const ClassList = () => {
                     setLoading(false);
                 });
         }
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleSearch = (e) => {
         if (e.key === 'Enter') {
             axios
-                .get(
-                    API_STUDENT,
-                    {
-                        headers: header,
-                        params: {
-                            search: searchClass,
-                        },
+                .get(API_STUDENT, {
+                    headers: header,
+                    params: {
+                        search: searchClass,
                     },
-                    {
-                        userEmail: user.email,
-                    }
-                )
+                })
                 .then((res) => {
                     const data = res.data;
                     setClass(data.data);

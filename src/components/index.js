@@ -17,6 +17,7 @@ import Particles from './Particles';
 import RouteContainer from './RouteContainer';
 import Selection from './Selection';
 import SideBar from './Sidebar';
+import { Spinner } from './Spinner';
 import StudentRow from './StudentRow';
 import TopActivities from './TopActivities';
 
@@ -43,4 +44,5 @@ export {
     Calendar,
     AvatarGroup,
     Column,
+    Spinner,
 };

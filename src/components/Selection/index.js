@@ -5,13 +5,13 @@ import { Container, StyledButton, StyledList, StyledItem } from './style';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-const Selection = ({ options, placeholder, onChange }) => {
+const Selection = ({ options, placeholder, onChange, disable, reset }) => {
     const [picked, setPicked] = useState(placeholder || 'Pick an option');
 
     const [open, setOpen] = useState(false);
 
     const pick = (item) => {
-        setPicked(item.content);
+        if (!reset) setPicked(item.content);
         if (item.fn && typeof item.fn == 'function') item.fn(item);
         if (onChange && typeof onChange == 'function') onChange(item);
     };
@@ -25,9 +25,11 @@ const Selection = ({ options, placeholder, onChange }) => {
     return (
         <Container>
             <StyledButton
+                disable={disable}
                 open={open}
                 ref={ref}
                 onClick={() => {
+                    if (disable) return;
                     setOpen(!open);
                 }}
             >

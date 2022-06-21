@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from 'react';
 
 import { useParams } from 'react-router-dom';
@@ -19,6 +20,7 @@ import {
     Status,
     Round,
     Select,
+    PickContainer,
 } from './style';
 
 import ArticleIcon from '@mui/icons-material/Article';
@@ -27,6 +29,7 @@ import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 
 const GroupView = () => {
     const { groupId } = useParams();
+    const [isPicked] = useState(false);
 
     const list = new Array(7)
         .fill({
@@ -83,6 +86,21 @@ const GroupView = () => {
 
     const onChange = () => setDraftShow(true);
 
+    const topicPickedView = () => {
+        return (
+            <StyledList>
+                {list.map(({ content, type }, index) => (
+                    <StyledItem feedback={type} key={index}>
+                        <Title feedback={type}>
+                            {(type ? 'FEEDBACK' : 'REPORT') + ' #' + index}
+                        </Title>
+                        <Content>{content}</Content>
+                    </StyledItem>
+                ))}
+            </StyledList>
+        );
+    };
+
     return (
         <>
             <Select>
@@ -90,23 +108,15 @@ const GroupView = () => {
                     options={reportType}
                     placeholder="Write Report"
                     fixed
+                    reset={true}
                     onChange={onChange}
                 ></Selection>
             </Select>
-            <Overlay showing={draftIsShow}>
+            <Overlay isOpen={draftIsShow}>
                 <DraftEditor groupId={groupId} setShow={setDraftShow} />
             </Overlay>
             <Container>
-                <StyledList>
-                    {list.map(({ content, type }, index) => (
-                        <StyledItem feedback={type} key={index}>
-                            <Title feedback={type}>
-                                {(type ? 'FEEDBACK' : 'REPORT') + ' #' + index}
-                            </Title>
-                            <Content>{content}</Content>
-                        </StyledItem>
-                    ))}
-                </StyledList>
+                {topicPickedView()}
                 <SideBar>
                     <Calendar onChange={test} />
                     <StyledH4>

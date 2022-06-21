@@ -3,12 +3,13 @@ import styled from 'styled-components';
 import { COLOR } from '../../utils/style';
 
 export const EditorWrapper = styled.div`
-    max-width: 1400px;
+    min-width: 1100px;
+    max-width: 1100px;
     box-sizing: border-box;
     margin: 0 auto;
     padding: 6rem;
-    height: auto;
-    height: 100%;
+    min-height: 800px;
+    max-height: 800px;
     display: flex;
     flex-flow: column;
 
@@ -35,13 +36,15 @@ export const EditorWrapper = styled.div`
     }
 
     [data-contents='true'] {
-        padding: 4rem 8rem;
+        padding: 4rem 4rem;
         box-sizing: border-box;
     }
 `;
 
 export const HighLight = styled.div`
-    font-weight: bold;
+    font-weight: 900;
+    letter-spacing: 0.05rem;
+    margin-bottom: 0.05rem;
 `;
 
 export const Name = styled.div`

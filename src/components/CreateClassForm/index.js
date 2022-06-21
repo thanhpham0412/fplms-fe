@@ -2,9 +2,11 @@ import { useState } from 'react';
 
 import axios from 'axios';
 
+import { COLOR } from '../../utils/style';
 import { error, success } from '../../utils/toaster';
 import Overlay from '../Overlay';
 import Selection from '../Selection';
+import { Spinner } from '../Spinner';
 import {
     Container,
     StyledHeader,
@@ -53,14 +55,20 @@ const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
     const submit = () => {
         let errors = 0;
 
+        if (disable) return;
+
         if (form.enrollKey.trim().length < 3) {
             setError((err) => ({ ...err, enrollKey: 'Enroll Key length must be longer than 3!' }));
             errors++;
+        } else {
+            setError((err) => ({ ...err, enrollKey: '' }));
         }
 
         if (form.name.trim().length < 5) {
             setError((err) => ({ ...err, name: 'Class Name length must be longer than 5!' }));
             errors++;
+        } else {
+            setError((err) => ({ ...err, name: '' }));
         }
 
         if (errors > 0) return;
@@ -126,7 +134,7 @@ const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
     ]);
 
     return (
-        <Overlay showing={showing} setOpen={setCreate}>
+        <Overlay isOpen={showing} closeFn={setCreate}>
             <Container>
                 <StyledHeader>
                     <StyledJumbotron>
@@ -185,7 +193,11 @@ const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
                     <Row>
                         <Col>
                             <StyledButton onClick={submit} disable={disable}>
-                                Create Class
+                                {disable ? (
+                                    <Spinner radius="32px" color={COLOR.primary02} />
+                                ) : (
+                                    'CREATE CLASS'
+                                )}
                             </StyledButton>
                         </Col>
                     </Row>
