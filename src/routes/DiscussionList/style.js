@@ -39,7 +39,21 @@ export const NewTopicBtn = styled.button`
     border: none;
     display: flex;
     align-items: flex-end;
-    cursor: pointer;
+    :hover {
+        cursor: pointer;
+        transform: scale(1.05);
+        transition: 0.3s ease-in-out;
+        svg {
+            transform: rotate(0.5turn);
+            transition: 1s ease;
+        }
+    }
+    :not(:hover) {
+        svg {
+            transform: rotate(-0.5turn);
+            transition: 1s ease;
+        }
+    }
     svg {
         width: 16px;
         height: 16px;
@@ -67,7 +81,7 @@ export const InputBox = styled.input`
 export const StyledBody = styled.div`
     width: 100%;
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto auto;
     gap: 30px;
     margin: 15px 0;
     @media (max-width: 1250px) {
@@ -81,7 +95,19 @@ export const StyledBody = styled.div`
 
 export const PostList = styled.div`
     width: 100%;
+    max-width: 700px;
     display: flex;
     flex-direction: column;
     gap: 10px;
+`;
+
+export const TypeSelection = styled.div`
+    max-width: 200px;
+`;
+
+export const PaginateContainer = styled.div`
+    width: 100%;
+    max-width: 700px;
+    height: 40px;
+    position: relative;
 `;

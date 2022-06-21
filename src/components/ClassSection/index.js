@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
+
 /* eslint-disable prettier/prettier */
 import { useState, useRef } from 'react';
 
 import axios from 'axios';
-
-import { getTokenInfo } from '../../utils/account';
 import { useNavigate } from 'react-router-dom';
 
 import { useClickOutside } from '../../hooks';
+import { getTokenInfo } from '../../utils/account';
 import { error } from '../../utils/toaster';
 import EditClassForm from '../EditClassForm';
 // import { error } from '../../utils/toaster';
@@ -21,9 +21,9 @@ import {
     InputContainer,
 } from './style';
 
+import AcUnitIcon from '@mui/icons-material/AcUnit';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
-import AcUnitIcon from '@mui/icons-material/AcUnit';
 import BookIcon from '@mui/icons-material/Book';
 import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
 
@@ -95,6 +95,9 @@ const ClassSection = ({ className, fullClassName, lecture, join, id, subjectId, 
         const header = {
             Authorization: `${localStorage.getItem('token')}`,
         };
+        if (user.role == 'Lecturer') {
+            navigate(`/class/${id}`);
+        }
         if (join) {
             const API = process.env.REACT_APP_API_URL + `/management/classes/${id}/groups/details`;
             axios.get(API, { headers: header }).then((res) => {
@@ -106,7 +109,7 @@ const ClassSection = ({ className, fullClassName, lecture, join, id, subjectId, 
                 }
             });
         }
-    }
+    };
 
     return (
         <Container isEnroll={join}>
@@ -121,7 +124,9 @@ const ClassSection = ({ className, fullClassName, lecture, join, id, subjectId, 
             </Row>
             <Row>
                 <CollectionsBookmarkIcon />
-                <DetailText>{subjectsCode.filter((s) => s.value == subjectId)[0]?.content}</DetailText>
+                <DetailText>
+                    {subjectsCode.filter((s) => s.value == subjectId)[0]?.content}
+                </DetailText>
             </Row>
             <Row onClick={openEnroll} ref={buttonRef} gap="0px">
                 <InputContainer open={open}>

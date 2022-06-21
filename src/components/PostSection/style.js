@@ -4,7 +4,6 @@ import { COLOR } from '../../utils/color';
 
 export const Container = styled.div`
     width: 100%;
-    max-width: 700px;
     padding: 16px 10px;
     display: flex;
     flex-direction: column;
@@ -14,7 +13,6 @@ export const Container = styled.div`
 `;
 
 export const Row = styled.div`
-    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -33,8 +31,9 @@ export const Course = styled.div`
 `;
 
 export const PostContent = styled.div`
-    width: 100%;
+    max-width: 100%;
     font-size: 1rem;
+    word-break: break-all;
     color: ${COLOR.primary03};
     cursor: pointer;
 `;
@@ -50,6 +49,11 @@ export const PostFeature = styled.div`
     background-color: ${COLOR.blue[4]};
     padding: 2px;
     border-radius: 4px;
+    :hover {
+        cursor: pointer;
+        transform: scale(1.1);
+        transition: 0.1s ease-in-out;
+    }
 `;
 
 export const Divider = styled.div`
@@ -63,11 +67,21 @@ export const Author = styled.div`
     align-items: center;
     font-size: 10px;
     cursor: pointer;
+    color: ${COLOR.primary03};
     p {
         margin: 0 8px;
     }
     span {
-        color: ${COLOR.blue[0]};
+        color: ${COLOR.blue[2]};
+        :hover {
+            color: ${COLOR.blue[0]};
+        }
+    }
+    img {
+        width: 21px;
+        height: auto;
+        object-fit: cover;
+        border-radius: 50%;
     }
 `;
 

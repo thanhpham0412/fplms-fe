@@ -7,15 +7,7 @@ import { TextareaAutosize } from '@mui/material';
 export const Container = styled.div`
     width: 100%;
     display: grid;
-    grid-template-columns: auto 1fr;
     gap: 24px;
-`;
-
-export const Avatar = styled.div`
-    width: 40px;
-    height: 40px;
-    background-color: ${COLOR.blue[3]};
-    border-radius: 50%;
 `;
 
 export const Comment = styled.div`
@@ -46,4 +38,17 @@ export const CommentInput = styled(TextareaAutosize)`
     font-size: 1rem;
     font-family: Lato;
     color: ${COLOR.primary03};
+`;
+
+export const Answers = styled.div`
+    width: 100%;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px;
+    img {
+        width: 40px;
+        height: auto;
+        object-fit: cover;
+        border-radius: 50%;
+    }
 `;

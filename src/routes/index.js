@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
 import { RouteContainer } from '../components';
+import TextEditor from '../components/TextEditor';
 import ClassList from './ClassList';
 import DiscussionList from './DiscussionList';
 import DiscussionView from './DiscussionView';
@@ -60,8 +61,8 @@ export const privateRoute = [
         restrict: true,
     },
     {
-        path: 'discussion-view',
-        name: 'discussion-view',
+        path: 'discussion-view/:id',
+        name: 'discussion-view/:id',
         component: DiscussionView,
         exact: true,
         restrict: true,
@@ -70,6 +71,13 @@ export const privateRoute = [
         path: 'topic',
         name: 'topic',
         component: Topic,
+        exact: true,
+        restrict: true,
+    },
+    {
+        path: 'add-question',
+        name: 'add-question',
+        component: TextEditor,
         exact: true,
         restrict: true,
     },

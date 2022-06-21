@@ -15,6 +15,11 @@ export const StyledHeader = styled.div`
     align-items: center;
     gap: 10px;
     margin: 10px 0 30px 0;
+    img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
 `;
 
 export const Row = styled.div`
@@ -28,12 +33,6 @@ export const Column = styled.div`
     flex-direction: column;
 `;
 
-export const Avatar = styled.div`
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: ${COLOR.blue[3]};
-`;
 export const Title = styled.div`
     font-size: 1rem;
     color: ${COLOR.primary03};
@@ -88,4 +87,5 @@ export const Divider = styled.div`
 export const PostText = styled.div`
     font-size: 1.2rem;
     color: ${COLOR.primary03};
+    word-break: break-all;
 `;
