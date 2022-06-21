@@ -5,7 +5,9 @@ import ClassSection from './ClassSection';
 import Column from './Column';
 import CreateClass from './CreateClass';
 import CreateClassForm from './CreateClassForm';
+import CreateTopicForm from './CreateTopicForm';
 import DraftEditor from './DraftEditor';
+import Expand from './Expand';
 import Footer from './Footer';
 import GroupSection from './GroupSection';
 import Header from './Header';
@@ -18,6 +20,7 @@ import Particles from './Particles';
 import RouteContainer from './RouteContainer';
 import Selection from './Selection';
 import SideBar from './Sidebar';
+import { Spinner } from './Spinner';
 import StudentRow from './StudentRow';
 import TopActivities from './TopActivities';
 
@@ -36,6 +39,7 @@ export {
     CreateClass,
     Overlay,
     CreateClassForm,
+    CreateTopicForm,
     Footer,
     StudentRow,
     GroupSection,
@@ -45,4 +49,6 @@ export {
     Calendar,
     AvatarGroup,
     Column,
+    Expand,
+    Spinner,
 };

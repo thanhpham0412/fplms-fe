@@ -21,7 +21,8 @@ export const StyledButton = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    cursor: pointer;
+    cursor: ${({ disable }) => (disable ? 'not-allowed' : 'pointer')};
+    opacity: ${({ disable }) => (disable ? 0.7 : 1)};
     transition: all 300ms;
 
     svg {

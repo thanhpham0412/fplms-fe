@@ -8,6 +8,8 @@ import smImg1 from '../../assets/LoginHero/image 2.png';
 import smImg2 from '../../assets/LoginHero/image 3.png';
 import { Particles, BigImg, SmallImg } from '../../components';
 import AuthContext from '../../contexts/auth';
+import LoadOverLayContext from '../../contexts/loadOverlay';
+import { error } from '../../utils/toaster';
 import {
     GoogleButton,
     StyledContainer,
@@ -21,6 +23,7 @@ import {
 
 const Login = () => {
     const auth = useContext(AuthContext);
+    const loadContext = useContext(LoadOverLayContext);
 
     const navigate = useNavigate();
 
@@ -29,6 +32,8 @@ const Login = () => {
     const URL = process.env.REACT_APP_AUTH_URL + '/auth/accounts/login';
 
     const responseGoogle = (response) => {
+        loadContext.setActive(true);
+        loadContext.setText('Logging in');
         axios
             .post(URL, {
                 idToken: response.tokenId,
@@ -37,10 +42,15 @@ const Login = () => {
             .then((res) => {
                 const data = res.data;
                 if (data.isAuthSuccessful) {
-                    navigate('/class');
                     auth.setAuth(true);
+                    loadContext.setActive(false);
+                    navigate('/class');
                     localStorage.setItem('token', data.token);
                 }
+            })
+            .catch(() => {
+                error('An error occurred');
+                loadContext.setActive(false);
             });
     };
 

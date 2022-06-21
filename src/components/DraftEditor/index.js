@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Editor, EditorState, convertToRaw } from 'draft-js';
+import { Editor, EditorState, convertToRaw, ContentState } from 'draft-js';
 
 import { post } from '../../utils/request';
 import { COLOR } from '../../utils/style';
@@ -12,7 +12,9 @@ import SendIcon from '@mui/icons-material/Send';
 import 'draft-js/dist/Draft.css';
 
 function DraftEditor({ setShow, groupId }) {
-    const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+    const [editorState, setEditorState] = useState(() =>
+        EditorState.createWithContent(ContentState.createFromText('Reports:\n'))
+    );
 
     const submitCycle = () => {
         const blocks = convertToRaw(editorState.getCurrentContent()).blocks;

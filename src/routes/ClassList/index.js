@@ -29,35 +29,19 @@ const ClassList = () => {
 
     useEffect(() => {
         if (user.role == 'Lecturer') {
-            axios
-                .get(
-                    API_LECTURER,
-                    {
-                        headers: header,
-                    },
-                    {
-                        userEmail: user.email,
-                    }
-                )
-                .then((res) => {
-                    const data = res.data;
-                    setClass(data.data);
-                    setLoading(false);
-                });
+            axios.get(API_LECTURER, { headers: header }).then((res) => {
+                const data = res.data;
+                setClass(data.data);
+                setLoading(false);
+            });
         } else {
             axios
-                .get(
-                    API_STUDENT,
-                    {
-                        headers: header,
-                        params: {
-                            search: searchClass,
-                        },
+                .get(API_STUDENT, {
+                    headers: header,
+                    params: {
+                        search: searchClass,
                     },
-                    {
-                        userEmail: user.email,
-                    }
-                )
+                })
                 .then((res) => {
                     const data = res.data;
                     console.log(data);
@@ -65,30 +49,39 @@ const ClassList = () => {
                     setLoading(false);
                 });
         }
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleSearch = (e) => {
         if (e.key === 'Enter') {
-            axios
-                .get(
-                    API_STUDENT,
-                    {
+            if (user.role == 'Student') {
+                axios
+                    .get(API_STUDENT, {
                         headers: header,
                         params: {
                             search: searchClass,
                         },
-                    },
-                    {
-                        userEmail: user.email,
-                    }
-                )
-                .then((res) => {
-                    const data = res.data;
-                    setClass(data.data);
-                    setLoading(false);
-                });
+                    })
+                    .then((res) => {
+                        const data = res.data;
+                        setClass(data.data);
+                        setLoading(false);
+                    });
+            } else {
+                axios
+                    .get(API_LECTURER, {
+                        headers: header,
+                        params: {
+                            search: searchClass,
+                        },
+                    })
+                    .then((res) => {
+                        const data = res.data;
+                        console.log(data);
+                        setClass(data.data);
+                        setLoading(false);
+                    });
+            }
         }
     };
 
@@ -103,7 +96,7 @@ const ClassList = () => {
 
     const realData = () => {
         return classes
-            .filter((classData) => classData.name?.toLowerCase().includes(filter.toLowerCase()))
+            ?.filter((classData) => classData.name?.toLowerCase().includes(filter.toLowerCase()))
             .map((classData, index) => (
                 <Section
                     key={index}

@@ -2,6 +2,23 @@ import styled from 'styled-components';
 
 import { COLOR } from '../../utils/style';
 
+import TextareaAutosize from '@mui/base/TextareaAutosize';
+
+export const Textarea = styled(TextareaAutosize)`
+    border: 1px solid ${COLOR.blue[0]};
+    resize: none;
+    border-radius: 2px;
+    font-family: Lato;
+    padding: 1rem;
+    box-sizing: border-box;
+    outline: none;
+
+    :focus {
+        border: 1px solid ${COLOR.blue[0]};
+        background: ${COLOR.blue[5]};
+    }
+`;
+
 export const Container = styled.div`
     width: 600px;
     height: auto;
