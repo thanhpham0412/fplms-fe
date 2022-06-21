@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
+import { get } from '../../utils/request';
 import { COLOR } from '../../utils/style';
 import { error, success } from '../../utils/toaster';
 import Overlay from '../Overlay';
@@ -26,12 +27,11 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
     const [form, setForm] = useState({
+        cycleDuration: 7,
         name: '',
         enrollKey: '',
         subjectId: 1,
-        id: 1,
-        timeout: '',
-        semester: 'SPRING',
+        semesterCode: 0,
     });
 
     const [validError, setError] = useState({
@@ -94,12 +94,12 @@ const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
                             semester: form.semester,
                         })
                     );
-                    setDisable(false);
                     success(`Class ${form.name} created successfully`);
                     close();
                 } else {
                     error(data.message);
                 }
+                setDisable(false);
             })
             .catch(() => {
                 error(`An error occured!`);
@@ -107,31 +107,24 @@ const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
             });
     };
 
-    const handleSelection = (val) => {
+    const handleSelection = (field, e) => {
         setForm({
             ...form,
-            subjectId: val.value,
+            [field]: e.value,
         });
     };
 
-    const [semester] = useState([
-        {
-            value: 1,
-            content: 'Spring',
-        },
-        {
-            value: 2,
-            content: 'Summer',
-        },
-        {
-            value: 3,
-            content: 'Fall',
-        },
-        {
-            value: 4,
-            content: 'Winter',
-        },
-    ]);
+    const [semester, setSemester] = useState([]);
+
+    useEffect(() => {
+        get('/management/semesters').then((res) => {
+            const data = res.data.data.map((semester) => ({
+                value: semester.code,
+                content: semester.code,
+            }));
+            setSemester(data);
+        });
+    }, []);
 
     return (
         <Overlay isOpen={showing} closeFn={setCreate}>
@@ -178,7 +171,7 @@ const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
                             <Selection
                                 options={subjects}
                                 placeholder="Subject Code"
-                                onChange={handleSelection}
+                                onChange={(e) => handleSelection('subjectId', e)}
                             />
                         </Col>
                         <Col>
@@ -186,7 +179,7 @@ const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
                             <Selection
                                 options={semester}
                                 placeholder="Semester"
-                                onChange={handleSelection}
+                                onChange={(e) => handleSelection('semesterCode', e)}
                             />
                         </Col>
                     </Row>

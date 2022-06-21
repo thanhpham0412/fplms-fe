@@ -22,10 +22,6 @@ import {
 
 import AddIcon from '@mui/icons-material/Add';
 
-const header = {
-    Authorization: `${localStorage.getItem('token')}`,
-};
-
 const Column = ({ list, droppableId, name, type, setColumns, subjectId }) => {
     const [isScroll, setScroll] = useState(false);
     const [isBot, setBot] = useState(true);
@@ -67,30 +63,22 @@ const Column = ({ list, droppableId, name, type, setColumns, subjectId }) => {
 
                 const API = process.env.REACT_APP_API_URL + '/management/projects';
 
-                axios[item.needAdd ? 'post' : 'put'](
-                    API,
-                    {
-                        actors: 'string',
-                        context: 'string',
-                        id: 0,
-                        name: item.title,
-                        problem: item.content,
-                        requirements: item.content,
-                        subjectId: subjectId,
-                        theme: 'string',
-                    },
-                    { headers: header }
-                )
+                axios[item.needAdd ? 'post' : 'put'](API, {
+                    actors: 'string',
+                    context: 'string',
+                    id: 0,
+                    name: item.title,
+                    problem: item.content,
+                    requirements: item.content,
+                    subjectId: parseInt(subjectId),
+                    theme: 'string',
+                })
                     .then((res) => {
                         const data = res.data;
+                        console.log(data);
                         if (data.code == 200) {
-                            success(
-                                `Topic \`${item.title}\` ${item.needAdd ? 'added' : 'updated'}`
-                            );
-                            item.needAdd = false;
+                            success(`Topic \`${item.title}\` added`);
                             saveItem(item.id);
-                        } else {
-                            error(data.message);
                         }
                         setDisable(false);
                     })

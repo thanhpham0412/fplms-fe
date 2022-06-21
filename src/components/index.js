@@ -5,7 +5,9 @@ import ClassSection from './ClassSection';
 import Column from './Column';
 import CreateClass from './CreateClass';
 import CreateClassForm from './CreateClassForm';
+import CreateTopicForm from './CreateTopicForm';
 import DraftEditor from './DraftEditor';
+import Expand from './Expand';
 import Footer from './Footer';
 import GroupSection from './GroupSection';
 import Header from './Header';
@@ -35,6 +37,7 @@ export {
     CreateClass,
     Overlay,
     CreateClassForm,
+    CreateTopicForm,
     Footer,
     StudentRow,
     GroupSection,
@@ -44,5 +47,6 @@ export {
     Calendar,
     AvatarGroup,
     Column,
+    Expand,
     Spinner,
 };

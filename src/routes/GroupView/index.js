@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { useParams } from 'react-router-dom';
 
-import { Calendar, DraftEditor, Overlay, Selection } from '../../components';
+import { Calendar, DraftEditor, Overlay, Selection, Expand } from '../../components';
 import {
     Container,
     StyledList,
@@ -21,6 +21,8 @@ import {
     Round,
     Select,
     PickContainer,
+    TopicList,
+    UnPickTitle,
 } from './style';
 
 import ArticleIcon from '@mui/icons-material/Article';
@@ -45,6 +47,25 @@ const GroupView = () => {
                 'cillum dolore eu fugiat nulla pariatur...',
         })
         .map((e) => ({ ...e, type: Math.random() > 0.5 }));
+
+    const [topicList] = useState([
+        {
+            name: 'Project base management',
+            problem: '(Project has no problem)',
+            actor: '(Project has no actor)',
+            context: '(Project has no context)',
+            theme: '(Project has no theme)',
+            requirement:
+                'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod' +
+                'tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' +
+                'quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo' +
+                'consequat. Duis aute irure dolor in reprehenderit in voluptate velit' +
+                'tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim' +
+                'quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo' +
+                'consequat. Duis aute irure dolor in reprehenderit in voluptate velit' +
+                'cillum dolore eu fugiat nulla pariatur...',
+        },
+    ]);
 
     const test = (date) => {
         console.log(date);
@@ -101,22 +122,49 @@ const GroupView = () => {
         );
     };
 
+    const unPickView = () => {
+        return (
+            <PickContainer>
+                <UnPickTitle>Pick a topic for your team:</UnPickTitle>
+                <p>Once you picked a topic it will be applied to all of your team members.</p>
+                <p>Remember to pick a topic carefully because this action can&apos;t be undone.</p>
+                <TopicList>
+                    {topicList.map((topic, index) => (
+                        <Expand key={index} isOpen={false} title={topic.name}>
+                            <Expand title="1. Context">
+                                <p>{topic.context}</p>
+                            </Expand>
+                            <Expand title="2. Problem">
+                                <p>{topic.problem}</p>
+                            </Expand>
+                            <Expand title="3. Requirement">
+                                <p>{topic.requirement}</p>
+                            </Expand>
+                        </Expand>
+                    ))}
+                </TopicList>
+            </PickContainer>
+        );
+    };
+
     return (
         <>
-            <Select>
-                <Selection
-                    options={reportType}
-                    placeholder="Write Report"
-                    fixed
-                    reset={true}
-                    onChange={onChange}
-                ></Selection>
-            </Select>
             <Overlay isOpen={draftIsShow}>
                 <DraftEditor groupId={groupId} setShow={setDraftShow} />
             </Overlay>
+            {isPicked && (
+                <Select>
+                    <Selection
+                        options={reportType}
+                        placeholder="Write Report"
+                        fixed
+                        reset={true}
+                        onChange={onChange}
+                    ></Selection>
+                </Select>
+            )}
             <Container>
-                {topicPickedView()}
+                {isPicked ? topicPickedView() : unPickView()}
                 <SideBar>
                     <Calendar onChange={test} />
                     <StyledH4>

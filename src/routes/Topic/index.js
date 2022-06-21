@@ -1,8 +1,10 @@
-import { useState } from 'react';
+/* eslint-disable no-unused-vars */
+import { useEffect, useState } from 'react';
 
 import { DragDropContext } from 'react-beautiful-dnd';
 
-import { Column } from '../../components';
+import { Column, CreateTopicForm } from '../../components';
+import { get } from '../../utils/request';
 import { Container } from './style';
 
 const lorem =
@@ -22,25 +24,43 @@ const getItems = (count, hash = Math.random()) =>
     }));
 
 const Topic = () => {
+    const [subjects, setSubjects] = useState([]);
     const [columns, setColumns] = useState({
-        ['Temporary']: {
-            name: 'Temporary',
-            items: getItems(10, 'Temporary'),
-            type: 0,
-        },
-        ['mas-202']: {
-            name: 'MAS 202',
-            items: getItems(1, 'mas'),
-        },
-        ['swr-123']: {
-            name: 'SWR 123',
-            items: getItems(1, 'jpd'),
-        },
-        ['prj-301']: {
-            name: 'PRJ 301',
-            items: getItems(1, 'prj'),
-        },
+        // ['Temporary']: {
+        //     name: 'Temporary',
+        //     items: getItems(10, 'Temporary'),
+        //     type: 0,
+        // },
     });
+
+    useEffect(() => {
+        const subjects = get('/management/subjects');
+        const projects = get('/management/projects');
+
+        Promise.all([subjects, projects]).then(([subjects, projects]) => {
+            subjects = subjects.data.data;
+            projects = projects.data.data;
+            subjects.forEach((subject) => {
+                if (!columns[subject.id])
+                    setColumns((col) => ({
+                        ...col,
+                        [subject.id]: {
+                            name: subject.name,
+                            items: projects
+                                .filter((project) => project.subjectId == subject.id)
+                                .map((item) => ({
+                                    id: item.id + subject.name,
+                                    title: item.name,
+                                    content: item.requirement,
+                                })),
+                            type: 1,
+                        },
+                    }));
+            });
+        });
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const onDragEnd = (result) => {
         if (!result.destination) return;
@@ -83,20 +103,23 @@ const Topic = () => {
     };
 
     return (
-        <Container>
-            <DragDropContext onDragEnd={(result) => onDragEnd(result, columns, setColumns)}>
-                {Object.entries(columns).map(([id, data]) => (
-                    <Column
-                        type={data.type}
-                        name={data.name}
-                        list={data.items}
-                        key={id}
-                        setColumns={setColumns}
-                        droppableId={id}
-                    ></Column>
-                ))}
-            </DragDropContext>
-        </Container>
+        <>
+            <Container>
+                <DragDropContext onDragEnd={(result) => onDragEnd(result, columns, setColumns)}>
+                    {Object.entries(columns).map(([id, data]) => (
+                        <Column
+                            type={data.type}
+                            name={data.name}
+                            list={data.items}
+                            key={id}
+                            subjectId={id}
+                            setColumns={setColumns}
+                            droppableId={id}
+                        ></Column>
+                    ))}
+                </DragDropContext>
+            </Container>
+        </>
     );
 };
 

@@ -9,7 +9,7 @@ export const Container = styled.div`
     box-sizing: border-box;
     height: fit-content;
     user-select: none;
-    width: 25%;
+    width: 100%;
 
     * {
         font-family: Lato;
@@ -25,7 +25,7 @@ export const Header = styled.div`
         isScroll ? `2px solid ${COLOR.blue[2]}` : `2px solid transparent`};
 `;
 
-export const Title = styled.input`
+export const Title = styled.div`
     color: ${COLOR.blue[0]};
     font-weight: bold;
     width: 100%;
@@ -65,7 +65,9 @@ export const DropContainer = styled.div`
     /* min-height: 250px;
     max-height: 500px; */
 
-    height: 500px;
+    height: 100%;
+    min-height: 300px;
+    max-height: 300px;
     overflow-y: auto;
 
     ::-webkit-scrollbar {

@@ -20,10 +20,16 @@ const Overlay = ({ children, isOpen, closeFn, dark, duration, blur, inDelay, out
 
     useEffect(() => {
         const handleClickOutSide = (e) => {
-            if (node.current.contains(e.target) && node.current == e.target) {
+            if (node.current?.contains(e.target) && node.current == e.target) {
                 closeFn();
             }
         };
+
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
 
         document.addEventListener('click', handleClickOutSide);
 

@@ -117,5 +117,22 @@ export const Select = styled.div`
 export const PickContainer = styled.div`
     width: 100%;
     height: 100%;
-    background: green;
+`;
+
+export const UnPickTitle = styled.h3`
+    font-weight: 900;
+    letter-spacing: 0.05rem;
+`;
+
+export const UnPickDes = styled.p``;
+
+export const TopicList = styled.div`
+    width: 100%;
+    height: auto;
+    gap: 0.5rem;
+    display: flex;
+`;
+
+export const Topic = styled.div`
+    display: grid;
 `;
