@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-import { Pagination } from '../../components';
 import Jumbotron from '../../components/Jumbotron';
 import PostSection from '../../components/PostSection';
 import PostLoader from '../../components/PostSection/loader';
@@ -22,7 +21,6 @@ import {
     PostList,
     Label,
     TypeSelection,
-    PaginateContainer,
 } from './style';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -70,14 +68,9 @@ const MyQuestions = () => {
         new Array(3).fill(PostLoader).map((Load, i) => <PostLoader key={i} />)
     );
     const [isLoading, setLoading] = useState(true);
-    const [posts, setPost] = useState();
-    const [pageNum, setPageNum] = useState(1);
-    const [pageSize] = useState(10);
-    // eslint-disable-next-line no-unused-vars
-    const [totalPosts, setTotalPosts] = useState();
+    const [posts, setPosts] = useState();
     const navigate = useNavigate();
     const user = getTokenInfo();
-    console.log(user);
     let URL = process.env.REACT_APP_DISCUSSION_URL;
     if (user.role == 'Student') {
         URL = URL + '/discussion/students/questions';
@@ -95,19 +88,17 @@ const MyQuestions = () => {
                 axios
                     .get(URL, {
                         headers: header,
-                        params: { PageNumber: pageNum, PageSize: pageSize },
                     })
                     .then((res) => {
                         if (res.status >= 200 && res.status < 300) {
-                            setPost(res.data);
-                            console.log(res);
-                            // setTotalPosts(JSON.parse(res.headers['x-pagination']).TotalCount);
-                            success(`Fetch success`);
+                            setPosts(res.data);
+                            success(`Load post success`);
                             setLoading(false);
                         } else {
                             setLoading(false);
                         }
-                    });
+                    })
+                    .catch(setLoading(false));
             };
             fetchData();
         } catch (err) {
@@ -116,7 +107,7 @@ const MyQuestions = () => {
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pageNum]);
+    }, []);
 
     return (
         <>
@@ -161,28 +152,13 @@ const MyQuestions = () => {
                                 loadAnim
                             ) : (
                                 <>
-                                    <span>My posts</span>
-                                    {posts
-                                        ?.filter((post) => !post.removed)
-                                        .map((post) => (
-                                            <PostSection key={post.id} post={post} />
-                                        ))}
                                     <span>Removed posts</span>
-                                    {posts
-                                        ?.filter((post) => post.removed)
-                                        .map((post) => (
-                                            <PostSection key={post.id} post={post} />
-                                        ))}
+                                    {posts?.map((post) => (
+                                        <PostSection key={post.id} post={post} />
+                                    ))}
                                 </>
                             )}
                         </PostList>
-                        <PaginateContainer>
-                            <Pagination
-                                pageSize={pageSize}
-                                totalPosts={10}
-                                setPageNum={setPageNum}
-                            />
-                        </PaginateContainer>
                     </Column>
                     <Column>
                         <span>Top Activities</span>

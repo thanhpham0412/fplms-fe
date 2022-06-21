@@ -19,7 +19,7 @@ import {
     StyledBody,
     PostView,
     PostMain,
-    PostTitle, // PostText,
+    PostTitle,
     Divider,
 } from './style';
 
@@ -53,7 +53,6 @@ const DiscussionView = () => {
     let raw;
     const questionId = useParams().id;
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${questionId}`;
-    // const user = getTokenInfo();
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
@@ -89,7 +88,6 @@ const DiscussionView = () => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [refresh]);
-    console.log(question);
     return (
         <>
             <StyledContainer>

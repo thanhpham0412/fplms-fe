@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import React, { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 
 import axios from 'axios';
 import TimeAgo from 'javascript-time-ago';
@@ -21,12 +20,11 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
     TimeAgo.addLocale(ru);
     const [answer, setAnswer] = useState();
     const [isLoading, setLoading] = useState(false);
-    const [liked, setLiked] = useState(false);
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/answers`;
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
-    const handleAnswer = (e) => {
+    const handleAnswer = () => {
         setLoading(true);
         axios
             .post(
@@ -59,24 +57,24 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
         });
     };
 
-    const handleLike = (data) => {
-        console.log(data);
-        if (!liked) {
-            setLiked(true);
+    const handleLike = (data, e) => {
+        if (e.target.checked) {
+            console.log(data.id);
             axios
                 .put(`${URL}/${data.id}/accept`, { headers: header })
                 .then((res) => {
                     if (res.status >= 200 && res.status < 300) {
+                        e.target.style.color = '#5680F9';
                         success(`Like success`);
                     } else {
+                        e.target.checked = false;
                         error(`Error occured`);
                     }
                 })
                 .catch((err) => {
+                    e.target.checked = false;
                     error(`${err.message}`);
                 });
-        } else {
-            setLiked(false);
         }
     };
 
@@ -111,8 +109,14 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
                             </Comment>
                         </Row>
                         <Row>
-                            <Action onClick={() => handleLike(data)} liked={liked}>
-                                Like
+                            <Action>
+                                <input
+                                    type={'radio'}
+                                    name="Like"
+                                    id={data.id}
+                                    onClick={(e) => handleLike(data, e)}
+                                />
+                                <label htmlFor={data.id}>Like</label>
                             </Action>
                             <Action>
                                 <ReactTimeAgo

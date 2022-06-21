@@ -9,7 +9,6 @@ import PostSection from '../../components/PostSection';
 import PostLoader from '../../components/PostSection/loader';
 import Selection from '../../components/Selection';
 import TopActivities from '../../components/TopActivities';
-import { getTokenInfo } from '../../utils/account';
 import { error, success } from '../../utils/toaster';
 import {
     StyledContainer,
@@ -77,8 +76,7 @@ const DiscussionList = () => {
     const navigate = useNavigate();
 
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions`;
-    const user = getTokenInfo();
-    console.log(user);
+
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
@@ -170,7 +168,7 @@ const DiscussionList = () => {
                         <Column>
                             <NewTopicBtn onClick={() => navigate('/add-question')}>
                                 <AddIcon />
-                                Start new topic
+                                <span>Add question</span>
                             </NewTopicBtn>
                         </Column>
                     </Row>

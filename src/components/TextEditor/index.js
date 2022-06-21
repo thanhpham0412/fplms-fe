@@ -37,7 +37,6 @@ const TextEditor = () => {
         },
     ];
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions`;
-    // const user = getTokenInfo();
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
@@ -47,8 +46,6 @@ const TextEditor = () => {
             editorState,
         });
         setContent(JSON.stringify(convertToRaw(editorState.getCurrentContent())));
-        const test = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
-        console.log('content state', test);
     };
 
     const handleAddQuestion = () => {

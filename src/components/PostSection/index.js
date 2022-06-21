@@ -1,4 +1,3 @@
-// import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import axios from 'axios';
 import TimeAgo from 'javascript-time-ago';
 import { useNavigate } from 'react-router-dom';
@@ -22,7 +21,6 @@ import en from 'javascript-time-ago/locale/en.json';
 import ru from 'javascript-time-ago/locale/ru.json';
 
 const PostSection = ({ post, setPosts }) => {
-    console.log(post.removed);
     TimeAgo.addLocale(en);
     TimeAgo.addLocale(ru);
     const navigate = useNavigate();
@@ -45,7 +43,7 @@ const PostSection = ({ post, setPosts }) => {
     };
     return (
         <>
-            <Container removed={post.removed}>
+            <Container>
                 <Row>
                     <Title
                         onClick={() => {
@@ -54,7 +52,7 @@ const PostSection = ({ post, setPosts }) => {
                     >
                         {title}
                     </Title>
-                    <Course>{subject.name}</Course>
+                    <Course>{subject?.name}</Course>
                 </Row>
                 <Row>
                     <FeatureList>
@@ -67,10 +65,9 @@ const PostSection = ({ post, setPosts }) => {
                 <Divider />
                 <Row>
                     <Author>
-                        {/* <AccountCircleOutlinedIcon /> */}
-                        <img src={student.picture} alt="Student Avatar" />
+                        <img src={student?.picture} alt="Student Avatar" />
                         <p>
-                            Posted by <span>{student.email} </span>
+                            Posted by <span>{student?.email} </span>
                             <ReactTimeAgo date={Date.parse(createdDate)} locale="en-US" />
                         </p>
                     </Author>

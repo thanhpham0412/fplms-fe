@@ -41,7 +41,7 @@ export const NewTopicBtn = styled.button`
     border-radius: 4px;
     border: none;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     :hover {
         cursor: pointer;
         transform: scale(1.05);
@@ -61,6 +61,12 @@ export const NewTopicBtn = styled.button`
         width: 16px;
         height: 16px;
         margin-right: 5px;
+        align-self: center;
+    }
+    span {
+        margin: 0;
+        height: inherit;
+        align-self: center;
     }
 `;
 

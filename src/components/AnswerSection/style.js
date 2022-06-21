@@ -1,17 +1,8 @@
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 import { COLOR } from '../../utils/color';
 
 import { TextareaAutosize } from '@mui/material';
-
-const likeAnimate = keyframes`
-    from{
-        transform: scale(1.15);
-    }
-    to{
-        transform: scale(1.0);
-    }
-`;
 
 export const Container = styled.div`
     width: 100%;
@@ -92,13 +83,18 @@ export const Action = styled.div`
     margin: 3px 0;
     align-self: center;
     margin-right: 15px;
-    &:first-child {
-        cursor: pointer;
-
-        color: ${({ liked }) => (liked ? COLOR.blue[0] : COLOR.blue[2])};
-
-        animation: ${({ liked }) => (liked ? likeAnimate : '')} 0.5s ease-in-out;
+    input[type='radio'] {
+        display: none;
+        &:checked + label {
+            color: ${COLOR.blue[0]};
+            pointer-events: none;
+        }
     }
+    label {
+        cursor: pointer;
+        color: ${COLOR.blue[2]};
+    }
+
     & > time {
         cursor: pointer;
     }
