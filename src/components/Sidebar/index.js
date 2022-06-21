@@ -89,8 +89,8 @@ const SideBar = () => {
             icon: <ForumIcon />,
             submenu: [
                 {
-                    title: 'My question',
-                    path: '#',
+                    title: 'My questions',
+                    path: '/my-questions',
                     submenu: [],
                 },
                 {

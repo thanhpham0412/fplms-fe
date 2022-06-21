@@ -3,7 +3,6 @@ import { StyledContainer, ActiveMember, MemberInfo, Avatar, Comments } from './s
 const TopActivities = ({ arr }) => {
     return (
         <StyledContainer>
-            Top Activities
             {arr.map((data) => (
                 <ActiveMember key={data.name}>
                     <MemberInfo>

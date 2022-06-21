@@ -36,9 +36,9 @@ const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
     const header = {
         Authorization: TOKEN,
     };
-    const handleCreateBtn = async () => {
+    const handleCreateBtn = () => {
         setLoading(true);
-        await axios
+        axios
             .post(
                 URL,
                 {

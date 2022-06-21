@@ -27,7 +27,7 @@ import {
 
 import AddIcon from '@mui/icons-material/Add';
 
-const DiscussionList = () => {
+const MyQuestions = () => {
     const [search, setSearch] = useState('');
     const topMember = [
         {
@@ -70,73 +70,53 @@ const DiscussionList = () => {
         new Array(3).fill(PostLoader).map((Load, i) => <PostLoader key={i} />)
     );
     const [isLoading, setLoading] = useState(true);
-    const [posts, setPosts] = useState();
+    const [posts, setPost] = useState();
     const [pageNum, setPageNum] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
-    const [pageSize] = useState(3);
+    const [pageSize] = useState(10);
+    // eslint-disable-next-line no-unused-vars
+    const [totalPosts, setTotalPosts] = useState();
     const navigate = useNavigate();
-
-    const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions`;
     const user = getTokenInfo();
     console.log(user);
+    let URL = process.env.REACT_APP_DISCUSSION_URL;
+    if (user.role == 'Student') {
+        URL = URL + '/discussion/students/questions';
+    } else {
+        URL = URL + '/discussion/lecturers/questions';
+    }
+
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
 
     useEffect(() => {
         try {
-            setLoading(true);
             const fetchData = async () => {
                 axios
                     .get(URL, {
                         headers: header,
-                        params: {
-                            PageNumber: pageNum,
-                            PageSize: pageSize,
-                        },
+                        params: { PageNumber: pageNum, PageSize: pageSize },
                     })
                     .then((res) => {
-                        if (res.status == 200) {
-                            setPosts(res.data);
-                            setTotalPages(JSON.parse(res.headers['x-pagination']).TotalPages);
-                            success(`Load post success`);
+                        if (res.status >= 200 && res.status < 300) {
+                            setPost(res.data);
+                            console.log(res);
+                            // setTotalPosts(JSON.parse(res.headers['x-pagination']).TotalCount);
+                            success(`Fetch success`);
                             setLoading(false);
                         } else {
-                            error(`An error occured!`);
                             setLoading(false);
                         }
                     });
             };
             fetchData();
         } catch (err) {
-            error(`${err}`);
+            error(err);
             setLoading(false);
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pageNum]);
-
-    const searchForQuestions = (e) => {
-        if (e.key === 'Enter') {
-            setLoading(true);
-            axios
-                .get(URL, {
-                    headers: header,
-                    params: { PageNumber: pageNum, PageSize: pageSize, Question: search },
-                })
-                .then((res) => {
-                    if (res.status == 200) {
-                        setPosts(res.data);
-                        setTotalPages(JSON.parse(res.headers['x-pagination']).TotalPages);
-                        success(`Load post success`);
-                        setLoading(false);
-                    } else {
-                        error(`An error occured!`);
-                        setLoading(false);
-                    }
-                });
-        }
-    };
 
     return (
         <>
@@ -153,7 +133,6 @@ const DiscussionList = () => {
                                         value={search}
                                         placeholder={'Search topic by name'}
                                         onChange={(e) => setSearch(e.target.value)}
-                                        onKeyUp={searchForQuestions}
                                     />
                                 </Column>
                                 <Column>
@@ -177,24 +156,33 @@ const DiscussionList = () => {
                 </StyledHeader>
                 <StyledBody>
                     <Column>
-                        <span>New Posts</span>
                         <PostList>
-                            {isLoading
-                                ? loadAnim
-                                : posts?.map((post) => (
-                                      <PostSection key={post.id} post={post} setPosts />
-                                  ))}
+                            {isLoading ? (
+                                loadAnim
+                            ) : (
+                                <>
+                                    <span>My posts</span>
+                                    {posts
+                                        ?.filter((post) => !post.removed)
+                                        .map((post) => (
+                                            <PostSection key={post.id} post={post} />
+                                        ))}
+                                    <span>Removed posts</span>
+                                    {posts
+                                        ?.filter((post) => post.removed)
+                                        .map((post) => (
+                                            <PostSection key={post.id} post={post} />
+                                        ))}
+                                </>
+                            )}
                         </PostList>
-                        {totalPages > 0 && (
-                            <PaginateContainer>
-                                <Pagination
-                                    pageSize={pageSize}
-                                    totalPages={totalPages}
-                                    setPageNum={setPageNum}
-                                    currentPage={pageNum}
-                                />
-                            </PaginateContainer>
-                        )}
+                        <PaginateContainer>
+                            <Pagination
+                                pageSize={pageSize}
+                                totalPosts={10}
+                                setPageNum={setPageNum}
+                            />
+                        </PaginateContainer>
                     </Column>
                     <Column>
                         <span>Top Activities</span>
@@ -206,4 +194,4 @@ const DiscussionList = () => {
     );
 };
 
-export default DiscussionList;
+export default MyQuestions;

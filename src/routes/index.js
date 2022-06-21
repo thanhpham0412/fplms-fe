@@ -8,6 +8,7 @@ import DiscussionView from './DiscussionView';
 import GroupPicking from './GroupPicking';
 import GroupView from './GroupView';
 import Login from './Login';
+import MyQuestions from './MyQuestions';
 import NotFound from './NotFound';
 import PrivateRoute from './PrivateRoute';
 import PublicRoute from './PublicRoute';
@@ -62,7 +63,7 @@ export const privateRoute = [
     },
     {
         path: 'discussion-view/:id',
-        name: 'discussion-view/:id',
+        name: 'discussion-view',
         component: DiscussionView,
         exact: true,
         restrict: true,
@@ -78,6 +79,13 @@ export const privateRoute = [
         path: 'add-question',
         name: 'add-question',
         component: TextEditor,
+        exact: true,
+        restrict: true,
+    },
+    {
+        path: 'my-questions',
+        name: 'my-questions',
+        component: MyQuestions,
         exact: true,
         restrict: true,
     },

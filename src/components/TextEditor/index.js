@@ -1,12 +1,12 @@
 import { useRef, useState } from 'react';
 
 import axios from 'axios';
-import { convertToHTML } from 'draft-convert';
 import { convertToRaw, EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { useNavigate } from 'react-router-dom';
 
 import { error } from '../../utils/toaster';
+import ButtonLoader from '../ButtonLoader';
 import Selection from '../Selection';
 import { Container, SubTitle, Wrapper, TitleBlock, Title, CreateBtn } from './style';
 
@@ -16,7 +16,7 @@ const TextEditor = () => {
     const [editorState, setEditorState] = useState({
         editorState: EditorState.createEmpty(),
     });
-
+    const [isLoading, setLoading] = useState(false);
     const [content, setContent] = useState('');
     const [title, setTitle] = useState('');
     const [subjectName, setSubject] = useState();
@@ -46,12 +46,13 @@ const TextEditor = () => {
         setEditorState({
             editorState,
         });
-        const contentState = editorState.getCurrentContent();
-        console.log('content state', convertToHTML(contentState));
         setContent(JSON.stringify(convertToRaw(editorState.getCurrentContent())));
+        const test = JSON.stringify(convertToRaw(editorState.getCurrentContent()));
+        console.log('content state', test);
     };
 
     const handleAddQuestion = () => {
+        setLoading(true);
         axios
             .post(
                 URL,
@@ -63,9 +64,13 @@ const TextEditor = () => {
                 { headers: header }
             )
             .then(() => {
+                setLoading(false);
                 navigate('/discussion-list');
             })
-            .catch((err) => error(err));
+            .catch(() => {
+                setLoading(false);
+                error(`An error occured!`);
+            });
     };
 
     return (
@@ -111,7 +116,10 @@ const TextEditor = () => {
                         />
                     </div>
                 </Wrapper>
-                <CreateBtn onClick={handleAddQuestion}>CREATE QUESTION</CreateBtn>
+                <CreateBtn onClick={handleAddQuestion} isLoading={isLoading}>
+                    <ButtonLoader isLoading={isLoading} />
+                    <span>CREATE QUESTION</span>
+                </CreateBtn>
             </div>
         </Container>
     );

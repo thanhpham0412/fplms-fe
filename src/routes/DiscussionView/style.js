@@ -46,7 +46,7 @@ export const Subtitle = styled.div`
 export const StyledBody = styled.div`
     width: 100%;
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 1fr 344px;
     gap: 20px;
     margin: 15px 0;
     @media (max-width: 1250px) {
@@ -71,6 +71,14 @@ export const PostMain = styled.div`
     display: flex;
     flex-direction: column;
     gap: 20px;
+    .editorClassName {
+        ::-webkit-scrollbar {
+            display: none;
+        }
+    }
+    .toolbarClassName {
+        display: none;
+    }
 `;
 
 export const PostTitle = styled.div`

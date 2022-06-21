@@ -94,6 +94,6 @@ export const AuthorAva = styled.div`
 
 export const Answers = styled.div`
     font-size: 1rem;
-    color: ${COLOR.blue[0]};
+    color: ${COLOR.red[2]};
     cursor: pointer;
 `;

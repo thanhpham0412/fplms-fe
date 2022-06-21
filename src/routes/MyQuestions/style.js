@@ -84,7 +84,7 @@ export const InputBox = styled.input`
 export const StyledBody = styled.div`
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 344px;
+    grid-template-columns: auto auto;
     gap: 30px;
     margin: 15px 0;
     @media (max-width: 1250px) {

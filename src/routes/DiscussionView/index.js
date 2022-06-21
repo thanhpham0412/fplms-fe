@@ -1,6 +1,9 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 
 import axios from 'axios';
+import { convertFromRaw, EditorState } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
 import { useParams } from 'react-router-dom';
 
 import { Jumbotron, TopActivities } from '../../components';
@@ -16,8 +19,7 @@ import {
     StyledBody,
     PostView,
     PostMain,
-    PostTitle,
-    PostText,
+    PostTitle, // PostText,
     Divider,
 } from './style';
 
@@ -45,15 +47,20 @@ const DiscussionView = () => {
         },
     ];
     const [question, setQuestion] = useState();
-    const [isLoading, setLoading] = useState();
+    const [isLoading, setLoading] = useState(true);
     const [refresh, setRefresh] = useState(0);
-
+    let editorState;
+    let raw;
     const questionId = useParams().id;
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${questionId}`;
     // const user = getTokenInfo();
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
+    if (question && question.content) {
+        raw = convertFromRaw(JSON.parse(question.content));
+        editorState = EditorState.createWithContent(raw);
+    }
     useEffect(() => {
         try {
             const fetchData = () => {
@@ -64,7 +71,6 @@ const DiscussionView = () => {
                     .then((res) => {
                         if (res.status == 200) {
                             setQuestion(res.data);
-                            console.log(res);
                             setLoading(false);
                         } else {
                             error(`An error occured!`);
@@ -75,9 +81,15 @@ const DiscussionView = () => {
             fetchData();
         } catch (err) {
             error(err);
+            setLoading(false);
         }
+        if (question) {
+            question?.answers;
+        }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [refresh]);
+    console.log(question);
     return (
         <>
             <StyledContainer>
@@ -88,25 +100,31 @@ const DiscussionView = () => {
                 ) : (
                     <>
                         <StyledHeader>
-                            <img src={question?.student.picture} alt="Student Avatar" />
+                            <img src={question.student.picture} alt="Student Avatar" />
                             <Column>
-                                <Title>{question?.student.email}</Title>
-                                <Subtitle>{question?.createdDate}</Subtitle>
+                                <Title>{question.student.email}</Title>
+                                <Subtitle>{question.createdDate}</Subtitle>
                             </Column>
                         </StyledHeader>
                         <StyledBody>
                             <Column>
                                 <PostView>
                                     <PostMain>
-                                        <PostTitle>{question?.title}</PostTitle>
-                                        <PostText>{question?.content}</PostText>
+                                        <PostTitle>{question.title}</PostTitle>
+                                        <Editor
+                                            readOnly={true}
+                                            editorState={editorState}
+                                            toolbarClassName="toolbarClassName"
+                                            wrapperClassName="wrapperClassName"
+                                            editorClassName="editorClassName"
+                                        />
                                         <Divider />
                                     </PostMain>
                                     <AnswerSection
                                         questionId={questionId}
-                                        answers={question?.answers}
-                                        refresh={refresh}
-                                        student={question?.student}
+                                        answers={question.answers}
+                                        setQuestion={setQuestion}
+                                        student={question.student}
                                         setRefresh={setRefresh}
                                     />
                                 </PostView>

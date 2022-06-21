@@ -94,16 +94,21 @@ export const TitleBlock = styled.input`
 
 export const CreateBtn = styled.div`
     width: fit-content;
+    min-width: 100px;
     font-size: 1rem;
     color: ${COLOR.primary02};
     padding: 12px 16px;
     background: ${COLOR.blue[0]};
     border-radius: 4px;
     border: none;
-    display: flex;
     align-self: flex-end;
+    display: flex;
+    pointer-events: ${({ isLoading }) => (isLoading ? 'none' : 'auto')};
     :hover {
         cursor: pointer;
         transform: scale(1.05);
+    }
+    span {
+        display: ${({ isLoading }) => (isLoading ? 'none' : 'inline')};
     }
 `;

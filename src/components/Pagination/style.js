@@ -41,13 +41,11 @@ export const PageBlock = styled.div`
     border: 1px solid ${COLOR.gray[3]};
     transform: scale(${({ isActive }) => (isActive == true ? 1.2 : 1.0)});
     transition-duration: 0.3s;
-    z-index: ${({ isActive }) => (!isActive == true ? 99 : 1)};
     :hover {
         transform: scale(1.2);
         transition-duration: 0.3s;
         background-color: ${COLOR.blue[0]};
         color: ${COLOR.primary02};
-        z-index: 99;
     }
 `;
 
