@@ -3,7 +3,6 @@ import TimeAgo from 'javascript-time-ago';
 import { useNavigate } from 'react-router-dom';
 import ReactTimeAgo from 'react-time-ago';
 
-import { getTokenInfo } from '../../utils/account';
 import { error, success } from '../../utils/toaster';
 import {
     Container,
@@ -24,10 +23,9 @@ const PostSection = ({ post, setPosts }) => {
     TimeAgo.addLocale(en);
     TimeAgo.addLocale(ru);
     const navigate = useNavigate();
-    const { title, student, subject, createdDate } = post;
+    const { title, student, subject, createdDate, removed, removedBy } = post;
 
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${post.id}`;
-    const user = getTokenInfo();
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
@@ -35,7 +33,11 @@ const PostSection = ({ post, setPosts }) => {
         axios.delete(URL, { headers: header }).then((res) => {
             if (res.status >= 200 && res.status < 300) {
                 success(`Delete success`);
-                setPosts((prev) => prev.filter((item) => item.id !== post.id));
+                setPosts((prev) =>
+                    prev.filter((item) => {
+                        if (item.id !== post.id) return item;
+                    })
+                );
             } else {
                 error(`${res.message}`);
             }
@@ -71,12 +73,10 @@ const PostSection = ({ post, setPosts }) => {
                             <ReactTimeAgo date={Date.parse(createdDate)} locale="en-US" />
                         </p>
                     </Author>
-                    {user.role == 'Student' ? (
-                        <Answers onClick={deleteQuestion}>Remove</Answers>
-                    ) : (
-                        <Answers onClick={deleteQuestion}>Remove</Answers>
-                    )}
+
+                    {!removed && <Answers onClick={deleteQuestion}>Remove</Answers>}
                 </Row>
+                {removed && <Answers>Removed by {removedBy}</Answers>}
             </Container>
         </>
     );

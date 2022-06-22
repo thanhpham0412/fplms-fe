@@ -9,13 +9,17 @@ import ButtonLoader from '../ButtonLoader';
 // eslint-disable-next-line no-unused-vars
 import { Container, CommentInput, Comment, Answers, Col, Row, Action } from './style';
 
+// import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+// import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import AttachmentIcon from '@mui/icons-material/Attachment';
+import DoneIcon from '@mui/icons-material/Done';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import SendIcon from '@mui/icons-material/Send';
 import en from 'javascript-time-ago/locale/en.json';
 import ru from 'javascript-time-ago/locale/ru.json';
 
 const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
+    console.log(answers);
     TimeAgo.addLocale(en);
     TimeAgo.addLocale(ru);
     const [answer, setAnswer] = useState();
@@ -37,9 +41,9 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
             )
             .then(() => {
                 success(`Post answer successfully!`);
+
                 setAnswer('');
                 setLoading(false);
-                setRefresh((prev) => prev + 1);
             })
             .catch((err) => {
                 error(`${err}`);
@@ -58,24 +62,21 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
     };
 
     const handleLike = (data, e) => {
-        if (e.target.checked) {
-            console.log(data.id);
-            axios
-                .put(`${URL}/${data.id}/accept`, { headers: header })
-                .then((res) => {
-                    if (res.status >= 200 && res.status < 300) {
-                        e.target.style.color = '#5680F9';
-                        success(`Like success`);
-                    } else {
-                        e.target.checked = false;
-                        error(`Error occured`);
-                    }
-                })
-                .catch((err) => {
-                    e.target.checked = false;
-                    error(`${err.message}`);
-                });
-        }
+        e.preventDefault();
+        console.log(data.id);
+        axios
+            .put(`${URL}/${data.id}/accept`, {}, { headers: header })
+            .then((res) => {
+                if (res.status >= 200 && res.status < 300) {
+                    e.target.checked = true;
+                    success(`Like success`);
+                } else {
+                    error(`Error occured`);
+                }
+            })
+            .catch((err) => {
+                error(`${err.message}`);
+            });
     };
 
     const editAnswer = () => {};
@@ -111,13 +112,17 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
                         <Row>
                             <Action>
                                 <input
-                                    type={'radio'}
+                                    type={'checkbox'}
                                     name="Like"
                                     id={data.id}
                                     onClick={(e) => handleLike(data, e)}
+                                    defaultChecked={data.accepted ? true : false}
                                 />
-                                <label htmlFor={data.id}>Like</label>
+                                <label htmlFor={data.id}>
+                                    <DoneIcon />
+                                </label>
                             </Action>
+
                             <Action>
                                 <ReactTimeAgo
                                     date={Date.parse(data.createdDate)}
@@ -127,6 +132,11 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
                             </Action>
                         </Row>
                     </Col>
+                    {/* <Vote>
+                        <ArrowDropUpIcon />
+                        <div>UpVote</div>
+                        <ArrowDropDownIcon />
+                    </Vote> */}
                 </Answers>
             ))}
         </Container>

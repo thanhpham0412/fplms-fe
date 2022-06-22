@@ -57,19 +57,28 @@ const DiscussionList = () => {
             value: 'SWP391',
         },
         {
-            content: 'C#',
-            value: 'C#',
+            content: 'OSG202',
+            value: 'OSG202',
         },
         {
-            content: 'MogoDB',
-            value: 'MogoDB',
+            content: 'SWT301',
+            value: 'SWT301',
+        },
+        {
+            content: 'SWR302',
+            value: 'SWR302',
+        },
+        {
+            content: 'EIT201T',
+            value: 'EIT201T',
         },
     ];
     const [loadAnim] = useState(
         new Array(3).fill(PostLoader).map((Load, i) => <PostLoader key={i} />)
     );
     const [isLoading, setLoading] = useState(true);
-    const [posts, setPosts] = useState();
+    const [posts, setPosts] = useState([]);
+    const [subject, setSubject] = useState();
     const [pageNum, setPageNum] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [pageSize] = useState(3);
@@ -80,17 +89,18 @@ const DiscussionList = () => {
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
-
     useEffect(() => {
         try {
             setLoading(true);
-            const fetchData = async () => {
+            const fetchData = () => {
                 axios
                     .get(URL, {
                         headers: header,
                         params: {
                             PageNumber: pageNum,
                             PageSize: pageSize,
+                            Question: search || '',
+                            Subject: subject?.content || '',
                         },
                     })
                     .then((res) => {
@@ -112,7 +122,7 @@ const DiscussionList = () => {
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pageNum]);
+    }, [pageNum, subject]);
 
     const searchForQuestions = (e) => {
         if (e.key === 'Enter') {
@@ -120,7 +130,12 @@ const DiscussionList = () => {
             axios
                 .get(URL, {
                     headers: header,
-                    params: { PageNumber: pageNum, PageSize: pageSize, Question: search },
+                    params: {
+                        PageNumber: pageNum,
+                        PageSize: pageSize,
+                        Question: search || '',
+                        Subject: subject?.content || '',
+                    },
                 })
                 .then((res) => {
                     if (res.status == 200) {
@@ -160,6 +175,7 @@ const DiscussionList = () => {
                                             title={'Type'}
                                             options={options}
                                             placeholder={'All'}
+                                            onChange={setSubject}
                                         />
                                     </TypeSelection>
                                 </Column>
@@ -180,7 +196,7 @@ const DiscussionList = () => {
                             {isLoading
                                 ? loadAnim
                                 : posts?.map((post) => (
-                                      <PostSection key={post.id} post={post} setPosts />
+                                      <PostSection key={post.id} post={post} setPosts={setPosts} />
                                   ))}
                         </PostList>
                         {totalPages > 0 && (

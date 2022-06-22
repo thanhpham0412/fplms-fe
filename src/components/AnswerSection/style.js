@@ -82,20 +82,40 @@ export const Action = styled.div`
     color: ${COLOR.blue[2]};
     margin: 3px 0;
     align-self: center;
-    margin-right: 15px;
-    input[type='radio'] {
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    input[type='checkbox'] {
         display: none;
         &:checked + label {
-            color: ${COLOR.blue[0]};
-            pointer-events: none;
+            svg {
+                stroke: ${COLOR.green[1]};
+                color: ${COLOR.green[1]};
+            }
         }
     }
     label {
         cursor: pointer;
         color: ${COLOR.blue[2]};
+        svg {
+            stroke: ${COLOR.blue[2]};
+            color: ${COLOR.primary02};
+            font-size: 1.5rem;
+        }
     }
 
     & > time {
         cursor: pointer;
+    }
+`;
+
+export const Vote = styled.div`
+    width: 50px;
+    max-height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    svg {
+        font-size: 30px;
     }
 `;

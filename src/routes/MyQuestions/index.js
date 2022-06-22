@@ -9,7 +9,7 @@ import PostLoader from '../../components/PostSection/loader';
 import Selection from '../../components/Selection';
 import TopActivities from '../../components/TopActivities';
 import { getTokenInfo } from '../../utils/account';
-import { error, success } from '../../utils/toaster';
+import { success } from '../../utils/toaster';
 import {
     StyledContainer,
     StyledHeader,
@@ -83,31 +83,27 @@ const MyQuestions = () => {
     };
 
     useEffect(() => {
-        try {
-            const fetchData = async () => {
-                axios
-                    .get(URL, {
-                        headers: header,
-                    })
-                    .then((res) => {
-                        if (res.status >= 200 && res.status < 300) {
-                            setPosts(res.data);
-                            success(`Load post success`);
-                            setLoading(false);
-                        } else {
-                            setLoading(false);
-                        }
-                    })
-                    .catch(setLoading(false));
-            };
-            fetchData();
-        } catch (err) {
-            error(err);
-            setLoading(false);
-        }
+        const fetchData = () => {
+            axios
+                .get(URL, {
+                    headers: header,
+                })
+                .then((res) => {
+                    if (res.status >= 200 && res.status < 300) {
+                        setPosts(res.data);
+                        success(`Load post success`);
+                        setLoading(false);
+                    } else {
+                        setLoading(false);
+                    }
+                })
+                .catch(setLoading(false));
+        };
+        fetchData();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
+    console.log(posts);
 
     return (
         <>
@@ -152,10 +148,18 @@ const MyQuestions = () => {
                                 loadAnim
                             ) : (
                                 <>
+                                    <span>My posts</span>
+                                    {posts
+                                        ?.filter((post) => !post.removed)
+                                        .map((post) => (
+                                            <PostSection key={post.id} post={post} />
+                                        ))}
                                     <span>Removed posts</span>
-                                    {posts?.map((post) => (
-                                        <PostSection key={post.id} post={post} />
-                                    ))}
+                                    {posts
+                                        ?.filter((post) => post.removed)
+                                        .map((post) => (
+                                            <PostSection key={post.id} post={post} />
+                                        ))}
                                 </>
                             )}
                         </PostList>

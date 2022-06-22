@@ -111,7 +111,7 @@ export const PostList = styled.div`
 `;
 
 export const TypeSelection = styled.div`
-    max-width: 200px;
+    min-width: 80px;
 `;
 
 export const PaginateContainer = styled.div`

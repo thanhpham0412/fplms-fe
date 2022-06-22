@@ -13,7 +13,7 @@ const Pagination = ({ currentPage, setPageNum, totalPages }) => {
     return (
         <>
             <Container number={pageNumbers.length}>
-                <ArrowBackIosNewIcon />
+                <ArrowBackIosNewIcon onClick={() => setPageNum((prev) => prev - 1)} />
                 {pageNumbers.map((pageNum, index) => (
                     <PageBlock
                         isActive={currentPage == pageNum ? true : false}
@@ -23,7 +23,7 @@ const Pagination = ({ currentPage, setPageNum, totalPages }) => {
                         {pageNum}
                     </PageBlock>
                 ))}
-                <ArrowForwardIosIcon />
+                <ArrowForwardIosIcon onClick={() => setPageNum((prev) => prev + 1)} />
             </Container>
         </>
     );
