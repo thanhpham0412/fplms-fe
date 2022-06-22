@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 /* eslint-disable no-unused-vars */
 import { useRef, useEffect } from 'react';
 
@@ -36,7 +38,7 @@ const Overlay = ({ children, isOpen, closeFn, dark, duration, blur, inDelay, out
         return () => {
             document.removeEventListener('click', handleClickOutSide);
         };
-    });
+    }, [isOpen]);
 
     return (
         <AnimatePresence>

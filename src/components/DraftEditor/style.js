@@ -36,7 +36,7 @@ export const EditorWrapper = styled.div`
     }
 
     [data-contents='true'] {
-        padding: 4rem 4rem;
+        padding: 2rem 4rem;
         box-sizing: border-box;
     }
 `;

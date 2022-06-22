@@ -26,7 +26,7 @@ export const LoadOverlayProvider = ({ children }) => {
     const [text, setText] = useState('');
     return (
         <LoadOverLayContext.Provider value={{ isActive, setActive, text, setText }}>
-            <Overlay isOpen={isActive} dark={0.8} outDelay={1}>
+            <Overlay isOpen={isActive} dark={0.8} outDelay={0}>
                 <Container>
                     <Spinner />
                     {text}

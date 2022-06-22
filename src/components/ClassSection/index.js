@@ -103,7 +103,7 @@ const ClassSection = ({ className, fullClassName, lecture, join, id, subjectId, 
             axios.get(API, { headers: header }).then((res) => {
                 const data = res.data.data;
                 if (data) {
-                    navigate(`/group/${data.id}`);
+                    navigate(`/class/${id}/group/${data.id}`);
                 } else {
                     navigate(`/class/${id}`);
                 }
