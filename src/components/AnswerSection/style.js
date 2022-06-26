@@ -54,8 +54,8 @@ export const CommentInput = styled(TextareaAutosize)`
 export const Answers = styled.div`
     width: 100%;
     display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 24px;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
     img {
         width: 40px;
         height: auto;
@@ -85,7 +85,7 @@ export const Action = styled.div`
     margin-right: 10px;
     display: flex;
     align-items: center;
-    input[type='checkbox'] {
+    input[type='radio'] {
         display: none;
         &:checked + label {
             svg {
@@ -110,12 +110,25 @@ export const Action = styled.div`
 `;
 
 export const Vote = styled.div`
-    width: 50px;
     max-height: 80px;
+    margin-right: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    color: ${COLOR.gray[0]};
+    line-height: 1;
     svg {
-        font-size: 30px;
+        height: 30px;
+        width: 30px;
+        path {
+            d: path('m 4 18 l 8 -10 l 8 10 Z');
+        }
+        color: ${({ upvoted }) => (upvoted ? COLOR.green[0] : COLOR.gray[0])};
+        font-size: 3rem;
+        cursor: pointer;
+    }
+    div {
+        font-style: oblique;
+        font-size: 1.5rem;
     }
 `;

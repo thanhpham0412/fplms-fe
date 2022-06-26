@@ -97,3 +97,25 @@ export const Answers = styled.div`
     color: ${COLOR.red[2]};
     cursor: pointer;
 `;
+
+export const Vote = styled.div`
+    align-self: flex-start;
+    max-height: 80px;
+    margin-left: 24px;
+    margin-right: 12px;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: ${COLOR.gray[0]};
+    font-size: 30px;
+    line-height: 0.4;
+    svg {
+        color: ${({ upvoted }) => (upvoted ? COLOR.green[0] : COLOR.gray[0])};
+        font-size: 50px;
+        cursor: pointer;
+    }
+    div {
+        font-style: oblique;
+    }
+`;

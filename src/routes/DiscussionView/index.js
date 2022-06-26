@@ -82,12 +82,10 @@ const DiscussionView = () => {
             error(err);
             setLoading(false);
         }
-        if (question) {
-            question?.answers;
-        }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [refresh]);
+    console.log(question);
     return (
         <>
             <StyledContainer>
@@ -98,9 +96,9 @@ const DiscussionView = () => {
                 ) : (
                     <>
                         <StyledHeader>
-                            <img src={question.student.picture} alt="Student Avatar" />
+                            <img src={question?.student.picture} alt="Student Avatar" />
                             <Column>
-                                <Title>{question.student.email}</Title>
+                                <Title>{question?.student.email}</Title>
                                 <Subtitle>{question.createdDate}</Subtitle>
                             </Column>
                         </StyledHeader>
@@ -120,8 +118,8 @@ const DiscussionView = () => {
                                     </PostMain>
                                     <AnswerSection
                                         questionId={questionId}
-                                        answers={question.answers}
                                         setQuestion={setQuestion}
+                                        answers={question.answers}
                                         student={question.student}
                                         setRefresh={setRefresh}
                                     />

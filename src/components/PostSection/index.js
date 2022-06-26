@@ -14,8 +14,10 @@ import {
     Author,
     Answers,
     FeatureList,
+    Vote,
 } from './style';
 
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import en from 'javascript-time-ago/locale/en.json';
 import ru from 'javascript-time-ago/locale/ru.json';
 
@@ -43,8 +45,38 @@ const PostSection = ({ post, setPosts }) => {
             }
         });
     };
+
+    const handleVote = () => {
+        const handleUpvote = () => {
+            setPosts((prev) =>
+                prev.map((item) =>
+                    item.id === post.id
+                        ? {
+                              ...item,
+                              upvotes: post.upvoted ? post.upvotes - 1 : post.upvotes + 1,
+                              upvoted: post.upvoted ? false : true,
+                          }
+                        : item
+                )
+            );
+        };
+        axios
+            .patch(
+                URL + `/upvote`,
+                {
+                    upvotes: post.upvotes + 1,
+                },
+                { headers: header }
+            )
+            .then((res) => {
+                if (res.status == 204) {
+                    handleUpvote();
+                    success(`Update upvote successfully!`);
+                }
+            });
+    };
     return (
-        <>
+        <Row>
             <Container>
                 <Row>
                     <Title
@@ -78,7 +110,11 @@ const PostSection = ({ post, setPosts }) => {
                 </Row>
                 {removed && <Answers>Removed by {removedBy}</Answers>}
             </Container>
-        </>
+            <Vote upvoted={post.upvoted}>
+                <ArrowDropUpIcon onClick={() => handleVote()} />
+                <div>{post.upvotes}</div>
+            </Vote>
+        </Row>
     );
 };
 

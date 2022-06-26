@@ -123,7 +123,7 @@ const DiscussionList = () => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pageNum, subject]);
-
+    console.log(posts);
     const searchForQuestions = (e) => {
         if (e.key === 'Enter') {
             setLoading(true);
@@ -195,9 +195,16 @@ const DiscussionList = () => {
                         <PostList>
                             {isLoading
                                 ? loadAnim
-                                : posts?.map((post) => (
-                                      <PostSection key={post.id} post={post} setPosts={setPosts} />
-                                  ))}
+                                : posts
+                                      ?.sort((a, b) => b.upvotes - a.upvotes)
+                                      .sort((a) => (a.accepted ? -1 : 1))
+                                      .map((post) => (
+                                          <PostSection
+                                              key={post.id}
+                                              post={post}
+                                              setPosts={setPosts}
+                                          />
+                                      ))}
                         </PostList>
                         {totalPages > 0 && (
                             <PaginateContainer>
