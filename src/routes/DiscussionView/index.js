@@ -52,40 +52,34 @@ const DiscussionView = () => {
     let editorState;
     let raw;
     const questionId = useParams().id;
-    const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${questionId}`;
-    const header = {
-        Authorization: `${localStorage.getItem('token')}`,
-    };
+
     if (question && question.content) {
         raw = convertFromRaw(JSON.parse(question.content));
         editorState = EditorState.createWithContent(raw);
     }
     useEffect(() => {
-        try {
-            const fetchData = () => {
-                axios
-                    .get(URL, {
-                        headers: header,
-                    })
-                    .then((res) => {
-                        if (res.status == 200) {
-                            setQuestion(res.data);
-                            setLoading(false);
-                        } else {
-                            error(`An error occured!`);
-                            setLoading(false);
-                        }
-                    });
-            };
-            fetchData();
-        } catch (err) {
-            error(err);
-            setLoading(false);
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [refresh]);
-    console.log(question);
+        const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${questionId}`;
+        const header = {
+            Authorization: `${localStorage.getItem('token')}`,
+        };
+        const fetchData = () => {
+            axios
+                .get(URL, {
+                    headers: header,
+                })
+                .then((res) => {
+                    if (res.status == 200) {
+                        setQuestion(res.data);
+                        setLoading(false);
+                    } else {
+                        error(`An error occured!`);
+                        setLoading(false);
+                    }
+                })
+                .catch((err) => error(err));
+        };
+        fetchData();
+    }, [questionId, refresh]);
     return (
         <>
             <StyledContainer>

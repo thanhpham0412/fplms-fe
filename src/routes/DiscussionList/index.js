@@ -123,7 +123,6 @@ const DiscussionList = () => {
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [pageNum, subject]);
-    console.log(posts);
     const searchForQuestions = (e) => {
         if (e.key === 'Enter') {
             setLoading(true);

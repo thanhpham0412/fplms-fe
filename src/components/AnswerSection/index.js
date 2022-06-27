@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 
 import axios from 'axios';
 import TimeAgo from 'javascript-time-ago';
@@ -21,7 +20,7 @@ import {
 } from './style';
 
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
-import AttachmentIcon from '@mui/icons-material/Attachment';
+// import AttachmentIcon from '@mui/icons-material/Attachment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import DoneIcon from '@mui/icons-material/Done';
 import EditIcon from '@mui/icons-material/Edit';
@@ -36,15 +35,13 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
     TimeAgo.addLocale(ru);
     const [answer, setAnswer] = useState();
     const [isLoading, setLoading] = useState(false);
-    const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
     const refs = useRef(new Array());
     const dropdownRefs = useRef(new Array());
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/answers`;
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
-    const handleAnswer = () => {
+    const handlePostAnswer = () => {
         setLoading(true);
         axios
             .post(
@@ -66,22 +63,20 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
                 setLoading(false);
             });
     };
-    const showMore = (index) => {
-        console.log(index);
-    };
 
-    const deleteAnswer = (data) => {
+    const handleDeleteAnswer = (data) => {
         axios.delete(`${URL}/${data.id}`, { headers: header }).then((res) => {
             if (res.status >= 200 && res.status < 300) {
-                setRefresh((prev) => prev - 1);
                 success(`Delete answer sucessfully!`);
+                setRefresh((prev) => prev - 1);
             } else {
                 error(`An error occured!`);
+                setRefresh((prev) => prev - 1);
             }
         });
     };
 
-    const handleLike = (data, e) => {
+    const handleAcceptAnswer = (data, e) => {
         e.preventDefault();
         axios
             .put(`${URL}/${data.id}/accept`, {}, { headers: header })
@@ -89,6 +84,7 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
                 if (res.status >= 200 && res.status < 300) {
                     e.target.checked = true;
                     success(`Like success`);
+                    setRefresh((prev) => prev - 1);
                 } else {
                     error(`Error occured`);
                 }
@@ -114,14 +110,13 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
                 }
             });
     };
-    const editAnswer = (index) => {
-        console.log(index);
-        // refs.current[index].value = '';
-        // refs.current[index].disabled = false;
-        // refs.current[index].focus();
+    const handleEditAnswer = (index) => {
+        refs.current[index].disabled = false;
+        refs.current[index].focus();
+        document.querySelector(`.save-btn-${index}`).style.display = 'block';
     };
 
-    const submitEdit = (id, index) => {
+    const handleSaveAnswer = (id, index) => {
         axios
             .put(
                 URL + `/${id}`,
@@ -132,8 +127,10 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
             )
             .then((res) => {
                 if (res.status == 204) {
-                    setRefresh((prev) => prev + 1);
                     success(`Update answer successfully!`);
+                    document.querySelector(`.save-btn-${index}`).style.display = 'none';
+                    refs.current[index].disabled = true;
+                    setRefresh((prev) => prev + 1);
                 } else {
                     error(`An error occured`);
                 }
@@ -141,13 +138,6 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
             .catch((err) => {
                 error(err);
             });
-    };
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-        console.log(anchorEl);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
     };
 
     return (
@@ -157,8 +147,9 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
                 <Comment isLoading={isLoading}>
                     <ButtonLoader isLoading={isLoading} />
                     <CommentInput onChange={(e) => setAnswer(e.target.value)} value={answer} />
-                    <AttachmentIcon />
-                    <SendIcon onClick={handleAnswer} />
+
+                    {/* <AttachmentIcon /> */}
+                    <SendIcon onClick={handlePostAnswer} />
                 </Comment>
             </Answers>
 
@@ -182,7 +173,7 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
                                         }
                                     />
 
-                                    <Dropdown onClick={handleClick}>
+                                    <Dropdown>
                                         <button
                                             className="sub-option"
                                             ref={(el) => dropdownRefs.current.push(el)}
@@ -190,18 +181,17 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
                                         >
                                             <MoreVertIcon />
                                         </button>
-                                        <DropdownMenu
-                                            anchorEl={anchorEl}
-                                            className="dropdown-menu"
-                                            onClose={handleClose}
-                                            onClick={handleClose}
-                                        >
-                                            <DeleteIcon onClick={() => deleteAnswer(data)} />
-                                            <EditIcon onClick={() => editAnswer(index)} />
+                                        <DropdownMenu className="dropdown-menu">
+                                            <DeleteIcon onClick={() => handleDeleteAnswer(data)} />
+                                            <EditIcon onClick={() => handleEditAnswer(index)} />
                                         </DropdownMenu>
                                     </Dropdown>
 
-                                    <SaveIcon onClick={() => submitEdit(data.id, index)} />
+                                    <SaveIcon
+                                        sx={{ display: 'none' }}
+                                        className={`save-btn-${index}`}
+                                        onClick={() => handleSaveAnswer(data.id, index)}
+                                    />
                                 </Comment>
                             </Row>
                             <Row>
@@ -210,7 +200,7 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
                                         type={'radio'}
                                         name="Like"
                                         id={data.id}
-                                        onClick={(e) => handleLike(data, e)}
+                                        onClick={(e) => handleAcceptAnswer(data, e)}
                                         defaultChecked={data.accepted ? true : false}
                                     />
                                     <label htmlFor={data.id}>
@@ -222,7 +212,6 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
                                     <ReactTimeAgo
                                         date={Date.parse(data.createdDate)}
                                         locale="en-US"
-                                        onClick={() => editAnswer(index)}
                                     />
                                 </Action>
                             </Row>

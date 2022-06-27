@@ -1,6 +1,6 @@
 import axios from 'axios';
 import TimeAgo from 'javascript-time-ago';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ReactTimeAgo from 'react-time-ago';
 
 import { error, success } from '../../utils/toaster';
@@ -26,6 +26,7 @@ const PostSection = ({ post, setPosts }) => {
     TimeAgo.addLocale(ru);
     const navigate = useNavigate();
     const { title, student, subject, createdDate, removed, removedBy } = post;
+    const pathname = useLocation().pathname;
 
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${post.id}`;
     const header = {
@@ -75,6 +76,10 @@ const PostSection = ({ post, setPosts }) => {
                 }
             });
     };
+    const editQuestion = () => {
+        navigate(`/add-question?id=${post.id}`);
+    };
+
     return (
         <Row>
             <Container>
@@ -86,7 +91,13 @@ const PostSection = ({ post, setPosts }) => {
                     >
                         {title}
                     </Title>
-                    <Course>{subject?.name}</Course>
+                    {pathname == '/discussion-list' ? (
+                        <Course>{subject?.name}</Course>
+                    ) : (
+                        <Course style={{ cursor: 'pointer' }} onClick={editQuestion}>
+                            Edit
+                        </Course>
+                    )}
                 </Row>
                 <Row>
                     <FeatureList>

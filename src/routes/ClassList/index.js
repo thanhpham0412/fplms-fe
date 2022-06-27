@@ -44,7 +44,6 @@ const ClassList = () => {
                 })
                 .then((res) => {
                     const data = res.data;
-                    console.log(data);
                     setClass(data.data);
                     setLoading(false);
                 });
@@ -77,7 +76,6 @@ const ClassList = () => {
                     })
                     .then((res) => {
                         const data = res.data;
-                        console.log(data);
                         setClass(data.data);
                         setLoading(false);
                     });
