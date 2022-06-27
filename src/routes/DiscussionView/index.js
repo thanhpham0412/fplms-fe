@@ -80,6 +80,7 @@ const DiscussionView = () => {
         };
         fetchData();
     }, [questionId, refresh]);
+    console.log(question);
     return (
         <>
             <StyledContainer>

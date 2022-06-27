@@ -4,7 +4,7 @@ import axios from 'axios';
 import TimeAgo from 'javascript-time-ago';
 import ReactTimeAgo from 'react-time-ago';
 
-import { error, success } from '../../utils/toaster';
+import { error } from '../../utils/toaster';
 import ButtonLoader from '../ButtonLoader';
 import {
     Container,
@@ -30,13 +30,15 @@ import SendIcon from '@mui/icons-material/Send';
 import en from 'javascript-time-ago/locale/en.json';
 import ru from 'javascript-time-ago/locale/ru.json';
 
-const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
+const AnswerSection = ({ questionId, answers, setRefresh }) => {
     TimeAgo.addLocale(en);
     TimeAgo.addLocale(ru);
     const [answer, setAnswer] = useState();
     const [isLoading, setLoading] = useState(false);
     const refs = useRef(new Array());
     const dropdownRefs = useRef(new Array());
+    const userInfo = JSON.parse(localStorage.getItem('user'));
+
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/answers`;
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
@@ -53,7 +55,6 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
                 { headers: header }
             )
             .then(() => {
-                success(`Post answer successfully!`);
                 setRefresh((prev) => prev + 1);
                 setAnswer('');
                 setLoading(false);
@@ -67,7 +68,6 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
     const handleDeleteAnswer = (data) => {
         axios.delete(`${URL}/${data.id}`, { headers: header }).then((res) => {
             if (res.status >= 200 && res.status < 300) {
-                success(`Delete answer sucessfully!`);
                 setRefresh((prev) => prev - 1);
             } else {
                 error(`An error occured!`);
@@ -83,7 +83,6 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
             .then((res) => {
                 if (res.status >= 200 && res.status < 300) {
                     e.target.checked = true;
-                    success(`Like success`);
                     setRefresh((prev) => prev - 1);
                 } else {
                     error(`Error occured`);
@@ -105,7 +104,6 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
             )
             .then((res) => {
                 if (res.status == 204) {
-                    success(`Update upvote successfully!`);
                     setRefresh((prev) => prev - 1);
                 }
             });
@@ -127,7 +125,6 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
             )
             .then((res) => {
                 if (res.status == 204) {
-                    success(`Update answer successfully!`);
                     document.querySelector(`.save-btn-${index}`).style.display = 'none';
                     refs.current[index].disabled = true;
                     setRefresh((prev) => prev + 1);
@@ -143,7 +140,7 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
     return (
         <Container>
             <Answers>
-                <img src={student?.picture} />
+                <img src={userInfo?.imageUrl} />
                 <Comment isLoading={isLoading}>
                     <ButtonLoader isLoading={isLoading} />
                     <CommentInput onChange={(e) => setAnswer(e.target.value)} value={answer} />
@@ -172,20 +169,23 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
                                             (refs.current[index].value = e.target.value)
                                         }
                                     />
-
-                                    <Dropdown>
-                                        <button
-                                            className="sub-option"
-                                            ref={(el) => dropdownRefs.current.push(el)}
-                                            onClick={(e) => e.stopPropagation}
-                                        >
-                                            <MoreVertIcon />
-                                        </button>
-                                        <DropdownMenu className="dropdown-menu">
-                                            <DeleteIcon onClick={() => handleDeleteAnswer(data)} />
-                                            <EditIcon onClick={() => handleEditAnswer(index)} />
-                                        </DropdownMenu>
-                                    </Dropdown>
+                                    {userInfo.email === data.student.email && (
+                                        <Dropdown>
+                                            <button
+                                                className="sub-option"
+                                                ref={(el) => dropdownRefs.current.push(el)}
+                                                onClick={(e) => e.stopPropagation}
+                                            >
+                                                <MoreVertIcon />
+                                            </button>
+                                            <DropdownMenu className="dropdown-menu">
+                                                <DeleteIcon
+                                                    onClick={() => handleDeleteAnswer(data)}
+                                                />
+                                                <EditIcon onClick={() => handleEditAnswer(index)} />
+                                            </DropdownMenu>
+                                        </Dropdown>
+                                    )}
 
                                     <SaveIcon
                                         sx={{ display: 'none' }}
@@ -207,7 +207,9 @@ const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
                                         <DoneIcon />
                                     </label>
                                 </Action>
-
+                                <Action>
+                                    <span>{data.student.name}</span>
+                                </Action>
                                 <Action>
                                     <ReactTimeAgo
                                         date={Date.parse(data.createdDate)}

@@ -3,7 +3,8 @@ import TimeAgo from 'javascript-time-ago';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ReactTimeAgo from 'react-time-ago';
 
-import { error, success } from '../../utils/toaster';
+import { getTokenInfo } from '../../utils/account';
+import { error } from '../../utils/toaster';
 import {
     Container,
     Row,
@@ -27,6 +28,9 @@ const PostSection = ({ post, setPosts }) => {
     const navigate = useNavigate();
     const { title, student, subject, createdDate, removed, removedBy } = post;
     const pathname = useLocation().pathname;
+    const userInfo = JSON.parse(localStorage.getItem('user'));
+    const user = getTokenInfo();
+    console.log(post);
 
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${post.id}`;
     const header = {
@@ -35,7 +39,6 @@ const PostSection = ({ post, setPosts }) => {
     const deleteQuestion = () => {
         axios.delete(URL, { headers: header }).then((res) => {
             if (res.status >= 200 && res.status < 300) {
-                success(`Delete success`);
                 setPosts((prev) =>
                     prev.filter((item) => {
                         if (item.id !== post.id) return item;
@@ -72,12 +75,25 @@ const PostSection = ({ post, setPosts }) => {
             .then((res) => {
                 if (res.status == 204) {
                     handleUpvote();
-                    success(`Update upvote successfully!`);
                 }
             });
     };
     const editQuestion = () => {
         navigate(`/add-question?id=${post.id}`);
+    };
+
+    const displayAuthorInfo = (studentId) => {
+        const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/students/${studentId}`;
+        axios
+            .get(URL, { headers: header })
+            .then((res) => {
+                if (res.status >= 200 && res.status < 300) {
+                    console.log(res.data);
+                } else {
+                    error(res.message);
+                }
+            })
+            .catch((err) => error(err));
     };
 
     return (
@@ -109,22 +125,29 @@ const PostSection = ({ post, setPosts }) => {
                 </Row>
                 <Divider />
                 <Row>
-                    <Author>
+                    <Author onClick={() => displayAuthorInfo(student?.id)}>
                         <img src={student?.picture} alt="Student Avatar" />
                         <p>
-                            Posted by <span>{student?.email} </span>
+                            Posted by <span>{student?.name} </span>
                             <ReactTimeAgo date={Date.parse(createdDate)} locale="en-US" />
                         </p>
                     </Author>
 
-                    {!removed && <Answers onClick={deleteQuestion}>Remove</Answers>}
+                    {(!removed && userInfo.email == post.student.email) ||
+                    (!removed && user.role == 'Lecturer') ? (
+                        <Answers onClick={deleteQuestion}>Remove</Answers>
+                    ) : null}
                 </Row>
                 {removed && <Answers>Removed by {removedBy}</Answers>}
             </Container>
-            <Vote upvoted={post.upvoted}>
-                <ArrowDropUpIcon onClick={() => handleVote()} />
-                <div>{post.upvotes}</div>
-            </Vote>
+            {!removed ? (
+                <Vote upvoted={post.upvoted}>
+                    <ArrowDropUpIcon onClick={() => handleVote()} />
+                    <div>{post.upvotes}</div>
+                </Vote>
+            ) : (
+                <div style={{ width: '87px' }}></div>
+            )}
         </Row>
     );
 };

@@ -9,7 +9,8 @@ import PostSection from '../../components/PostSection';
 import PostLoader from '../../components/PostSection/loader';
 import Selection from '../../components/Selection';
 import TopActivities from '../../components/TopActivities';
-import { error, success } from '../../utils/toaster';
+import { getTokenInfo } from '../../utils/account';
+import { error } from '../../utils/toaster';
 import {
     StyledContainer,
     StyledHeader,
@@ -73,16 +74,32 @@ const DiscussionList = () => {
             value: 'EIT201T',
         },
     ];
+    const loadPage = [
+        {
+            content: 'NEW',
+            value: 0,
+        },
+        {
+            content: 'TOP',
+            value: 1,
+        },
+        {
+            content: 'HOT',
+            value: 2,
+        },
+    ];
     const [loadAnim] = useState(
         new Array(3).fill(PostLoader).map((Load, i) => <PostLoader key={i} />)
     );
     const [isLoading, setLoading] = useState(true);
     const [posts, setPosts] = useState([]);
     const [subject, setSubject] = useState();
+    const [sort, setSort] = useState(0);
     const [pageNum, setPageNum] = useState(1);
     const [totalPages, setTotalPages] = useState(0);
     const [pageSize] = useState(3);
     const navigate = useNavigate();
+    const user = getTokenInfo();
 
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions`;
 
@@ -99,6 +116,7 @@ const DiscussionList = () => {
                         params: {
                             PageNumber: pageNum,
                             PageSize: pageSize,
+                            sort: sort.value || 0,
                             Question: search || '',
                             Subject: subject?.content || '',
                         },
@@ -107,7 +125,6 @@ const DiscussionList = () => {
                         if (res.status == 200) {
                             setPosts(res.data);
                             setTotalPages(JSON.parse(res.headers['x-pagination']).TotalPages);
-                            success(`Load post success`);
                             setLoading(false);
                         } else {
                             error(`An error occured!`);
@@ -122,7 +139,7 @@ const DiscussionList = () => {
         }
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pageNum, subject]);
+    }, [pageNum, subject, sort]);
     const searchForQuestions = (e) => {
         if (e.key === 'Enter') {
             setLoading(true);
@@ -140,7 +157,6 @@ const DiscussionList = () => {
                     if (res.status == 200) {
                         setPosts(res.data);
                         setTotalPages(JSON.parse(res.headers['x-pagination']).TotalPages);
-                        success(`Load post success`);
                         setLoading(false);
                     } else {
                         error(`An error occured!`);
@@ -178,13 +194,25 @@ const DiscussionList = () => {
                                         />
                                     </TypeSelection>
                                 </Column>
+                                <Column>
+                                    <TypeSelection>
+                                        <Selection
+                                            title={'Type'}
+                                            options={loadPage}
+                                            placeholder={'Sort'}
+                                            onChange={setSort}
+                                        />
+                                    </TypeSelection>
+                                </Column>
                             </Row>
                         </Column>
                         <Column>
-                            <NewTopicBtn onClick={() => navigate('/add-question')}>
-                                <AddIcon />
-                                <span>Add question</span>
-                            </NewTopicBtn>
+                            {user.role != 'Lecturer' ? (
+                                <NewTopicBtn onClick={() => navigate('/add-question')}>
+                                    <AddIcon />
+                                    <span>Add question</span>
+                                </NewTopicBtn>
+                            ) : null}
                         </Column>
                     </Row>
                 </StyledHeader>
@@ -194,16 +222,9 @@ const DiscussionList = () => {
                         <PostList>
                             {isLoading
                                 ? loadAnim
-                                : posts
-                                      ?.sort((a, b) => b.upvotes - a.upvotes)
-                                      .sort((a) => (a.accepted ? -1 : 1))
-                                      .map((post) => (
-                                          <PostSection
-                                              key={post.id}
-                                              post={post}
-                                              setPosts={setPosts}
-                                          />
-                                      ))}
+                                : posts?.map((post) => (
+                                      <PostSection key={post.id} post={post} setPosts={setPosts} />
+                                  ))}
                         </PostList>
                         {totalPages > 0 && (
                             <PaginateContainer>

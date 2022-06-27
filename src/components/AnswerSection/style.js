@@ -165,6 +165,7 @@ export const Action = styled.div`
     }
     time {
         cursor: default;
+        color: ${COLOR.gray[0]};
     }
 `;
 
