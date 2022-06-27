@@ -35,7 +35,7 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin }) => {
                 setJoin(true);
                 setBtnStyle(true);
                 setSlot((prev) => prev + 1);
-                navigate(`/group/${group_Id}`);
+                navigate(`/class/${class_ID}/group/${group_Id}`);
             } else {
                 error(`An error occured!`);
             }
@@ -79,7 +79,7 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin }) => {
                     <Row>
                         <GroupBtn
                             onClick={() => {
-                                navigate(`/group/${group.id}`);
+                                navigate(`/class/${class_ID}/group/${group.id}`);
                             }}
                         >
                             View

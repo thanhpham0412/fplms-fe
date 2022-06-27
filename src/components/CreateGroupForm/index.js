@@ -79,7 +79,7 @@ const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
 
     return (
         <>
-            <Overlay showing={showing}>
+            <Overlay isOpen={showing}>
                 <FormContainer onclick={preventPropagation}>
                     <FormHeader>
                         <HeaderJumbotron>

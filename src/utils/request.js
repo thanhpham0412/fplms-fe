@@ -14,4 +14,9 @@ const get = (url, params) => {
     return axios.get(API, { headers: header, params: params });
 };
 
-export { post, get };
+const put = (url, body, head) => {
+    const API = process.env.REACT_APP_API_URL + url;
+    return axios.put(API, body, { headers: header, ...head });
+};
+
+export { post, get, put };
