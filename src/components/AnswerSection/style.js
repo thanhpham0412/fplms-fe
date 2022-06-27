@@ -24,11 +24,11 @@ export const Comment = styled.div`
     font-family: Lato;
     color: ${COLOR.primary03};
     display: grid;
-    align-items: end;
     grid-template-columns: 1fr auto auto;
-    position: relative;
     svg {
         width: 30px;
+        height: 30px;
+        padding: 5px;
         cursor: pointer;
     }
     div:nth-child(2),
@@ -40,7 +40,7 @@ export const Comment = styled.div`
 
 export const CommentInput = styled(TextareaAutosize)`
     width: 100%;
-    height: auto;
+    height: 100%;
     outline: none;
     border: none;
     resize: none;
@@ -49,6 +49,44 @@ export const CommentInput = styled(TextareaAutosize)`
     font-size: 1rem;
     font-family: Lato;
     color: ${COLOR.primary03};
+    align-self: center;
+`;
+
+export const Dropdown = styled.div`
+    position: relative;
+    .sub-option {
+        padding: 0;
+        border: none;
+        background-color: unset;
+        height: 30px;
+    }
+    .sub-option:focus + .dropdown-menu {
+        display: flex;
+        transform: translateY(0);
+    }
+`;
+
+export const DropdownMenu = styled.div`
+    position: absolute;
+    right: 0;
+    width: fit-content;
+    padding: 0.75rem;
+    top: calc(100% + 0.25rem);
+    background-color: ${COLOR.gray[2]};
+    box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.1);
+    display: none;
+    flex-direction: column;
+    z-index: 99;
+    transform: translateY(-10px);
+    transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+    svg {
+        align-self: flex-end;
+    }
+`;
+
+export const DropdownItem = styled.div`
+    width: 100%;
+    height: auto;
 `;
 
 export const Answers = styled.div`

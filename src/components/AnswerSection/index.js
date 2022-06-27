@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import axios from 'axios';
 import TimeAgo from 'javascript-time-ago';
@@ -7,27 +7,43 @@ import ReactTimeAgo from 'react-time-ago';
 
 import { error, success } from '../../utils/toaster';
 import ButtonLoader from '../ButtonLoader';
-import { Container, CommentInput, Comment, Answers, Col, Row, Action, Vote } from './style';
+import {
+    Container,
+    CommentInput,
+    Comment,
+    Answers,
+    Col,
+    Row,
+    Action,
+    Vote,
+    Dropdown,
+    DropdownMenu,
+} from './style';
 
 import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
 import AttachmentIcon from '@mui/icons-material/Attachment';
+import DeleteIcon from '@mui/icons-material/Delete';
 import DoneIcon from '@mui/icons-material/Done';
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import SaveIcon from '@mui/icons-material/Save';
 import SendIcon from '@mui/icons-material/Send';
 import en from 'javascript-time-ago/locale/en.json';
 import ru from 'javascript-time-ago/locale/ru.json';
 
-const AnswerSection = ({ questionId, answers, setRefresh, student, setQuestion }) => {
+const AnswerSection = ({ questionId, answers, setRefresh, student }) => {
     TimeAgo.addLocale(en);
     TimeAgo.addLocale(ru);
     const [answer, setAnswer] = useState();
     const [isLoading, setLoading] = useState(false);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+    const refs = useRef(new Array());
+    const dropdownRefs = useRef(new Array());
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/answers`;
-    const date = new Date();
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
-    console.log(answers);
     const handleAnswer = () => {
         setLoading(true);
         axios
@@ -41,21 +57,7 @@ const AnswerSection = ({ questionId, answers, setRefresh, student, setQuestion }
             )
             .then(() => {
                 success(`Post answer successfully!`);
-                setQuestion((prev) => {
-                    return {
-                        ...prev,
-                        answers: prev.answers.concat({
-                            id: Math.floor(Math.random() * 1000),
-                            content: answer,
-                            createdDate: date,
-                            accepted: false,
-                            upvotes: 0,
-                            upvoted: false,
-                            student: null,
-                        }),
-                    };
-                });
-                // setRefresh((prev) => prev + 1);
+                setRefresh((prev) => prev + 1);
                 setAnswer('');
                 setLoading(false);
             })
@@ -64,7 +66,11 @@ const AnswerSection = ({ questionId, answers, setRefresh, student, setQuestion }
                 setLoading(false);
             });
     };
-    const showMore = (data) => {
+    const showMore = (index) => {
+        console.log(index);
+    };
+
+    const deleteAnswer = (data) => {
         axios.delete(`${URL}/${data.id}`, { headers: header }).then((res) => {
             if (res.status >= 200 && res.status < 300) {
                 setRefresh((prev) => prev - 1);
@@ -77,7 +83,6 @@ const AnswerSection = ({ questionId, answers, setRefresh, student, setQuestion }
 
     const handleLike = (data, e) => {
         e.preventDefault();
-        console.log(data.id);
         axios
             .put(`${URL}/${data.id}/accept`, {}, { headers: header })
             .then((res) => {
@@ -93,44 +98,7 @@ const AnswerSection = ({ questionId, answers, setRefresh, student, setQuestion }
             });
     };
 
-    const editAnswer = (id) => {
-        axios
-            .put(
-                URL + `/${id}`,
-                {
-                    content: 'HALO WORLD',
-                },
-                { headers: header }
-            )
-            .then((res) => {
-                if (res.status == 204) {
-                    success(`Update answer successfully!`);
-                } else {
-                    error(`An error occured`);
-                }
-            })
-            .catch((err) => {
-                error(err);
-            });
-    };
-
     const handleVote = (data) => {
-        const handleUpvote = () => {
-            setQuestion((prev) => {
-                return {
-                    ...prev,
-                    answers: prev.answers.map((answer) =>
-                        answer.id === data.id
-                            ? {
-                                  ...answer,
-                                  upvotes: data.upvoted ? data.upvotes - 1 : data.upvotes + 1,
-                                  upvoted: data.upvoted ? false : true,
-                              }
-                            : answer
-                    ),
-                };
-            });
-        };
         axios
             .patch(
                 URL + `/${data.id}/upvote`,
@@ -141,10 +109,45 @@ const AnswerSection = ({ questionId, answers, setRefresh, student, setQuestion }
             )
             .then((res) => {
                 if (res.status == 204) {
-                    handleUpvote();
                     success(`Update upvote successfully!`);
+                    setRefresh((prev) => prev - 1);
                 }
             });
+    };
+    const editAnswer = (index) => {
+        console.log(index);
+        // refs.current[index].value = '';
+        // refs.current[index].disabled = false;
+        // refs.current[index].focus();
+    };
+
+    const submitEdit = (id, index) => {
+        axios
+            .put(
+                URL + `/${id}`,
+                {
+                    content: refs.current[index].value,
+                },
+                { headers: header }
+            )
+            .then((res) => {
+                if (res.status == 204) {
+                    setRefresh((prev) => prev + 1);
+                    success(`Update answer successfully!`);
+                } else {
+                    error(`An error occured`);
+                }
+            })
+            .catch((err) => {
+                error(err);
+            });
+    };
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+        console.log(anchorEl);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
     };
 
     return (
@@ -153,11 +156,7 @@ const AnswerSection = ({ questionId, answers, setRefresh, student, setQuestion }
                 <img src={student?.picture} />
                 <Comment isLoading={isLoading}>
                     <ButtonLoader isLoading={isLoading} />
-                    <CommentInput
-                        onChange={(e) => setAnswer(e.target.value)}
-                        value={answer}
-                        // placeholder="Writing your comment"
-                    />
+                    <CommentInput onChange={(e) => setAnswer(e.target.value)} value={answer} />
                     <AttachmentIcon />
                     <SendIcon onClick={handleAnswer} />
                 </Comment>
@@ -166,7 +165,7 @@ const AnswerSection = ({ questionId, answers, setRefresh, student, setQuestion }
             {answers
                 ?.sort((a, b) => b.upvotes - a.upvotes)
                 .sort((a) => (a.accepted ? -1 : 1))
-                .map((data) => (
+                .map((data, index) => (
                     <Answers key={data.id}>
                         <Col>
                             <img src={data.student?.picture} alt="Student Avatar" />
@@ -174,8 +173,35 @@ const AnswerSection = ({ questionId, answers, setRefresh, student, setQuestion }
                         <Col>
                             <Row>
                                 <Comment>
-                                    <CommentInput disabled defaultValue={data.content} />
-                                    <MoreHorizIcon onClick={() => showMore(data)} />
+                                    <CommentInput
+                                        disabled
+                                        defaultValue={data.content}
+                                        ref={(el) => refs.current.push(el)}
+                                        onChange={(e) =>
+                                            (refs.current[index].value = e.target.value)
+                                        }
+                                    />
+
+                                    <Dropdown onClick={handleClick}>
+                                        <button
+                                            className="sub-option"
+                                            ref={(el) => dropdownRefs.current.push(el)}
+                                            onClick={(e) => e.stopPropagation}
+                                        >
+                                            <MoreVertIcon />
+                                        </button>
+                                        <DropdownMenu
+                                            anchorEl={anchorEl}
+                                            className="dropdown-menu"
+                                            onClose={handleClose}
+                                            onClick={handleClose}
+                                        >
+                                            <DeleteIcon onClick={() => deleteAnswer(data)} />
+                                            <EditIcon onClick={() => editAnswer(index)} />
+                                        </DropdownMenu>
+                                    </Dropdown>
+
+                                    <SaveIcon onClick={() => submitEdit(data.id, index)} />
                                 </Comment>
                             </Row>
                             <Row>
@@ -196,7 +222,7 @@ const AnswerSection = ({ questionId, answers, setRefresh, student, setQuestion }
                                     <ReactTimeAgo
                                         date={Date.parse(data.createdDate)}
                                         locale="en-US"
-                                        onClick={() => editAnswer(data.id)}
+                                        onClick={() => editAnswer(index)}
                                     />
                                 </Action>
                             </Row>
