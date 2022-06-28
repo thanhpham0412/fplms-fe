@@ -6,7 +6,7 @@ import { convertFromRaw, convertToRaw, EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { error } from '../../utils/toaster';
+import { error, success } from '../../utils/toaster';
 import ButtonLoader from '../ButtonLoader';
 import Selection from '../Selection';
 import { Container, SubTitle, Wrapper, TitleBlock, Title, CreateBtn } from './style';
@@ -19,31 +19,35 @@ const TextEditor = () => {
     });
     const [isLoading, setLoading] = useState(false);
     const [content, setContent] = useState('');
+    const [subjects, setSubjects] = useState();
     const [title, setTitle] = useState('');
-    const [subjectName, setSubject] = useState();
+    const [subjectName, setSubjectName] = useState();
     const navigate = useNavigate();
     const editor = useRef(null);
     const questionId = new URLSearchParams(location.search).get('id');
-    const options = [
-        {
-            content: 'SWP391',
-            value: 'SWP391',
-        },
-        {
-            content: 'OSG202',
-            value: 'OSG202',
-        },
-        {
-            content: 'SWT301',
-            value: 'SWT301',
-        },
-    ];
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions`;
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
 
     useEffect(() => {
+        const getSubjects = () => {
+            const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/subjects`;
+            axios
+                .get(URL, { headers: header })
+                .then((res) => {
+                    const datas = res.data.map((item) => ({
+                        value: item.id,
+                        content: item.name,
+                    }));
+                    setSubjects(datas);
+                })
+                .catch((err) => {
+                    error(err);
+                    return;
+                });
+        };
+        getSubjects();
         if (questionId != null) {
             const URL =
                 process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${questionId}`;
@@ -58,7 +62,7 @@ const TextEditor = () => {
                     .then((res) => {
                         if (res.status >= 200 && res.status < 300) {
                             setTitle(res.data.title);
-                            setSubject(res.data.subject.name);
+                            setSubjectName(res.data.subject.name);
                             setEditorState({
                                 editorState: EditorState.createWithContent(
                                     convertFromRaw(JSON.parse(res.data.content))
@@ -70,6 +74,7 @@ const TextEditor = () => {
                     })
                     .catch((err) => error(err));
             };
+
             getQuestion();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -90,13 +95,18 @@ const TextEditor = () => {
                 {
                     title: title,
                     content: content,
-                    subjectName: subjectName.value,
+                    subjectName: subjectName.content,
                 },
                 { headers: header }
             )
-            .then(() => {
+            .then((res) => {
                 setLoading(false);
-                navigate('/discussion-list');
+                if (res.status >= 200 && res.status < 400) {
+                    success(`Create question successfully!`);
+                    navigate('/discussion-list');
+                } else {
+                    error(res.message);
+                }
             })
             .catch(() => {
                 setLoading(false);
@@ -145,9 +155,9 @@ const TextEditor = () => {
                     <Title>Subject</Title>
                     <div style={{ width: 'fit-content' }}>
                         <Selection
-                            options={options}
+                            options={subjects || [{}]}
                             placeholder={subjectName || 'Subject'}
-                            onChange={setSubject}
+                            onChange={setSubjectName}
                         />
                     </div>
                     <Title>Body</Title>

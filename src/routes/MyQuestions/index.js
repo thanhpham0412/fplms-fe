@@ -7,6 +7,7 @@ import Jumbotron from '../../components/Jumbotron';
 import PostSection from '../../components/PostSection';
 import PostLoader from '../../components/PostSection/loader';
 import Selection from '../../components/Selection';
+import StudentInfoModal from '../../components/StudentInfoModal';
 import TopActivities from '../../components/TopActivities';
 import { getTokenInfo } from '../../utils/account';
 import { success } from '../../utils/toaster';
@@ -68,7 +69,10 @@ const MyQuestions = () => {
         new Array(3).fill(PostLoader).map((Load, i) => <PostLoader key={i} />)
     );
     const [isLoading, setLoading] = useState(true);
-    const [posts, setPosts] = useState();
+    const [posts, setPosts] = useState([]);
+    const [isOpen, setOpen] = useState(false);
+    const [studentInfo, setStudentInfo] = useState();
+    const [refresh, setRefresh] = useState(0);
     const navigate = useNavigate();
     const user = getTokenInfo();
     let URL = process.env.REACT_APP_DISCUSSION_URL;
@@ -102,10 +106,11 @@ const MyQuestions = () => {
         fetchData();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [refresh]);
 
     return (
         <>
+            <StudentInfoModal isOpen={isOpen} studentInfo={studentInfo} setOpen={setOpen} />
             <StyledContainer>
                 <Jumbotron title={'discussion'} subtitle={'SWP391'} />
                 <StyledHeader>
@@ -151,13 +156,27 @@ const MyQuestions = () => {
                                     {posts
                                         ?.filter((post) => !post.removed)
                                         .map((post) => (
-                                            <PostSection key={post.id} post={post} />
+                                            <PostSection
+                                                key={post.id}
+                                                post={post}
+                                                setOpen={setOpen}
+                                                setPosts={setPosts}
+                                                setStudentInfo={setStudentInfo}
+                                                setRefresh={setRefresh}
+                                            />
                                         ))}
                                     <span>Removed posts</span>
                                     {posts
                                         ?.filter((post) => post.removed)
                                         .map((post) => (
-                                            <PostSection key={post.id} post={post} />
+                                            <PostSection
+                                                key={post.id}
+                                                post={post}
+                                                setOpen={setOpen}
+                                                setPosts={setPosts}
+                                                setStudentInfo={setStudentInfo}
+                                                setRefresh={setRefresh}
+                                            />
                                         ))}
                                 </>
                             )}
