@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { convertFromRaw, EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { Jumbotron, TopActivities } from '../../components';
 import AnswerSection from '../../components/AnswerSection';
 import PostLoader from '../../components/PostSection/loader';
-import { error } from '../../utils/toaster';
+import { error, success } from '../../utils/toaster';
 import {
     StyledContainer,
     StyledHeader,
@@ -21,7 +21,14 @@ import {
     PostMain,
     PostTitle,
     Divider,
+    DropdownMenu,
+    Dropdown,
+    Row,
 } from './style';
+
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 const DiscussionView = () => {
     const topMember = [
@@ -52,42 +59,54 @@ const DiscussionView = () => {
     let editorState;
     let raw;
     const questionId = useParams().id;
-    const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${questionId}`;
+    const navigate = useNavigate();
+    const userInfo = JSON.parse(localStorage.getItem('user'));
+
+    const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${question?.id}`;
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
+
     if (question && question.content) {
         raw = convertFromRaw(JSON.parse(question.content));
         editorState = EditorState.createWithContent(raw);
     }
     useEffect(() => {
-        try {
-            const fetchData = () => {
-                axios
-                    .get(URL, {
-                        headers: header,
-                    })
-                    .then((res) => {
-                        if (res.status == 200) {
-                            setQuestion(res.data);
-                            setLoading(false);
-                        } else {
-                            error(`An error occured!`);
-                            setLoading(false);
-                        }
-                    });
-            };
-            fetchData();
-        } catch (err) {
-            error(err);
-            setLoading(false);
-        }
-        if (question) {
-            question?.answers;
-        }
+        const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${questionId}`;
+        const header = {
+            Authorization: `${localStorage.getItem('token')}`,
+        };
+        const fetchData = () => {
+            axios
+                .get(URL, {
+                    headers: header,
+                })
+                .then((res) => {
+                    if (res.status == 200) {
+                        setQuestion(res.data);
+                        setLoading(false);
+                    } else {
+                        error(`An error occured!`);
+                        setLoading(false);
+                    }
+                })
+                .catch((err) => error(err));
+        };
+        fetchData();
+    }, [questionId, refresh]);
+    console.log(question);
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [refresh]);
+    const deleteQuestion = () => {
+        axios.delete(URL, { headers: header }).then((res) => {
+            if (res.status >= 200 && res.status < 300) {
+                success(`Delete question successfully!`);
+                navigate(-1);
+            } else {
+                error(`${res.message}`);
+            }
+        });
+    };
+
     return (
         <>
             <StyledContainer>
@@ -98,9 +117,9 @@ const DiscussionView = () => {
                 ) : (
                     <>
                         <StyledHeader>
-                            <img src={question.student.picture} alt="Student Avatar" />
+                            <img src={question?.student.picture} alt="Student Avatar" />
                             <Column>
-                                <Title>{question.student.email}</Title>
+                                <Title>{question?.student.email}</Title>
                                 <Subtitle>{question.createdDate}</Subtitle>
                             </Column>
                         </StyledHeader>
@@ -108,7 +127,34 @@ const DiscussionView = () => {
                             <Column>
                                 <PostView>
                                     <PostMain>
-                                        <PostTitle>{question.title}</PostTitle>
+                                        <Row>
+                                            <Column>
+                                                <PostTitle>{question.title}</PostTitle>
+                                            </Column>
+                                            {userInfo.email === question?.student.email && (
+                                                <Column>
+                                                    <Dropdown>
+                                                        <button
+                                                            className="sub-option"
+                                                            onClick={(e) => e.stopPropagation}
+                                                        >
+                                                            <MoreVertIcon />
+                                                        </button>
+                                                        <DropdownMenu className="dropdown-menu">
+                                                            <DeleteIcon onClick={deleteQuestion} />
+                                                            <EditIcon
+                                                                onClick={() =>
+                                                                    navigate(
+                                                                        `/add-question?id=${question?.id}`
+                                                                    )
+                                                                }
+                                                            />
+                                                        </DropdownMenu>
+                                                    </Dropdown>
+                                                </Column>
+                                            )}
+                                        </Row>
+
                                         <Editor
                                             readOnly={true}
                                             editorState={editorState}
@@ -120,8 +166,8 @@ const DiscussionView = () => {
                                     </PostMain>
                                     <AnswerSection
                                         questionId={questionId}
-                                        answers={question.answers}
                                         setQuestion={setQuestion}
+                                        answers={question.answers}
                                         student={question.student}
                                         setRefresh={setRefresh}
                                     />

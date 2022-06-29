@@ -68,7 +68,6 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode }) => {
                     })
                     .then((response) => {
                         const data = response.data;
-                        console.log(data);
                         if (data.code == 400) {
                             error(data.message);
                             inputRef.current.value = '';

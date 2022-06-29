@@ -1,11 +1,12 @@
-import { useRef, useState } from 'react';
+/* eslint-disable no-unused-vars */
+import { useEffect, useRef, useState } from 'react';
 
 import axios from 'axios';
-import { convertToRaw, EditorState } from 'draft-js';
+import { convertFromRaw, convertToRaw, EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
-import { error } from '../../utils/toaster';
+import { error, success } from '../../utils/toaster';
 import ButtonLoader from '../ButtonLoader';
 import Selection from '../Selection';
 import { Container, SubTitle, Wrapper, TitleBlock, Title, CreateBtn } from './style';
@@ -18,28 +19,66 @@ const TextEditor = () => {
     });
     const [isLoading, setLoading] = useState(false);
     const [content, setContent] = useState('');
+    const [subjects, setSubjects] = useState();
     const [title, setTitle] = useState('');
-    const [subjectName, setSubject] = useState();
+    const [subjectName, setSubjectName] = useState();
     const navigate = useNavigate();
     const editor = useRef(null);
-    const options = [
-        {
-            content: 'SWP391',
-            value: 'SWP391',
-        },
-        {
-            content: 'OSG202',
-            value: 'OSG202',
-        },
-        {
-            content: 'SWT301',
-            value: 'SWT301',
-        },
-    ];
+    const questionId = new URLSearchParams(location.search).get('id');
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions`;
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
+
+    useEffect(() => {
+        const getSubjects = () => {
+            const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/subjects`;
+            axios
+                .get(URL, { headers: header })
+                .then((res) => {
+                    const datas = res.data.map((item) => ({
+                        value: item.id,
+                        content: item.name,
+                    }));
+                    setSubjects(datas);
+                })
+                .catch((err) => {
+                    error(err);
+                    return;
+                });
+        };
+        getSubjects();
+        if (questionId != null) {
+            const URL =
+                process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${questionId}`;
+            const header = {
+                Authorization: `${localStorage.getItem('token')}`,
+            };
+            const getQuestion = () => {
+                axios
+                    .get(URL, {
+                        headers: header,
+                    })
+                    .then((res) => {
+                        if (res.status >= 200 && res.status < 300) {
+                            setTitle(res.data.title);
+                            setSubjectName(res.data.subject.name);
+                            setEditorState({
+                                editorState: EditorState.createWithContent(
+                                    convertFromRaw(JSON.parse(res.data.content))
+                                ),
+                            });
+                        } else {
+                            error(`An error occured!`);
+                        }
+                    })
+                    .catch((err) => error(err));
+            };
+
+            getQuestion();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const onEditorStateChange = (editorState) => {
         setEditorState({
@@ -56,7 +95,34 @@ const TextEditor = () => {
                 {
                     title: title,
                     content: content,
+                    subjectName: subjectName.content,
+                },
+                { headers: header }
+            )
+            .then((res) => {
+                setLoading(false);
+                if (res.status >= 200 && res.status < 400) {
+                    success(`Create question successfully!`);
+                    navigate('/discussion-list');
+                } else {
+                    error(res.message);
+                }
+            })
+            .catch(() => {
+                setLoading(false);
+                error(`An error occured!`);
+            });
+    };
+
+    const handleEditQuestion = () => {
+        setLoading(true);
+        axios
+            .put(
+                URL + `/${questionId}`,
+                {
+                    title: title,
                     subjectName: subjectName.value,
+                    content: content,
                 },
                 { headers: header }
             )
@@ -80,16 +146,18 @@ const TextEditor = () => {
                     <Title>Title</Title>
                     <SubTitle>Main idea of the question which it describes for</SubTitle>
                     <TitleBlock
-                        placeholder="A title will briefly describe the issue"
+                        placeholder={
+                            questionId == null ? 'A title will briefly describe the issue' : title
+                        }
                         onChange={(e) => setTitle(e.target.value)}
                         required
                     />
                     <Title>Subject</Title>
                     <div style={{ width: 'fit-content' }}>
                         <Selection
-                            options={options}
-                            placeholder={`Subject`}
-                            onChange={setSubject}
+                            options={subjects || [{}]}
+                            placeholder={subjectName || 'Subject'}
+                            onChange={setSubjectName}
                         />
                     </div>
                     <Title>Body</Title>
@@ -113,10 +181,21 @@ const TextEditor = () => {
                         />
                     </div>
                 </Wrapper>
-                <CreateBtn onClick={handleAddQuestion} isLoading={isLoading}>
-                    <ButtonLoader isLoading={isLoading} />
-                    <span>CREATE QUESTION</span>
-                </CreateBtn>
+                {questionId == null ? (
+                    <CreateBtn onClick={handleAddQuestion} isLoading={isLoading}>
+                        <ButtonLoader isLoading={isLoading} />
+                        <span>CREATE QUESTION</span>
+                    </CreateBtn>
+                ) : (
+                    <CreateBtn
+                        style={{ justifyContent: 'center' }}
+                        onClick={handleEditQuestion}
+                        isLoading={isLoading}
+                    >
+                        <ButtonLoader isLoading={isLoading} />
+                        <span>SAVE</span>
+                    </CreateBtn>
+                )}
             </div>
         </Container>
     );

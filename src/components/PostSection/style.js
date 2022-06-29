@@ -95,5 +95,81 @@ export const AuthorAva = styled.div`
 export const Answers = styled.div`
     font-size: 1rem;
     color: ${COLOR.red[2]};
-    cursor: pointer;
+`;
+
+export const Vote = styled.div`
+    align-self: flex-start;
+    max-height: 80px;
+    margin-left: 24px;
+    margin-right: 12px;
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: ${COLOR.gray[0]};
+    font-size: 30px;
+    line-height: 0.4;
+    svg {
+        color: ${({ upvoted }) => (upvoted ? COLOR.green[0] : COLOR.gray[0])};
+        font-size: 50px;
+        cursor: pointer;
+    }
+    div {
+        font-style: oblique;
+    }
+`;
+
+export const Dropdown = styled.div`
+    position: relative;
+    .sub-option {
+        padding: 0;
+        border: none;
+        background-color: unset;
+        height: 30px;
+        cursor: pointer;
+    }
+    &:hover > .sub-option + .dropdown-menu {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
+`;
+
+export const DropdownMenu = styled.div`
+    position: absolute;
+    right: 0;
+    width: fit-content;
+    padding: 0.75rem;
+    top: calc(100% + 0.1rem);
+    background-color: ${COLOR.primary02};
+    border-radius: 4px;
+    box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    z-index: 99;
+    transform: translateY(-10px);
+    transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+    opacity: 0;
+    pointer-events: none;
+    svg {
+        align-self: flex-end;
+        border-radius: 50%;
+        margin: 2px 0;
+        cursor: pointer;
+        &:first-child {
+            color: ${COLOR.red[1]};
+        }
+        &:nth-child(2) {
+            color: ${COLOR.primary03};
+        }
+        &:hover {
+            transform: scale(1.3);
+            transition: all 150ms ease-in-out;
+        }
+    }
+`;
+
+export const DropdownItem = styled.div`
+    width: 100%;
+    height: auto;
 `;

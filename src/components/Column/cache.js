@@ -75,7 +75,6 @@ const Column = ({ list, droppableId, name, type, setColumns, subjectId }) => {
                 })
                     .then((res) => {
                         const data = res.data;
-                        console.log(data);
                         if (data.code == 200) {
                             success(`Topic \`${item.title}\` added`);
                             saveItem(item.id);

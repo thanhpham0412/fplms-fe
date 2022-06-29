@@ -24,11 +24,11 @@ export const Comment = styled.div`
     font-family: Lato;
     color: ${COLOR.primary03};
     display: grid;
-    align-items: end;
     grid-template-columns: 1fr auto auto;
-    position: relative;
     svg {
         width: 30px;
+        height: 30px;
+        padding: 5px;
         cursor: pointer;
     }
     div:nth-child(2),
@@ -36,11 +36,17 @@ export const Comment = styled.div`
     svg {
         display: ${({ isLoading }) => (isLoading ? 'none' : '')};
     }
+
+    :hover {
+        .sub-option {
+            visibility: visible;
+        }
+    }
 `;
 
 export const CommentInput = styled(TextareaAutosize)`
     width: 100%;
-    height: auto;
+    height: 100%;
     outline: none;
     border: none;
     resize: none;
@@ -49,13 +55,67 @@ export const CommentInput = styled(TextareaAutosize)`
     font-size: 1rem;
     font-family: Lato;
     color: ${COLOR.primary03};
+    align-self: center;
+`;
+
+export const Dropdown = styled.div`
+    position: relative;
+    .sub-option {
+        padding: 0;
+        border: none;
+        background-color: unset;
+        height: 30px;
+        visibility: hidden;
+    }
+    &:hover > .sub-option + .dropdown-menu {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
+`;
+
+export const DropdownMenu = styled.div`
+    position: absolute;
+    right: 0;
+    width: fit-content;
+    padding: 0.75rem;
+    top: calc(100% + 0.1rem);
+    background-color: ${COLOR.primary02};
+    border-radius: 4px;
+    box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    z-index: 99;
+    transform: translateY(-10px);
+    transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+    opacity: 0;
+    pointer-events: none;
+    svg {
+        align-self: flex-end;
+        border-radius: 50%;
+        &:first-child {
+            color: ${COLOR.red[1]};
+        }
+        &:nth-child(2) {
+            color: ${COLOR.primary03};
+        }
+        &:hover {
+            transform: scale(1.3);
+            transition: all 150ms ease-in-out;
+        }
+    }
+`;
+
+export const DropdownItem = styled.div`
+    width: 100%;
+    height: auto;
 `;
 
 export const Answers = styled.div`
     width: 100%;
     display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 24px;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
     img {
         width: 40px;
         height: auto;
@@ -85,7 +145,7 @@ export const Action = styled.div`
     margin-right: 10px;
     display: flex;
     align-items: center;
-    input[type='checkbox'] {
+    input[type='radio'] {
         display: none;
         &:checked + label {
             svg {
@@ -103,19 +163,32 @@ export const Action = styled.div`
             font-size: 1.5rem;
         }
     }
-
-    & > time {
-        cursor: pointer;
+    time {
+        cursor: default;
+        color: ${COLOR.gray[0]};
     }
 `;
 
 export const Vote = styled.div`
-    width: 50px;
     max-height: 80px;
+    margin-right: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    color: ${COLOR.gray[0]};
+    line-height: 1;
     svg {
-        font-size: 30px;
+        height: 30px;
+        width: 30px;
+        path {
+            d: path('m 4 18 l 8 -10 l 8 10 Z');
+        }
+        color: ${({ upvoted }) => (upvoted ? COLOR.green[0] : COLOR.gray[0])};
+        font-size: 3rem;
+        cursor: pointer;
+    }
+    div {
+        font-style: oblique;
+        font-size: 1.5rem;
     }
 `;

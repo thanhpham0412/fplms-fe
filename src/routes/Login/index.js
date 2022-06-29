@@ -34,6 +34,8 @@ const Login = () => {
     const responseGoogle = (response) => {
         loadContext.setActive(true);
         loadContext.setText('Logging in');
+        console.log(response);
+        localStorage.setItem('user', JSON.stringify(response.profileObj));
         axios
             .post(URL, {
                 idToken: response.tokenId,
@@ -41,6 +43,7 @@ const Login = () => {
             })
             .then((res) => {
                 const data = res.data;
+
                 if (data.isAuthSuccessful) {
                     auth.setAuth(true);
                     loadContext.setActive(false);
