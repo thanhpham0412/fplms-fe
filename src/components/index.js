@@ -5,6 +5,7 @@ import ClassSection from './ClassSection';
 import Column from './Column';
 import CreateClass from './CreateClass';
 import CreateClassForm from './CreateClassForm';
+import CreateMeetingForm from './CreateMeetingForm';
 import CreateTopicForm from './CreateTopicForm';
 import DraftEditor from './DraftEditor';
 import Expand from './Expand';
@@ -39,6 +40,7 @@ export {
     CreateClass,
     Overlay,
     CreateClassForm,
+    CreateMeetingForm,
     CreateTopicForm,
     Footer,
     StudentRow,

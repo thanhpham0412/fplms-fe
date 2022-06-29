@@ -3,13 +3,13 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-import { Pagination } from '../../components';
 import Jumbotron from '../../components/Jumbotron';
 import PostSection from '../../components/PostSection';
 import PostLoader from '../../components/PostSection/loader';
 import Selection from '../../components/Selection';
 import TopActivities from '../../components/TopActivities';
-import { error, success } from '../../utils/toaster';
+import { getTokenInfo } from '../../utils/account';
+import { success } from '../../utils/toaster';
 import {
     StyledContainer,
     StyledHeader,
@@ -21,12 +21,11 @@ import {
     PostList,
     Label,
     TypeSelection,
-    PaginateContainer,
 } from './style';
 
 import AddIcon from '@mui/icons-material/Add';
 
-const DiscussionList = () => {
+const MyQuestions = () => {
     const [search, setSearch] = useState('');
     const topMember = [
         {
@@ -57,99 +56,54 @@ const DiscussionList = () => {
             value: 'SWP391',
         },
         {
-            content: 'OSG202',
-            value: 'OSG202',
+            content: 'C#',
+            value: 'C#',
         },
         {
-            content: 'SWT301',
-            value: 'SWT301',
-        },
-        {
-            content: 'SWR302',
-            value: 'SWR302',
-        },
-        {
-            content: 'EIT201T',
-            value: 'EIT201T',
+            content: 'MogoDB',
+            value: 'MogoDB',
         },
     ];
     const [loadAnim] = useState(
         new Array(3).fill(PostLoader).map((Load, i) => <PostLoader key={i} />)
     );
     const [isLoading, setLoading] = useState(true);
-    const [posts, setPosts] = useState([]);
-    const [subject, setSubject] = useState();
-    const [pageNum, setPageNum] = useState(1);
-    const [totalPages, setTotalPages] = useState(0);
-    const [pageSize] = useState(3);
+    const [posts, setPosts] = useState();
     const navigate = useNavigate();
-
-    const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions`;
+    const user = getTokenInfo();
+    let URL = process.env.REACT_APP_DISCUSSION_URL;
+    if (user.role == 'Student') {
+        URL = URL + '/discussion/students/questions';
+    } else {
+        URL = URL + '/discussion/lecturers/questions';
+    }
 
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
+
     useEffect(() => {
-        try {
-            setLoading(true);
-            const fetchData = () => {
-                axios
-                    .get(URL, {
-                        headers: header,
-                        params: {
-                            PageNumber: pageNum,
-                            PageSize: pageSize,
-                            Question: search || '',
-                            Subject: subject?.content || '',
-                        },
-                    })
-                    .then((res) => {
-                        if (res.status == 200) {
-                            setPosts(res.data);
-                            setTotalPages(JSON.parse(res.headers['x-pagination']).TotalPages);
-                            success(`Load post success`);
-                            setLoading(false);
-                        } else {
-                            error(`An error occured!`);
-                            setLoading(false);
-                        }
-                    });
-            };
-            fetchData();
-        } catch (err) {
-            error(`${err}`);
-            setLoading(false);
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [pageNum, subject]);
-
-    const searchForQuestions = (e) => {
-        if (e.key === 'Enter') {
-            setLoading(true);
+        const fetchData = () => {
             axios
                 .get(URL, {
                     headers: header,
-                    params: {
-                        PageNumber: pageNum,
-                        PageSize: pageSize,
-                        Question: search || '',
-                        Subject: subject?.content || '',
-                    },
                 })
                 .then((res) => {
-                    if (res.status == 200) {
+                    if (res.status >= 200 && res.status < 300) {
                         setPosts(res.data);
-                        setTotalPages(JSON.parse(res.headers['x-pagination']).TotalPages);
                         success(`Load post success`);
                         setLoading(false);
                     } else {
-                        error(`An error occured!`);
                         setLoading(false);
                     }
-                });
-        }
-    };
+                })
+                .catch(setLoading(false));
+        };
+        fetchData();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+    console.log(posts);
 
     return (
         <>
@@ -166,7 +120,6 @@ const DiscussionList = () => {
                                         value={search}
                                         placeholder={'Search topic by name'}
                                         onChange={(e) => setSearch(e.target.value)}
-                                        onKeyUp={searchForQuestions}
                                     />
                                 </Column>
                                 <Column>
@@ -175,7 +128,6 @@ const DiscussionList = () => {
                                             title={'Type'}
                                             options={options}
                                             placeholder={'All'}
-                                            onChange={setSubject}
                                         />
                                     </TypeSelection>
                                 </Column>
@@ -184,31 +136,33 @@ const DiscussionList = () => {
                         <Column>
                             <NewTopicBtn onClick={() => navigate('/add-question')}>
                                 <AddIcon />
-                                <span>Add question</span>
+                                Start new topic
                             </NewTopicBtn>
                         </Column>
                     </Row>
                 </StyledHeader>
                 <StyledBody>
                     <Column>
-                        <span>New Posts</span>
                         <PostList>
-                            {isLoading
-                                ? loadAnim
-                                : posts?.map((post) => (
-                                      <PostSection key={post.id} post={post} setPosts={setPosts} />
-                                  ))}
+                            {isLoading ? (
+                                loadAnim
+                            ) : (
+                                <>
+                                    <span>My posts</span>
+                                    {posts
+                                        ?.filter((post) => !post.removed)
+                                        .map((post) => (
+                                            <PostSection key={post.id} post={post} />
+                                        ))}
+                                    <span>Removed posts</span>
+                                    {posts
+                                        ?.filter((post) => post.removed)
+                                        .map((post) => (
+                                            <PostSection key={post.id} post={post} />
+                                        ))}
+                                </>
+                            )}
                         </PostList>
-                        {totalPages > 0 && (
-                            <PaginateContainer>
-                                <Pagination
-                                    pageSize={pageSize}
-                                    totalPages={totalPages}
-                                    setPageNum={setPageNum}
-                                    currentPage={pageNum}
-                                />
-                            </PaginateContainer>
-                        )}
                     </Column>
                     <Column>
                         <span>Top Activities</span>
@@ -220,4 +174,4 @@ const DiscussionList = () => {
     );
 };
 
-export default DiscussionList;
+export default MyQuestions;

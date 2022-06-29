@@ -12,7 +12,7 @@ import 'draft-js/dist/Draft.css';
 
 function DraftEditor({ setShow, type, submit, initValue, readonly }) {
     const [editorState, setEditorState] = useState(() =>
-        EditorState.createWithContent(ContentState.createFromText(initValue))
+        EditorState.createWithContent(ContentState.createFromText(initValue || ''))
     );
 
     const submitter = () => {

@@ -18,6 +18,8 @@ import {
     Title,
     Status,
     Plus,
+    Footer,
+    DetailText,
 } from './style';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -26,7 +28,7 @@ const header = {
     Authorization: `${localStorage.getItem('token')}`,
 };
 
-const Column = ({ list, droppableId, name, type, setColumns, subjectId }) => {
+const Column = ({ list, droppableId, name, type, setColumns, subjects, setProjects }) => {
     const [isScroll, setScroll] = useState(false);
     const [isBot, setBot] = useState(true);
     const ref = useRef();
@@ -60,8 +62,12 @@ const Column = ({ list, droppableId, name, type, setColumns, subjectId }) => {
             setColumns((col) => {
                 const clone = col[droppableId].items;
                 const index = clone.findIndex((item) => item.id === id);
-                clone[index].title = data.name || 'Untitled';
-                clone[index].content = data.requirement || '(No requirement)';
+                clone[index] = {
+                    ...clone[index],
+                    ...data,
+                };
+                clone[index].name = data.name || 'Untitled';
+                clone[index].requirements = data.requirements || '(No requirement)';
 
                 setDisable(true);
 
@@ -72,21 +78,22 @@ const Column = ({ list, droppableId, name, type, setColumns, subjectId }) => {
                     {
                         actors: 'string',
                         context: 'string',
-                        id: 0,
-                        name: item.title,
-                        problem: item.content,
-                        requirements: item.content,
-                        subjectId: subjectId,
+                        name: item.name,
+                        problem: item.problems,
+                        requirements: item.requirements,
+                        subjectId: item.subjectId,
+                        semesterCode: 'SP21',
                         theme: 'string',
+                        ...data,
                     },
                     { headers: header }
                 )
                     .then((res) => {
                         const data = res.data;
                         if (data.code == 200) {
-                            success(
-                                `Topic \`${item.title}\` ${item.needAdd ? 'added' : 'updated'}`
-                            );
+                            setProjects((projects) => projects.concat(clone[index]));
+                            console.log('concat');
+                            success(`Topic \`${item.name}\` ${item.needAdd ? 'added' : 'updated'}`);
                             item.needAdd = false;
                             saveItem(item.id);
                         } else {
@@ -95,7 +102,7 @@ const Column = ({ list, droppableId, name, type, setColumns, subjectId }) => {
                         setDisable(false);
                     })
                     .catch(() => {
-                        error(`Topic \`${item.title}\` save error`);
+                        error(`Topic \`${item.name}\` save error`);
                         setDisable(false);
                     });
 
@@ -142,8 +149,9 @@ const Column = ({ list, droppableId, name, type, setColumns, subjectId }) => {
                     ...col[droppableId].items,
                     {
                         id: uuidv4(),
-                        content: 'Topic description',
-                        title: `Topic title`,
+                        requirements: 'Topic description',
+                        name: `Topic title`,
+                        subjectId: 1,
                         needAdd: true,
                     },
                 ],
@@ -160,10 +168,11 @@ const Column = ({ list, droppableId, name, type, setColumns, subjectId }) => {
                 setOpen={setOpen}
                 save={save}
                 subject={name}
+                subjects={subjects}
             />
             <Container type={type}>
                 <Header isScroll={isScroll}>
-                    {name} - {list.length} TOPICS
+                    {name} - {list.length} topics
                 </Header>
                 <Droppable droppableId={droppableId}>
                     {(provided, snapshot) => (
@@ -177,7 +186,7 @@ const Column = ({ list, droppableId, name, type, setColumns, subjectId }) => {
                             isDragging={snapshot.isDragging}
                         >
                             {list.map((item, index) => (
-                                <Draggable key={item.id} draggableId={item.id} index={index}>
+                                <Draggable key={item.id} draggableId={item.id + ''} index={index}>
                                     {(provided, snapshot) => (
                                         <ItemContainer
                                             ref={provided.innerRef}
@@ -193,7 +202,15 @@ const Column = ({ list, droppableId, name, type, setColumns, subjectId }) => {
                                                     });
                                                 }}
                                             >
-                                                <Title>{item.title}</Title>
+                                                <DetailText>
+                                                    {
+                                                        subjects.reduce((pre, cur) => {
+                                                            pre[cur.value] = cur.content;
+                                                            return pre;
+                                                        }, [])[item.subjectId]
+                                                    }
+                                                </DetailText>
+                                                <Title>{item.name}</Title>
                                                 {/* <Details>{item.content}</Details> */}
                                                 {/* {item.needUpdate ? <Status>Unsaved</Status> : null} */}
                                             </Item>
@@ -202,12 +219,15 @@ const Column = ({ list, droppableId, name, type, setColumns, subjectId }) => {
                                 </Draggable>
                             ))}
                             {provided.placeholder}
-                            <Plus type={type} isBot={isBot} bottom={0} onClick={add}>
+                            {/* <Plus type={type} isBot={isBot} bottom={0} onClick={add}>
                                 <AddIcon />
-                            </Plus>
+                            </Plus> */}
                         </DropContainer>
                     )}
                 </Droppable>
+                <Footer onClick={add}>
+                    <AddIcon /> Add topic
+                </Footer>
             </Container>
         </>
     );

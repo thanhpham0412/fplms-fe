@@ -41,7 +41,7 @@ export const NewTopicBtn = styled.button`
     border-radius: 4px;
     border: none;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     :hover {
         cursor: pointer;
         transform: scale(1.05);
@@ -61,12 +61,6 @@ export const NewTopicBtn = styled.button`
         width: 16px;
         height: 16px;
         margin-right: 5px;
-        align-self: center;
-    }
-    span {
-        margin: 0;
-        height: inherit;
-        align-self: center;
     }
 `;
 
@@ -90,7 +84,7 @@ export const InputBox = styled.input`
 export const StyledBody = styled.div`
     width: 100%;
     display: grid;
-    grid-template-columns: 1fr 344px;
+    grid-template-columns: auto auto;
     gap: 30px;
     margin: 15px 0;
     @media (max-width: 1250px) {
@@ -111,7 +105,7 @@ export const PostList = styled.div`
 `;
 
 export const TypeSelection = styled.div`
-    min-width: 80px;
+    max-width: 200px;
 `;
 
 export const PaginateContainer = styled.div`

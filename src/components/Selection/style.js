@@ -21,9 +21,10 @@ export const StyledButton = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-    cursor: ${({ disable }) => (disable ? 'not-allowed' : 'pointer')};
+    cursor: ${({ disable, isLoad }) => (disable || isLoad ? 'not-allowed' : 'pointer')};
     opacity: ${({ disable }) => (disable ? 0.7 : 1)};
     transition: all 300ms;
+    opacity: ${({ isLoad }) => (isLoad ? 0.5 : 1)};
 
     svg {
         transition: all 300ms;
@@ -48,21 +49,30 @@ const scaleZ = keyframes`
 `;
 
 export const StyledList = styled.ul`
+    max-height: ${({ maxHeight }) => maxHeight || 'auto'};
     color: #fff;
     list-style-type: none;
     flex-direction: column;
     position: absolute;
     border-radius: 4px;
-    max-height: auto;
     z-index: 1;
     width: 100%;
     padding: 0;
     transform: translateY(0.5rem);
     margin-block-start: -1px;
     border-radius: 2px;
-    overflow: hidden;
     margin-block-end: 0.5em;
     display: ${({ open }) => (open ? 'flex' : 'none')};
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    ::-webkit-scrollbar {
+        background: ${COLOR.blue[0]};
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: #fff;
+    }
 `;
 
 export const StyledItem = styled.li`

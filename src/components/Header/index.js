@@ -1,10 +1,40 @@
+/* eslint-disable no-unused-vars */
+import { useEffect, useState } from 'react';
+
 import logo from '../../assets/fpt logo 1.jpg';
-import { HContainer, HLogo, HIcons, HLink } from './style';
+import {
+    HContainer,
+    HLogo,
+    HIcons,
+    HLink,
+    NotificationContainer,
+    NotificationHeader,
+    NotificationBody,
+    NotiContainer,
+    NotiInfo,
+    BtnContainer,
+    NotiTarget,
+} from './style';
 
 import ForumIcon from '@mui/icons-material/Forum';
+import InboxIcon from '@mui/icons-material/Inbox';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import { io } from 'socket.io-client';
 
 const Header = () => {
+    const [isOpen, setOpen] = useState(false);
+    const [notifications] = useState([]);
+
+    useEffect(() => {
+        const socket = io('ws://0.tcp.ngrok.io:19880', {
+            Authorization: localStorage.getItem('token'),
+        });
+        socket.on('notifications', (notifications) => {
+            console.log(notifications);
+        });
+        socket.emit('notifications', {});
+    }, []);
+
     return (
         <div>
             <HContainer>
@@ -24,7 +54,7 @@ const Header = () => {
                             }}
                         />
                     </HLink>
-                    <HLink to={'/discussion-list'}>
+                    <BtnContainer>
                         <ForumIcon
                             style={{
                                 fontSize: 24,
@@ -33,8 +63,24 @@ const Header = () => {
                                 borderRadius: '50%',
                                 padding: '8px',
                             }}
+                            onClick={() => {
+                                setOpen((e) => !e);
+                                console.log('oen');
+                            }}
                         />
-                    </HLink>
+                        <NotificationContainer isOpen={isOpen}>
+                            <NotificationHeader>Notification</NotificationHeader>
+                            <NotificationBody>
+                                <NotiContainer>
+                                    <InboxIcon />
+                                    <NotiInfo>
+                                        <NotiTarget>Kien answerd your question</NotiTarget>
+                                        <div>Today</div>
+                                    </NotiInfo>
+                                </NotiContainer>
+                            </NotificationBody>
+                        </NotificationContainer>
+                    </BtnContainer>
                 </HIcons>
             </HContainer>
         </div>

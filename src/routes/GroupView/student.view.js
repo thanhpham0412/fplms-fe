@@ -40,9 +40,21 @@ const StudentView = ({ groupId, classId }) => {
     const loadOverlay = useContext(LoadOverLayContext);
     const [isPicked, setPicked] = useState(false);
 
-    const [list, setList] = useState([]);
+    const [list, setList] = useState([
+        {
+            content: 'Hello world',
+            type: 'feedback',
+            feedback: 'hello world',
+        },
+    ]);
 
-    const [topicList, setTopicList] = useState([]);
+    const [topicList, setTopicList] = useState([
+        {
+            content: 'Hello world',
+            type: 'feedback',
+            feedback: 'hello world',
+        },
+    ]);
 
     const test = (date) => {
         console.log(date);
@@ -119,12 +131,14 @@ const StudentView = ({ groupId, classId }) => {
     const topicPickedView = () => {
         return (
             <StyledList>
-                {list.map(({ content, type }, index) => (
+                {list.map(({ content, type, feedback }, index) => (
                     <StyledItem feedback={type} key={index}>
                         <Title feedback={type}>
                             {(type ? 'FEEDBACK' : 'REPORT') + ' #' + index}
                         </Title>
                         <Content>{content}</Content>
+                        <p>Feedback</p>
+                        <Content>{feedback || '(This report has no feedback)'}</Content>
                     </StyledItem>
                 ))}
             </StyledList>
@@ -148,7 +162,8 @@ const StudentView = ({ groupId, classId }) => {
 
         get('/management/projects', { classId }).then((res) => {
             const data = res.data.data;
-            setTopicList(data);
+            console.log(data);
+            if (data) setTopicList(data);
         });
         get(`/management/classes/${classId}/groups/details`)
             .then((res) => {

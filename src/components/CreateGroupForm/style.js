@@ -103,6 +103,7 @@ const SubTitle = styled.div`
 
 const CreateBtn = styled.button`
     width: 100%;
+    min-width: 80px;
     border: none;
     background: ${COLOR.blue[0]};
     color: ${COLOR.primary02};

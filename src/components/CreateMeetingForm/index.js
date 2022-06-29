@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 
 import axios from 'axios';
@@ -25,22 +26,13 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close';
 
-const CreateClassForm = ({ showing, setCreate, setClass }) => {
+const CreateClassForm = ({ showing, setCreate, setClass, date }) => {
     const [form, setForm] = useState({
-        cycleDuration: 7,
-        name: '',
-        enrollKey: '',
-        subjectId: 1,
-        semesterCode: 0,
+        date: date.toISOString().substr(0, 10),
+        time: '00:00',
     });
 
     const [isLoad, setLoad] = useState(true);
-    const [subjects, setSubjects] = useState([]);
-
-    const [validError, setError] = useState({
-        name: '',
-        enrollKey: '',
-    });
 
     const close = () => {
         setCreate(false);
@@ -56,25 +48,7 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
     };
 
     const submit = () => {
-        let errors = 0;
-
         if (disable) return;
-
-        if (form.enrollKey.trim().length < 3) {
-            setError((err) => ({ ...err, enrollKey: 'Enroll Key length must be longer than 3!' }));
-            errors++;
-        } else {
-            setError((err) => ({ ...err, enrollKey: '' }));
-        }
-
-        if (form.name.trim().length < 5) {
-            setError((err) => ({ ...err, name: 'Class Name length must be longer than 5!' }));
-            errors++;
-        } else {
-            setError((err) => ({ ...err, name: '' }));
-        }
-
-        if (errors > 0) return;
 
         setDisable(true);
 
@@ -114,43 +88,12 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
             });
     };
 
-    const handleSelection = (field, e) => {
-        setForm({
-            ...form,
-            [field]: e.value,
-        });
-    };
-
-    const [semester, setSemester] = useState([]);
-
-    useEffect(() => {
-        const sems = get('/management/semesters');
-        const subs = get('/management/subjects');
-        Promise.all([sems, subs]).then(([sems, subs]) => {
-            if (Array.isArray(sems.data.data))
-                setSemester(
-                    sems.data.data.map((semester) => ({
-                        value: semester.code,
-                        content: semester.code,
-                    }))
-                );
-            if (Array.isArray(subs.data.data))
-                setSubjects(
-                    subs.data.data.map((subject) => ({
-                        value: subject.id,
-                        content: subject.name,
-                    }))
-                );
-            if (sems.data.code == 200 && subs.data.code == 200) setLoad(false);
-        });
-    }, []);
-
     return (
         <Overlay isOpen={showing} closeFn={setCreate}>
             <Container>
                 <StyledHeader>
                     <StyledJumbotron>
-                        <Title>CREATE NEW CLASS</Title>
+                        <Title>CREATE NEW MEETING</Title>
                         <SubTitle>{form.name || 'Course name'}</SubTitle>
                     </StyledJumbotron>
                     <CloseIcon onClick={close} />
@@ -158,51 +101,31 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
                 <StyledBody>
                     <Row>
                         <Col>
-                            <DataHeader>
-                                <small>Classname</small>
-                                <Error>{validError.name}</Error>
-                            </DataHeader>
+                            <small>Date</small>
                             <StyledInput
-                                placeholder="Software Development"
+                                type="date"
                                 onChange={(e) => {
-                                    handleChange(e, 'name');
+                                    handleChange(e, 'date');
                                 }}
+                                defaultValue={
+                                    date &&
+                                    new Date(date.setDate(date.getDate() + 1))
+                                        .toISOString()
+                                        .substr(0, 10)
+                                }
+                                readOnly={true}
                             />
                         </Col>
                     </Row>
                     <Row>
                         <Col>
-                            <DataHeader>
-                                <small>Enroll Key</small>
-                                <Error>{validError.enrollKey}</Error>
-                            </DataHeader>
+                            <small>Time</small>
                             <StyledInput
-                                placeholder="123456"
-                                type="password"
+                                type="time"
                                 onChange={(e) => {
-                                    handleChange(e, 'enrollKey');
+                                    handleChange(e, 'time');
                                 }}
-                            />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <small>Subject Code</small>
-                            <Selection
-                                options={subjects}
-                                placeholder="Subject Code"
-                                onChange={(e) => handleSelection('subjectId', e)}
-                                maxHeight="200px"
-                                isLoad={isLoad}
-                            />
-                        </Col>
-                        <Col>
-                            <small>Semester</small>
-                            <Selection
-                                options={semester}
-                                placeholder="Semester"
-                                isLoad={isLoad}
-                                onChange={(e) => handleSelection('semesterCode', e)}
+                                defaultValue={date.toISOString().substr(0, 10)}
                             />
                         </Col>
                     </Row>
@@ -212,7 +135,7 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
                                 {disable || isLoad ? (
                                     <Spinner radius={24} color={COLOR.primary02} />
                                 ) : (
-                                    'CREATE CLASS'
+                                    'CREATE MEETING'
                                 )}
                             </StyledButton>
                         </Col>

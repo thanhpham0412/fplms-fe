@@ -30,6 +30,7 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin }) => {
     };
 
     const handleJoinBtn = async () => {
+        console.log('join');
         await axios.post(URL, { groupId: group_Id }, { headers: header }).then((res) => {
             if (res.data.code == 200) {
                 setJoin(true);

@@ -3,7 +3,8 @@ import styled, { keyframes } from 'styled-components';
 export const StyledContainer = styled.div`
     width: 100%;
     height: auto;
-    display: ${({ isLoading }) => (isLoading ? 'block' : 'none')};
+    display: ${({ isLoading }) => (isLoading ? 'flex' : 'none')};
+    justify-content: ${({ isLoading }) => (isLoading ? 'center' : 'unset')};
     div {
         display: ${({ isLoading }) => (isLoading ? 'block' : 'none')};
     }

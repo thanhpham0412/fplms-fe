@@ -1,33 +1,29 @@
-import { useState } from 'react';
-
 import { Container, PageBlock } from './style';
 
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 
-const Pagination = ({ setPageNum, pageSize, totalPosts }) => {
-    const [isActive, setActive] = useState(false);
+// eslint-disable-next-line no-unused-vars
+const Pagination = ({ currentPage, setPageNum, totalPages }) => {
     const pageNumbers = [];
-
-    for (let i = 1; i <= Math.ceil(totalPosts / pageSize); i++) {
+    for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(i);
     }
+
     return (
         <>
             <Container number={pageNumbers.length}>
-                <ArrowBackIosNewIcon />
+                <ArrowBackIosNewIcon onClick={() => setPageNum((prev) => prev - 1)} />
                 {pageNumbers.map((pageNum, index) => (
                     <PageBlock
+                        isActive={currentPage == pageNum ? true : false}
                         key={index}
-                        isActive={isActive}
-                        onClick={() => {
-                            setPageNum(pageNum), setActive(true);
-                        }}
+                        onClick={() => setPageNum(pageNum)}
                     >
                         {pageNum}
                     </PageBlock>
                 ))}
-                <ArrowForwardIosIcon />
+                <ArrowForwardIosIcon onClick={() => setPageNum((prev) => prev + 1)} />
             </Container>
         </>
     );

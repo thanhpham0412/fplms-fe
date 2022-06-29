@@ -3,8 +3,17 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 
-import { Calendar, DraftEditor, Overlay, Selection, Expand, AvatarGroup } from '../../components';
+import {
+    Calendar,
+    DraftEditor,
+    Overlay,
+    Selection,
+    Expand,
+    AvatarGroup,
+    Button,
+} from '../../components';
 import { get, put } from '../../utils/request';
+import { success } from '../../utils/toaster';
 import {
     Container,
     StyledList,
@@ -49,19 +58,19 @@ const LecturerView = ({ groupId, classId }) => {
     const events = [
         {
             icon: <ArticleIcon />,
-            title: 'Report your tasks',
+            title: 'Feedback reports',
             status: 'Upcomming',
             time: 'Today at 16h10',
         },
         {
             icon: <RadioButtonCheckedIcon />,
-            title: 'Meeting with lecturers',
+            title: 'Meeting with group 3',
             status: 'Upcomming',
             time: 'Today at 20h00',
         },
         {
             icon: <AssignmentIcon />,
-            title: 'Done your tasks',
+            title: 'Meeting with group 4',
             status: 'done',
             time: 'Tomorrow',
         },
@@ -70,18 +79,29 @@ const LecturerView = ({ groupId, classId }) => {
     const showDraft = (item) => {
         setValue(item.content);
         setDraftShow(true);
+        setForm({
+            ...form,
+            reportId: parseInt(item.id),
+        });
     };
 
     const topicPickedView = () => {
         return (
-            <StyledList>
-                {list.map((item, index) => (
-                    <StyledItemLec feedback={item.type} key={index} onClick={() => showDraft(item)}>
-                        <Title feedback={item.type}>{item.title}</Title>
-                        <AvatarGroup slot={3} />
-                    </StyledItemLec>
-                ))}
-            </StyledList>
+            <>
+                <StyledList>
+                    {list &&
+                        list.map((item, index) => (
+                            <StyledItemLec
+                                feedback={item.type}
+                                key={index}
+                                onClick={() => showDraft(item)}
+                            >
+                                <Title feedback={item.type}>{item.title}</Title>
+                                <AvatarGroup slot={3} />
+                            </StyledItemLec>
+                        ))}
+                </StyledList>
+            </>
         );
     };
 
@@ -100,14 +120,18 @@ const LecturerView = ({ groupId, classId }) => {
     const submit = () => {
         put('/management/cycle-reports/feedback', {
             feedback: form.feedback,
-            groupId: 0,
-            mark: parseInt(form.mark),
-            reportId: 0,
+            groupId: parseInt(groupId),
+            mark: parseInt(form.score),
+            reportId: form.reportId,
         });
+        success('Feedback success');
     };
 
     const changeHandle = (field, value) => {
-        console.log(field);
+        setForm({
+            ...form,
+            [field]: value,
+        });
     };
 
     return (
@@ -127,12 +151,12 @@ const LecturerView = ({ groupId, classId }) => {
                             minRows={7}
                             aria-label="maximum height"
                             placeholder="Feedback"
-                            onChange={(e) => changeHandle}
+                            onChange={(e) => changeHandle('feedback', e.target.value)}
                         />
                         <ScoreBar
                             placeholder="Score"
                             value={form.score}
-                            onChange={(e) => changeHandle}
+                            onChange={(e) => changeHandle('score', e.target.value)}
                         />
                     </ScoreBoard>
                 </FeedBackView>

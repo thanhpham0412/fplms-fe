@@ -15,10 +15,12 @@ const spin = keyframes`
 `;
 
 export const Loader = styled.div`
-    border: ${({ size }) => size || '4px'} solid ${({ bg }) => bg || ' rgba(255, 255, 255, 0.5)'};
-    border-top: ${({ size }) => size || '4px'} solid ${({ color }) => color || '#767676'};
+    border: ${({ size }) => (size ? size + 'px' : '4px')} solid
+        ${({ bg }) => bg || ' rgba(255, 255, 255, 0.5)'};
+    border-top: ${({ size }) => (size ? size + 'px' : '4px')} solid
+        ${({ color }) => color || '#767676'};
     border-radius: 50%;
-    width: ${({ radius }) => radius || '40px'};
-    height: ${({ radius }) => radius || '40px'};
+    width: ${({ radius }) => (radius ? radius + 'px' : '40px')};
+    height: ${({ radius }) => (radius ? radius + 'px' : '40px')};
     animation: ${spin} 4s infinite;
 `;

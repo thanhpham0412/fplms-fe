@@ -5,7 +5,6 @@ import { COLOR } from '../../utils/color';
 export const StyledContainer = styled.div`
     align-self: end;
     width: 100%;
-    max-width: 344px;
     display: flex;
     flex-direction: column;
     gap: 10px;

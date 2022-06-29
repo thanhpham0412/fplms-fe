@@ -35,7 +35,7 @@ export const Title = styled.div`
 `;
 
 export const ItemContainer = styled.div`
-    padding: 0.5rem 0;
+    padding: 0.1rem 0;
 `;
 
 export const Status = styled.div`
@@ -50,8 +50,11 @@ export const Item = styled.div`
     background: ${COLOR.primary02};
     width: auto;
     height: auto;
-    padding: 0.5rem;
-    border-radius: 4px;
+    padding: 0.7rem;
+    border-radius: 2px;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
 
     box-shadow: ${({ isDragging }) =>
         isDragging ? 'rgba(149, 157, 165, 0.2) 0px 8px 24px' : null};
@@ -61,13 +64,26 @@ export const Item = styled.div`
     box-sizing: border-box;
 `;
 
+export const DetailText = styled.button`
+    color: ${COLOR.primary03};
+    background: ${COLOR.blue[0]};
+    color: #fff;
+    border: none;
+    border-radius: 2px;
+    font-size: 0.75rem;
+    font-weight: 900;
+    width: fit-content;
+    white-space: nowrap;
+    padding: 0.5rem;
+`;
+
 export const DropContainer = styled.div`
     /* min-height: 250px;
     max-height: 500px; */
 
     height: 100%;
-    min-height: 300px;
-    max-height: 300px;
+    min-height: 500px;
+    max-height: 500px;
     overflow-y: auto;
 
     ::-webkit-scrollbar {
@@ -111,4 +127,28 @@ export const Plus = styled.div`
     }};
     background: ${({ type }) => (type == 0 ? COLOR.green[0] : COLOR.blue[0])};
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+`;
+
+export const Footer = styled.div`
+    color: ${COLOR.primary03};
+    font-weight: bold;
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    background: #fff;
+    svg {
+        fill: ${COLOR.blue[0]};
+    }
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    :hover {
+        background: ${COLOR.blue[0]};
+        color: #fff;
+        svg {
+            fill: #fff;
+        }
+    }
 `;
