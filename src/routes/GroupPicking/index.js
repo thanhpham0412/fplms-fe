@@ -17,7 +17,6 @@ const GroupPicking = () => {
 
     const URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups`;
     const UNENROLL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/unenroll`;
-    // const DELETE_URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/unenroll`;
     const TOKEN = localStorage.getItem('token');
     const header = {
         Authorization: TOKEN,
