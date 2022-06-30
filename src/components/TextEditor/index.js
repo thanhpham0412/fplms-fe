@@ -120,7 +120,7 @@ const TextEditor = () => {
                 URL + `/${questionId}`,
                 {
                     title: title,
-                    subjectName: subjectName.value,
+                    subjectName: subjectName.content,
                     content: content,
                 },
                 { headers: header }
@@ -144,13 +144,19 @@ const TextEditor = () => {
                 <Wrapper>
                     <Title>Title</Title>
                     <SubTitle>Main idea of the question which it describes for</SubTitle>
-                    <TitleBlock
-                        placeholder={
-                            questionId == null ? 'A title will briefly describe the issue' : title
-                        }
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
-                    />
+                    {questionId != null ? (
+                        <TitleBlock
+                            value={title || ''}
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                        />
+                    ) : (
+                        <TitleBlock
+                            placeholder={'A title will briefly describe the issue'}
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                        />
+                    )}
                     <Title>Subject</Title>
                     <div style={{ width: 'fit-content' }}>
                         <Selection

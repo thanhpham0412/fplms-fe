@@ -95,8 +95,10 @@ const Column = ({ list, droppableId, name, type, setColumns, subjects, setProjec
                             success(`Topic \`${item.name}\` ${item.needAdd ? 'added' : 'updated'}`);
                             item.needAdd = false;
                             saveItem(item.id);
+                            setOpen(false);
                         } else {
                             error(data.message);
+                            setOpen(false);
                         }
                         setDisable(false);
                     })

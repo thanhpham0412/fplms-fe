@@ -28,7 +28,6 @@ const EditGroupForm = ({ showing, setCreate, group, class_ID, setRefresh }) => {
     const [time, setTime] = useState(myDate[1]);
     const [enrollTime, setEnrollTime] = useState(group.enrollTime);
     const [isLoading, setLoading] = useState(false);
-
     const URL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups`;
     const TOKEN = localStorage.getItem('token');
     const header = {
@@ -94,12 +93,6 @@ const EditGroupForm = ({ showing, setCreate, group, class_ID, setRefresh }) => {
                                     defaultValue={groupNumEdit}
                                     onChange={(e) => setGroupNumEdit(e.target.value)}
                                 />
-                            </FormColumn>
-                        </FormRow>
-                        <FormRow>
-                            <FormColumn>
-                                <small>Group Project</small>
-                                <EditInput defaultValue={'Project-based Learning'} />
                             </FormColumn>
                         </FormRow>
                         <FormRow>

@@ -71,9 +71,10 @@ export const NotificationHeader = styled.div`
 
 export const NotificationBody = styled.div`
     display: flex;
-    gap: 0.5rem;
+    gap: 1rem;
     width: 100%;
     height: 100%;
+    flex-direction: column;
 `;
 
 export const NotiContainer = styled.div`

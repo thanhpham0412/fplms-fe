@@ -125,7 +125,7 @@ const CreateTopicForm = ({ showing, item, setOpen, save, disable, subject, subje
                                 placeholder="Project Requirement"
                                 defaultValue={item?.requirements}
                                 style={{ width: '100%' }}
-                                onChange={(e) => changeHandler('requirement', e)}
+                                onChange={(e) => changeHandler('requirements', e)}
                             />
                         </Col>
                     </Row>

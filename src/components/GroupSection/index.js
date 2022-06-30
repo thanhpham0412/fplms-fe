@@ -91,7 +91,6 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
             error(`Group ${group.number} is having ${group.currentNumber} member(s)!`);
         }
     };
-    console.log(group);
     return (
         <>
             <EditGroupForm

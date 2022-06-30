@@ -173,12 +173,6 @@ export const PickBtn = styled.button`
     }
 `;
 
-export const FeedBackView = styled.div`
-    position: relative;
-    width: fit-content;
-    height: fit-content;
-`;
-
 export const StyledItemLec = styled.div`
     box-sizing: border-box;
     font-size: 1rem;
@@ -231,11 +225,189 @@ export const ScoreBar = styled.input`
     outline: none;
     border: none;
     resize: none;
-    background-color: ${COLOR.primary02};
+    font-weight: bold;
     border-radius: 2px;
     font-size: 1rem;
     padding: 1rem;
+    background: ${COLOR.blue[0]};
     font-family: Lato;
-    color: ${COLOR.primary03};
+    color: #fff;
     box-sizing: border-box;
+`;
+
+export const EditorContainer = styled.div`
+    padding: 6rem 12rem;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    gap: 0.5rem;
+    display: grid;
+    grid-template-rows: 60px 1fr;
+`;
+
+export const BottomSide = styled.div`
+    width: 100%;
+    max-height: 100%;
+    overflow: auto;
+    display: grid;
+    gap: 0.5rem;
+    grid-template-columns: 1fr 400px;
+`;
+
+export const EditorSideBar = styled.div`
+    min-width: 400px;
+    max-width: 400px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+`;
+
+export const StudentFeedBack = styled.div`
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 1in;
+    overflow: auto;
+    cursor: text;
+    background: #fff;
+    .public-DraftStyleDefault-block {
+        margin: 0;
+    }
+`;
+
+export const Header = styled.div`
+    width: 100%;
+    height: 60px;
+    background: #fff;
+    box-sizing: border-box;
+    display: none;
+    padding: 0 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
+
+export const BackBtn = styled.div`
+    border: none;
+    height: 100%;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+
+    :hover {
+        svg {
+            fill: ${COLOR.red[0]};
+        }
+        color: ${COLOR.red[0]};
+    }
+
+    transition: all 0.3s;
+    * {
+        transition: all 0.3s;
+    }
+`;
+
+export const SendBtn = styled.button`
+    border: none;
+    radius: 2px;
+    background: ${COLOR.green[0]};
+    color: #fff;
+    cursor: pointer;
+    font-family: Lato;
+    font-weight: 900;
+    letter-spacing: 0.05rem;
+    font-size: 1rem;
+    padding: 1rem;
+`;
+
+export const GoalContainer = styled.div`
+    width: 100%;
+    background: #fff;
+    box-sizing: border-box;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    span {
+        font-weight: 600;
+        font-size: 12px;
+    }
+`;
+
+export const FeedBackView = styled.div`
+    flex: 1;
+    overflow: auto;
+`;
+
+export const FeedBackContainer = styled(GoalContainer)`
+    max-height: 100%;
+    [data-contents='true'] {
+        overflow: hidden;
+        * {
+            font-weight: normal !important;
+            font-size: 1rem !important;
+        }
+    }
+`;
+
+export const StatusBar = styled.div`
+    background: #d9d9d9;
+    width: 100%;
+    height: 0.7rem;
+    border-radius: 2rem;
+    position: relative;
+    overflow: hidden;
+
+    ::before {
+        content: '';
+        position: absolute;
+        width: calc(100% * (1 / 7));
+        height: 100%;
+        background: ${COLOR.blue[0]};
+        border-radius: 2rem;
+    }
+`;
+
+export const GoalCounter = styled.div`
+    margin-left: auto;
+    font-size: 12px;
+    color: ${COLOR.gray[0]};
+    span {
+        color: #000;
+        font-weight: 900;
+    }
+`;
+
+export const GroupAvatar = styled.ul`
+    display: flex;
+    list-style-type: none;
+    padding: 0px 7px 0px 0px;
+    z-index: 1;
+`;
+
+export const Avatar = styled.li`
+    height: ${({ size }) => size || 49}px;
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+    position: relative;
+    width: ${({ size }) => size - 7 || 42}px;
+
+    img,
+    span {
+        background: ${({ color }) => color || '#596376'};
+        border: 2px solid #fff;
+        border-radius: 100px 100px 100px 100px;
+        color: #ffffff;
+        display: block;
+        font-family: Lato;
+        font-size: 10px;
+        height: ${({ size }) => size - 4 || 45}px;
+        line-height: ${({ size }) => size - 4 || 45}px;
+        text-align: center;
+        width: ${({ size }) => size - 4 || 45}px;
+    }
 `;

@@ -34,8 +34,6 @@ const Login = () => {
     const responseGoogle = (response) => {
         loadContext.setActive(true);
         loadContext.setText('Logging in');
-        console.log(response);
-        localStorage.setItem('user', JSON.stringify(response.profileObj));
         axios
             .post(URL, {
                 idToken: response.tokenId,
@@ -49,6 +47,7 @@ const Login = () => {
                     loadContext.setActive(false);
                     navigate('/class');
                     localStorage.setItem('token', data.token);
+                    localStorage.setItem('user', JSON.stringify(response.profileObj));
                 }
             })
             .catch(() => {

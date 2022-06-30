@@ -15,7 +15,6 @@ const GroupPicking = () => {
     const [isJoined, setJoin] = useState(false);
     const [refresh, setRefresh] = useState(0);
     const navigate = useNavigate();
-    console.log(refresh);
     const URL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups`;
     const UNENROLL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/unenroll`;
     const TOKEN = localStorage.getItem('token');

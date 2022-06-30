@@ -152,8 +152,6 @@ const Topic = () => {
         }
     };
 
-    console.log(projects);
-
     return (
         <>
             <Container>

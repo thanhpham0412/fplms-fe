@@ -26,8 +26,8 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close';
 
-const CreateMeetingForm = ({ showing, closeFn, form }) => {
-    const [isLoad, setLoad] = useState(true);
+const CreateMeetingForm = ({ showing, closeFn, form, setForm, groupId }) => {
+    const [isLoad, setLoad] = useState(false);
 
     const [disable, setDisable] = useState(false);
 
@@ -40,7 +40,40 @@ const CreateMeetingForm = ({ showing, closeFn, form }) => {
             Authorization: `${localStorage.getItem('token')}`,
         };
 
-        const API = process.env.REACT_APP_API_URL + '/management/classes';
+        const API = process.env.REACT_APP_API_URL + '/meetings';
+        axios
+            .post(
+                API,
+                {
+                    groupId: groupId,
+                    link: form.link,
+                    scheduleTime: `${form.date} ${form.time}:00.000`,
+                    title: form.title,
+                },
+                { headers: header }
+            )
+            .then((res) => {
+                if (res.data.code == 200) {
+                    success(`Create meeting successfully!`);
+                    setDisable(false);
+                    closeFn();
+                } else {
+                    error(res.data.message);
+                    setDisable(false);
+                    closeFn();
+                }
+            })
+            .catch(() => {
+                error(`An error occured!`);
+                closeFn();
+            });
+    };
+
+    const handleChange = (e, field, parser = String) => {
+        setForm({
+            ...form,
+            [field]: parser(e.target.value),
+        });
     };
 
     return (
@@ -56,14 +89,50 @@ const CreateMeetingForm = ({ showing, closeFn, form }) => {
                 <StyledBody>
                     <Row>
                         <Col>
+                            <small>Title</small>
+                            <StyledInput
+                                type="text"
+                                placeholder="Meeting Title"
+                                onChange={(e) => {
+                                    handleChange(e, 'title');
+                                }}
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <small>Meeting url</small>
+                            <StyledInput
+                                type="url"
+                                placeholder="Meeting Link"
+                                onChange={(e) => {
+                                    handleChange(e, 'link');
+                                }}
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
                             <small>Date</small>
-                            <StyledInput type="date" defaultValue={form.date} readOnly={true} />
+                            <StyledInput
+                                type="date"
+                                defaultValue={form.date}
+                                onChange={(e) => {
+                                    handleChange(e, 'date');
+                                }}
+                            />
                         </Col>
                     </Row>
                     <Row>
                         <Col>
                             <small>Time</small>
-                            <StyledInput type="time" defaultValue={form.time} />
+                            <StyledInput
+                                type="time"
+                                defaultValue={form.time}
+                                onChange={(e) => {
+                                    handleChange(e, 'time');
+                                }}
+                            />
                         </Col>
                     </Row>
                     <Row>

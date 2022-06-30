@@ -36,7 +36,6 @@ const PostSection = ({ post, setOpen, setPosts, setStudentInfo, setRefresh }) =>
     const pathname = useLocation().pathname;
     const userInfo = JSON.parse(localStorage.getItem('user'));
     const user = getTokenInfo();
-
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions/${post.id}`;
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
@@ -142,9 +141,13 @@ const PostSection = ({ post, setOpen, setPosts, setStudentInfo, setRefresh }) =>
                                     </button>
                                     <DropdownMenu className="dropdown-menu">
                                         <DeleteIcon onClick={deleteQuestion} />
-                                        <EditIcon
-                                            onClick={() => navigate(`/add-question?id=${post?.id}`)}
-                                        />
+                                        {user.role != 'Lecturer' && (
+                                            <EditIcon
+                                                onClick={() =>
+                                                    navigate(`/add-question?id=${post?.id}`)
+                                                }
+                                            />
+                                        )}
                                     </DropdownMenu>
                                 </Dropdown>
                             </>

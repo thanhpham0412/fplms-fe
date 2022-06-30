@@ -94,7 +94,6 @@ const DiscussionView = () => {
         };
         fetchData();
     }, [questionId, refresh]);
-    console.log(question);
 
     const deleteQuestion = () => {
         axios.delete(URL, { headers: header }).then((res) => {
