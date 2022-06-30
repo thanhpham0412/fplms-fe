@@ -13,11 +13,11 @@ const GroupPicking = () => {
     const [isCreate, setCreate] = useState(false);
     const [groups, setGroups] = useState([]);
     const [isJoined, setJoin] = useState(false);
+    const [refresh, setRefresh] = useState(0);
     const navigate = useNavigate();
-
-    const URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups`;
-    const UNENROLL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/unenroll`;
-    // const DELETE_URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/unenroll`;
+    console.log(refresh);
+    const URL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups`;
+    const UNENROLL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/unenroll`;
     const TOKEN = localStorage.getItem('token');
     const header = {
         Authorization: TOKEN,
@@ -33,7 +33,7 @@ const GroupPicking = () => {
             })
             .then((res) => setGroups(res.data.data));
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [refresh]);
 
     const handleUnenroll = () => {
         axios.delete(UNENROLL, { headers: header }).then(navigate('/class'));
@@ -46,6 +46,7 @@ const GroupPicking = () => {
                 showing={isCreate}
                 setCreate={setCreate}
                 class_ID={class_ID}
+                setRefresh={setRefresh}
             />
             <Container>
                 <Banner />
@@ -75,6 +76,7 @@ const GroupPicking = () => {
                                     {...user}
                                     isJoined={isJoined}
                                     setJoin={setJoin}
+                                    setRefresh={setRefresh}
                                 />
                             );
                         })}

@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 
@@ -27,22 +28,22 @@ const ClassList = () => {
     };
 
     useEffect(() => {
-        const API_LECTURER = process.env.REACT_APP_API_URL + '/management/classes';
-        const API_STUDENT = process.env.REACT_APP_API_URL + `/management/classes/student`;
+        const API_LECTURER = process.env.REACT_APP_API_URL + '/classes';
+        const API_STUDENT = process.env.REACT_APP_API_URL + `/classes/student`;
         const CLASS_API = user.role == 'Lecturer' ? API_LECTURER : API_STUDENT;
 
-        const subs = get('/management/subjects');
+        const subs = get('/subjects');
         const list = axios.get(CLASS_API, {
             headers: header,
             params: {
                 search: searchClass,
             },
-        })
+        });
 
         Promise.all([subs, list]).then(([subs, list]) => {
             console.log('done');
             setSubjects(
-                subs.data.data.reduce((pre, cur) => {
+                subs?.data.data.reduce((pre, cur) => {
                     pre[cur.id] = cur.name;
                     return pre;
                 }, [])
@@ -82,16 +83,20 @@ const ClassList = () => {
                 <StyledList>
                     {Array.isArray(classList)
                         ? classList.map((item) => (
-                            <Section
-                                key={item.id}
-                                name={item.name}
-                                lecture={item.lecturerDto ? `${item.lecturerDto.name} - ${item.lecturerDto.email}` : item.enrollKey}
-                                subjectId={subjects[item.subjectId]}
-                                semesterCode={item.semesterCode}
-                                id={item.id}
-                                join={item.join}
-                            />
-                        ))
+                              <Section
+                                  key={item.id}
+                                  name={item.name}
+                                  lecture={
+                                      item.lecturerDto
+                                          ? `${item.lecturerDto.name} - ${item.lecturerDto.email}`
+                                          : item.enrollKey
+                                  }
+                                  subjectId={subjects[item.subjectId]}
+                                  semesterCode={item.semesterCode}
+                                  id={item.id}
+                                  join={item.join}
+                              />
+                          ))
                         : loadHolder}
                 </StyledList>
             </Container>

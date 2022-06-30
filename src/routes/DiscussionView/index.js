@@ -62,7 +62,7 @@ const DiscussionView = () => {
     const navigate = useNavigate();
     const userInfo = JSON.parse(localStorage.getItem('user'));
 
-    const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${question?.id}`;
+    const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions/${question?.id}`;
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
@@ -72,7 +72,7 @@ const DiscussionView = () => {
         editorState = EditorState.createWithContent(raw);
     }
     useEffect(() => {
-        const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${questionId}`;
+        const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions/${questionId}`;
         const header = {
             Authorization: `${localStorage.getItem('token')}`,
         };
@@ -110,7 +110,7 @@ const DiscussionView = () => {
     return (
         <>
             <StyledContainer>
-                <Jumbotron title={'discussion'} subtitle={'What does the fox say?'} />
+                <Jumbotron title={'discussion'} subtitle={question?.title} />
 
                 {isLoading ? (
                     <PostLoader />

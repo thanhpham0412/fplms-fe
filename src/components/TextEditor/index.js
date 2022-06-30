@@ -25,14 +25,14 @@ const TextEditor = () => {
     const navigate = useNavigate();
     const editor = useRef(null);
     const questionId = new URLSearchParams(location.search).get('id');
-    const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions`;
+    const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions`;
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
 
     useEffect(() => {
         const getSubjects = () => {
-            const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/subjects`;
+            const URL = process.env.REACT_APP_DISCUSSION_URL + `/subjects`;
             axios
                 .get(URL, { headers: header })
                 .then((res) => {
@@ -49,8 +49,7 @@ const TextEditor = () => {
         };
         getSubjects();
         if (questionId != null) {
-            const URL =
-                process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${questionId}`;
+            const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions/${questionId}`;
             const header = {
                 Authorization: `${localStorage.getItem('token')}`,
             };

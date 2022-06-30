@@ -39,7 +39,7 @@ const AnswerSection = ({ questionId, answers, setRefresh }) => {
     const dropdownRefs = useRef(new Array());
     const userInfo = JSON.parse(localStorage.getItem('user'));
 
-    const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/answers`;
+    const URL = process.env.REACT_APP_DISCUSSION_URL + `/answers`;
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };

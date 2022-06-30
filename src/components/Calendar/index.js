@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState } from 'react';
 
-import CreateMeetingForm from '../../components/CreateMeetingForm';
 import Overlay from '../../components/Overlay';
 import { chunkArray } from '../../utils/array';
 import { COLOR } from '../../utils/color';
@@ -23,8 +22,6 @@ const Calendar = ({ onChange }) => {
     const daysOfWeek = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 
     const [today, setToday] = useState(new Date());
-    const [isOpen, setOpen] = useState(true);
-    const [pickedDate, setDate] = useState(new Date());
 
     const changeMonth = (far) => {
         setToday(new Date(today.getFullYear(), today.getMonth() + far, 1));
@@ -42,7 +39,6 @@ const Calendar = ({ onChange }) => {
 
     return (
         <>
-            <CreateMeetingForm showing={isOpen} setCreate={setOpen} date={pickedDate} />
             <Container>
                 <StyledHeader>
                     <Flip
@@ -77,10 +73,6 @@ const Calendar = ({ onChange }) => {
                                     <StyledDay
                                         onClick={() => {
                                             onChange(day);
-                                            setOpen(() => {
-                                                setDate(day);
-                                                return true;
-                                            });
                                         }}
                                         background={
                                             today.getMonth() == day.getMonth()

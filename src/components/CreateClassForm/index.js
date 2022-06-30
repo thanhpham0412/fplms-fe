@@ -82,7 +82,7 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
             Authorization: `${localStorage.getItem('token')}`,
         };
 
-        const API = process.env.REACT_APP_API_URL + '/management/classes';
+        const API = process.env.REACT_APP_API_URL + '/classes';
 
         axios
             .post(API, form, {
@@ -124,8 +124,8 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
     const [semester, setSemester] = useState([]);
 
     useEffect(() => {
-        const sems = get('/management/semesters');
-        const subs = get('/management/subjects');
+        const sems = get('/semesters');
+        const subs = get('/subjects');
         Promise.all([sems, subs]).then(([sems, subs]) => {
             if (Array.isArray(sems.data.data))
                 setSemester(

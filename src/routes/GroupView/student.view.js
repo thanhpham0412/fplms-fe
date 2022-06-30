@@ -39,6 +39,7 @@ import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 const StudentView = ({ groupId, classId }) => {
     const loadOverlay = useContext(LoadOverLayContext);
     const [isPicked, setPicked] = useState(false);
+    const [draftIsShow, setDraftShow] = useState(false);
 
     const [list, setList] = useState([
         {
@@ -61,7 +62,7 @@ const StudentView = ({ groupId, classId }) => {
     };
 
     const submitCycle = (value) => {
-        post('/management/' + (type.value == 1 ? 'cycle-reports' : 'progress-reports'), {
+        post('/' + (type.value == 1 ? 'cycle-reports' : 'progress-reports'), {
             title: 'DRAFT',
             content: value,
             resourceLink: '',
@@ -78,16 +79,17 @@ const StudentView = ({ groupId, classId }) => {
                             groupId: groupId,
                         });
                     });
+                    setDraftShow(false);
                 } else {
                     error(res.data.message);
+                    setDraftShow(false);
                 }
             })
             .catch(() => {
                 error('An error occured');
+                setDraftShow(false);
             });
     };
-
-    const [draftIsShow, setDraftShow] = useState(false);
 
     const [reportType] = useState([
         {
@@ -146,8 +148,8 @@ const StudentView = ({ groupId, classId }) => {
     };
 
     const getCycleReport = () => {
-        const cycleReport = get('/management/cycle-reports', { classId, groupId });
-        const progressReport = get('/management/progress-reports', { classId, groupId });
+        const cycleReport = get('/cycle-reports', { classId, groupId });
+        const progressReport = get('/progress-reports', { classId, groupId });
 
         Promise.all([cycleReport, progressReport]).then(([cycleReport, progressReport]) => {
             setList(cycleReport.data.data.concat(progressReport.data.data));
@@ -160,12 +162,12 @@ const StudentView = ({ groupId, classId }) => {
 
         getCycleReport();
 
-        get('/management/projects', { classId }).then((res) => {
+        get('/projects', { classId }).then((res) => {
             const data = res.data.data;
             console.log(data);
             if (data) setTopicList(data);
         });
-        get(`/management/classes/${classId}/groups/details`)
+        get(`/classes/${classId}/groups/details`)
             .then((res) => {
                 const data = res.data.data;
                 if (data.projectDTO) {
@@ -179,8 +181,11 @@ const StudentView = ({ groupId, classId }) => {
     }, []);
 
     const pickTopic = (topic) => {
-        put(`/management/projects/${topic.id}`, {}, { params: { classId } }).then((res) => {
+        put(`/projects/${topic.id}`, {}, { params: { classId } }).then((res) => {
             const data = res.data.data;
+            if (res.data.code == 200) {
+                success(`Choose project successfully!`);
+            }
         });
     };
 

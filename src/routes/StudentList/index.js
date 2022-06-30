@@ -47,7 +47,7 @@ const StudentList = () => {
         createData('Duong Chi Khang', 'SE161108', 'Group 2', 'Member', 32, 'Remove'),
     ]);
 
-    const API = process.env.REACT_APP_API_URL + `/management/classes/2/student`;
+    const API = process.env.REACT_APP_API_URL + `/classes/2/student`;
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };

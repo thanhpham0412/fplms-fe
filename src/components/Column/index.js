@@ -71,13 +71,12 @@ const Column = ({ list, droppableId, name, type, setColumns, subjects, setProjec
 
                 setDisable(true);
 
-                const API = process.env.REACT_APP_API_URL + '/management/projects';
-
+                const API = process.env.REACT_APP_API_URL + '/projects';
                 axios[item.needAdd ? 'post' : 'put'](
                     API,
                     {
                         actors: 'string',
-                        context: 'string',
+                        context: item.context || '',
                         name: item.name,
                         problem: item.problems,
                         requirements: item.requirements,

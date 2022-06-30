@@ -26,26 +26,10 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close';
 
-const CreateClassForm = ({ showing, setCreate, setClass, date }) => {
-    const [form, setForm] = useState({
-        date: date.toISOString().substr(0, 10),
-        time: '00:00',
-    });
-
+const CreateMeetingForm = ({ showing, closeFn, form }) => {
     const [isLoad, setLoad] = useState(true);
 
-    const close = () => {
-        setCreate(false);
-    };
-
     const [disable, setDisable] = useState(false);
-
-    const handleChange = (e, field, parser = String) => {
-        setForm({
-            ...form,
-            [field]: parser(e.target.value),
-        });
-    };
 
     const submit = () => {
         if (disable) return;
@@ -57,76 +41,29 @@ const CreateClassForm = ({ showing, setCreate, setClass, date }) => {
         };
 
         const API = process.env.REACT_APP_API_URL + '/management/classes';
-
-        axios
-            .post(API, form, {
-                headers: header,
-            })
-            .then((res) => {
-                const data = res.data;
-                if (data.code == 200) {
-                    setClass((classes) =>
-                        classes.concat({
-                            id: data.data,
-                            name: form.name,
-                            semester: form.semester,
-                            enrollKey: form.enrollKey,
-                            subjectId: form.subjectId,
-                            semesterCode: form.semesterCode,
-                        })
-                    );
-                    success(`Class ${form.name} created successfully`);
-                    close();
-                } else {
-                    error(data.message);
-                }
-                setDisable(false);
-            })
-            .catch(() => {
-                error(`An error occured!`);
-                setDisable(false);
-            });
     };
 
     return (
-        <Overlay isOpen={showing} closeFn={setCreate}>
+        <Overlay isOpen={showing} closeFn={closeFn}>
             <Container>
                 <StyledHeader>
                     <StyledJumbotron>
                         <Title>CREATE NEW MEETING</Title>
-                        <SubTitle>{form.name || 'Course name'}</SubTitle>
+                        <SubTitle>New Meeting</SubTitle>
                     </StyledJumbotron>
-                    <CloseIcon onClick={close} />
+                    <CloseIcon onClick={closeFn} />
                 </StyledHeader>
                 <StyledBody>
                     <Row>
                         <Col>
                             <small>Date</small>
-                            <StyledInput
-                                type="date"
-                                onChange={(e) => {
-                                    handleChange(e, 'date');
-                                }}
-                                defaultValue={
-                                    date &&
-                                    new Date(date.setDate(date.getDate() + 1))
-                                        .toISOString()
-                                        .substr(0, 10)
-                                }
-                                readOnly={true}
-                            />
+                            <StyledInput type="date" defaultValue={form.date} readOnly={true} />
                         </Col>
                     </Row>
                     <Row>
                         <Col>
                             <small>Time</small>
-                            <StyledInput
-                                type="time"
-                                onChange={(e) => {
-                                    handleChange(e, 'time');
-                                }}
-                                defaultValue={date.toISOString().substr(0, 10)}
-                            />
+                            <StyledInput type="time" defaultValue={form.time} />
                         </Col>
                     </Row>
                     <Row>
@@ -146,4 +83,4 @@ const CreateClassForm = ({ showing, setCreate, setClass, date }) => {
     );
 };
 
-export default CreateClassForm;
+export default CreateMeetingForm;

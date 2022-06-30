@@ -48,7 +48,7 @@ const EditClassForm = ({ showing, setCreate, classItem }) => {
             Authorization: `${localStorage.getItem('token')}`,
         };
 
-        const API = process.env.REACT_APP_API_URL + '/management/classes';
+        const API = process.env.REACT_APP_API_URL + '/classes';
 
         axios
             .put(API, form, {

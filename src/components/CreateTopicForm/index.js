@@ -96,7 +96,10 @@ const CreateTopicForm = ({ showing, item, setOpen, save, disable, subject, subje
                                 <small>Context</small>
                                 <Error></Error>
                             </DataHeader>
-                            <StyledInput placeholder="Context" />
+                            <StyledInput
+                                placeholder="Context"
+                                onChange={(e) => changeHandler('context', e)}
+                            />
                         </Col>
                     </Row>
                     <Row>

@@ -59,9 +59,9 @@ const Topic = () => {
     });
 
     useEffect(() => {
-        const subjects = get('/management/subjects');
-        const projects = get('/management/projects');
-        const semester = get('/management/semesters');
+        const subjects = get('/subjects');
+        const projects = get('/projects');
+        const semester = get('/semesters');
 
         Promise.all([subjects, projects, semester]).then(([subjects, projects, semester]) => {
             subjects = subjects.data.data;

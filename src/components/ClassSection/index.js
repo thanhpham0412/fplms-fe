@@ -60,7 +60,7 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode }) => {
         };
         if (!join && open) {
             if (inputRef.current.value.trim().length) {
-                const API = process.env.REACT_APP_API_URL + `/management/classes/${id}/enroll`;
+                const API = process.env.REACT_APP_API_URL + `/classes/${id}/enroll`;
                 const enrollKey = inputRef.current.value;
                 axios
                     .post(API, enrollKey, {
@@ -102,7 +102,7 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode }) => {
             navigate(`/class/${id}`);
         }
         if (join) {
-            const API = process.env.REACT_APP_API_URL + `/management/classes/${id}/groups/details`;
+            const API = process.env.REACT_APP_API_URL + `/classes/${id}/groups/details`;
             axios.get(API, { headers: header }).then((res) => {
                 const data = res.data.data;
                 if (data) {
@@ -133,7 +133,7 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode }) => {
             <Row onClick={openEnroll} ref={buttonRef}>
                 <StyledButton open={open} onClick={joinClass}>
                     <Front onClick={focus} isEnroll={join}>
-                        {user.role == 'Student' ? join ? 'OPEN' : 'ENROLL' : 'VIEW'}
+                        {user.role == 'Student' ? (join ? 'OPEN' : 'ENROLL') : 'VIEW'}
                     </Front>
                     <Back>
                         <StyledInput ref={inputRef} type="password" placeholder="Enroll Key" />

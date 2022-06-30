@@ -4,8 +4,8 @@ import axios from 'axios';
 
 import { error, success } from '../../utils/toaster';
 import ButtonLoader from '../ButtonLoader';
+import Overlay from '../Overlay';
 import {
-    Overlay,
     FormContainer,
     FormHeader,
     FormBody,
@@ -20,7 +20,7 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close';
 
-const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID, email }) => {
+const EditGroupForm = ({ showing, setCreate, group, class_ID, setRefresh }) => {
     const myDate = group.enrollTime.split(' ');
     const [groupNumEdit, setGroupNumEdit] = useState(group.number);
     const [membersEdit, setMembersEdit] = useState(group.memberQuantity);
@@ -29,9 +29,7 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID, email })
     const [enrollTime, setEnrollTime] = useState(group.enrollTime);
     const [isLoading, setLoading] = useState(false);
 
-    const URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups`;
-    const URL_DELETE =
-        process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups/${group.id}`;
+    const URL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups`;
     const TOKEN = localStorage.getItem('token');
     const header = {
         Authorization: TOKEN,
@@ -47,6 +45,7 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID, email })
             .put(
                 URL,
                 {
+                    disable: false,
                     enrollTime: enrollTime,
                     id: group.id,
                     memberQuantity: membersEdit,
@@ -56,15 +55,11 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID, email })
             )
             .then((res) => {
                 if (res.data.code == 200) {
-                    setGroup({
-                        id: group.id,
-                        enrollTime: enrollTime,
-                        memberQuantity: membersEdit,
-                        number: groupNumEdit,
-                    });
                     success(`Edit group ${group.number} successfully`);
+                    setRefresh((prev) => prev + 1);
                 } else {
                     error(res.data.message);
+                    setRefresh((prev) => prev + 1);
                 }
             })
             .catch(() => {
@@ -76,33 +71,13 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID, email })
             });
     };
 
-    const handleRemoveBtn = () => {
-        setLoading(true);
-        if (group.currentNumber == 0) {
-            axios
-                .put(URL_DELETE, { userEmail: email }, { headers: header })
-                .then((res) => {
-                    if (res.data.code == 200) success(`Remove group${group.number} successfully!`);
-                    else error(`${res.data.message}`);
-                })
-                .finally(() => {
-                    closeForm();
-                    setLoading(false);
-                });
-        } else {
-            error(`Group ${group.number} is having ${group.currentNumber} member(s)!`);
-            closeForm();
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
         setEnrollTime(date + ' ' + time);
     }, [date, time]);
 
     return (
         <>
-            <Overlay isDisplay={showing}>
+            <Overlay isOpen={showing} closeFn={setCreate}>
                 <FormContainer>
                     <FormHeader>
                         <HeaderJumbotron>
@@ -156,14 +131,10 @@ const EditGroupForm = ({ showing, setCreate, group, setGroup, class_ID, email })
                                 />
                             </FormColumn>
                         </FormRow>
-                        <FormRow gap={'10px'} justifyContent={'flex-end'}>
+                        <FormRow justifyContent={'center'}>
                             <StyledButton isLoading={isLoading} onClick={handleSaveBtn}>
                                 <ButtonLoader isLoading={isLoading} />
                                 <span>SAVE</span>
-                            </StyledButton>
-                            <StyledButton isLoading={isLoading} onClick={handleRemoveBtn}>
-                                <ButtonLoader isLoading={isLoading} />
-                                <span>Remove</span>
                             </StyledButton>
                         </FormRow>
                     </FormBody>

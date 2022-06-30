@@ -25,15 +25,15 @@ const Header = () => {
     const [isOpen, setOpen] = useState(false);
     const [notifications] = useState([]);
 
-    useEffect(() => {
-        const socket = io('ws://0.tcp.ngrok.io:19880', {
-            Authorization: localStorage.getItem('token'),
-        });
-        socket.on('notifications', (notifications) => {
-            console.log(notifications);
-        });
-        socket.emit('notifications', {});
-    }, []);
+    // useEffect(() => {
+    //     const socket = io('ws://0.tcp.ngrok.io:19880', {
+    //         Authorization: localStorage.getItem('token'),
+    //     });
+    //     socket.on('notifications', (notifications) => {
+    //         console.log(notifications);
+    //     });
+    //     socket.emit('notifications', {});
+    // }, []);
 
     return (
         <div>

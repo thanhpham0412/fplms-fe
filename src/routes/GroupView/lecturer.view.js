@@ -13,7 +13,7 @@ import {
     Button,
 } from '../../components';
 import { get, put } from '../../utils/request';
-import { success } from '../../utils/toaster';
+import { error, success } from '../../utils/toaster';
 import {
     Container,
     StyledList,
@@ -106,7 +106,7 @@ const LecturerView = ({ groupId, classId }) => {
     };
 
     const getReports = () => {
-        const progressReport = get('/management/progress-reports', { classId, groupId });
+        const progressReport = get('/progress-reports', { classId, groupId });
 
         Promise.all([progressReport]).then(([progressReport]) => {
             setList(progressReport.data.data);
@@ -118,13 +118,22 @@ const LecturerView = ({ groupId, classId }) => {
     }, []);
 
     const submit = () => {
-        put('/management/cycle-reports/feedback', {
+        put('/cycle-reports/feedback', {
             feedback: form.feedback,
             groupId: parseInt(groupId),
             mark: parseInt(form.score),
             reportId: form.reportId,
-        });
-        success('Feedback success');
+        })
+            .then((res) => {
+                if (res.data.code === 200) {
+                    success(`Feedback successfully!`);
+                    setDraftShow(false);
+                } else {
+                    error(res.data.message);
+                    setDraftShow(false);
+                }
+            })
+            .catch((err) => error(err));
     };
 
     const changeHandle = (field, value) => {
@@ -151,6 +160,7 @@ const LecturerView = ({ groupId, classId }) => {
                             minRows={7}
                             aria-label="maximum height"
                             placeholder="Feedback"
+                            value={form.feedback}
                             onChange={(e) => changeHandle('feedback', e.target.value)}
                         />
                         <ScoreBar
@@ -164,7 +174,7 @@ const LecturerView = ({ groupId, classId }) => {
             <Container>
                 {topicPickedView()}
                 <SideBar>
-                    <Calendar onChange={test} />
+                    <Calendar onChange={test} groupId={groupId} />
                     <StyledH4>
                         UP COMMING TASKS <Round>3</Round>
                     </StyledH4>

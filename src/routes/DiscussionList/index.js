@@ -82,7 +82,7 @@ const DiscussionList = () => {
     const navigate = useNavigate();
     const user = getTokenInfo();
 
-    const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions`;
+    const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions`;
 
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
@@ -125,7 +125,7 @@ const DiscussionList = () => {
 
     useEffect(() => {
         const getSubjects = () => {
-            const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/subjects`;
+            const URL = process.env.REACT_APP_DISCUSSION_URL + `/subjects`;
             axios
                 .get(URL, { headers: header })
                 .then((res) => {

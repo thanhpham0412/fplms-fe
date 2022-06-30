@@ -29,7 +29,7 @@ const Login = () => {
 
     document.title = 'Login';
 
-    const URL = process.env.REACT_APP_AUTH_URL + '/auth/accounts/login';
+    const URL = process.env.REACT_APP_AUTH_URL + '/accounts/login';
 
     const responseGoogle = (response) => {
         loadContext.setActive(true);

@@ -23,7 +23,7 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import CloseIcon from '@mui/icons-material/Close';
 
-const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
+const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
     const [groups, setGroups] = useState(1);
     const [members, setMembers] = useState(1);
     const [date, setDate] = useState('');
@@ -31,7 +31,7 @@ const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
     const [enrollTime, setEnrollTime] = useState('');
     const [isLoading, setLoading] = useState(false);
 
-    const URL = process.env.REACT_APP_API_URL + `/management/classes/${class_ID}/groups`;
+    const URL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups`;
     const TOKEN = localStorage.getItem('token');
     const header = {
         Authorization: TOKEN,
@@ -52,6 +52,7 @@ const CreateGroupForm = ({ showing, setCreate, class_ID }) => {
             .then((res) => {
                 if (res.data.code == 200) {
                     success(`Create ${groups} group(s) successfully!`);
+                    setRefresh((prev) => prev + 1);
                 } else {
                     error(res.data.message);
                 }
