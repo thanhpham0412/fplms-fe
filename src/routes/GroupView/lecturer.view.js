@@ -45,6 +45,7 @@ import {
     ScoreBar,
     CommentInput,
     GoalCounter,
+    GoalDes,
     StatusBar,
     BackBtn,
     SendBtn,
@@ -194,14 +195,14 @@ const LecturerView = ({ groupId, classId }) => {
                         </StudentFeedBack>
                         <EditorSideBar>
                             <GoalContainer>
-                                <span>Reports Stats:</span>
+                                <GoalDes>Reports Stats:</GoalDes>
                                 <StatusBar />
                                 <GoalCounter>
                                     <span>100</span> / 700
                                 </GoalCounter>
                             </GoalContainer>
                             <GoalContainer>
-                                <span>Reports Score:</span>
+                                <GoalDes>Reports Score:</GoalDes>
                                 <ScoreBar
                                     placeholder="Score"
                                     value={form.score}
@@ -210,9 +211,13 @@ const LecturerView = ({ groupId, classId }) => {
                                 <GoalCounter>Progress reports need to be score</GoalCounter>
                             </GoalContainer>
                             <FeedBackContainer>
-                                <span>Reports Feedback:</span>
-                                <FeedBackView>
-                                    <DraftEditor editorRef={edtior2} />
+                                <GoalDes>Reports Feedback:</GoalDes>
+                                <FeedBackView onClick={() => edtior2.current.focus()}>
+                                    <DraftEditor
+                                        id={`feedback_${groupId}_${classId}`}
+                                        editorRef={edtior2}
+                                        placeholder="Write your feedback..."
+                                    />
                                 </FeedBackView>
                                 <GoalCounter>Reports need to be feedback</GoalCounter>
                             </FeedBackContainer>

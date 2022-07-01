@@ -249,9 +249,8 @@ export const BottomSide = styled.div`
     width: 100%;
     max-height: 100%;
     overflow: auto;
-    display: grid;
+    display: flex;
     gap: 0.5rem;
-    grid-template-columns: 1fr 400px;
 `;
 
 export const EditorSideBar = styled.div`
@@ -264,7 +263,7 @@ export const EditorSideBar = styled.div`
 `;
 
 export const StudentFeedBack = styled.div`
-    max-width: 100%;
+    width: 100%;
     box-sizing: border-box;
     padding: 1in;
     overflow: auto;
@@ -331,11 +330,7 @@ export const GoalContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-
-    span {
-        font-weight: 600;
-        font-size: 12px;
-    }
+    flex: 0 0 auto;
 `;
 
 export const FeedBackView = styled.div`
@@ -344,14 +339,8 @@ export const FeedBackView = styled.div`
 `;
 
 export const FeedBackContainer = styled(GoalContainer)`
-    max-height: 100%;
-    [data-contents='true'] {
-        overflow: hidden;
-        * {
-            font-weight: normal !important;
-            font-size: 1rem !important;
-        }
-    }
+    flex: 0 1 auto;
+    overflow: auto;
 `;
 
 export const StatusBar = styled.div`
@@ -380,6 +369,11 @@ export const GoalCounter = styled.div`
         color: #000;
         font-weight: 900;
     }
+`;
+
+export const GoalDes = styled.span`
+    font-weight: 600;
+    font-size: 12px;
 `;
 
 export const GroupAvatar = styled.ul`
