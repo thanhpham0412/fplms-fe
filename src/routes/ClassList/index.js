@@ -83,20 +83,20 @@ const ClassList = () => {
                 <StyledList>
                     {Array.isArray(classList)
                         ? classList.map((item) => (
-                              <Section
-                                  key={item.id}
-                                  name={item.name}
-                                  lecture={
-                                      item.lecturerDto
-                                          ? `${item.lecturerDto.name} - ${item.lecturerDto.email}`
-                                          : item.enrollKey
-                                  }
-                                  subjectId={subjects[item.subjectId]}
-                                  semesterCode={item.semesterCode}
-                                  id={item.id}
-                                  join={item.join}
-                              />
-                          ))
+                            <Section
+                                key={item.id}
+                                name={item.name}
+                                lecture={
+                                    item.lecturerDto
+                                        ? `${item.lecturerDto.name} - ${item.lecturerDto.email}`
+                                        : item.enrollKey
+                                }
+                                subjectId={subjects[item.subjectId]}
+                                semesterCode={item.semesterCode}
+                                id={item.id}
+                                join={item.join}
+                            />
+                        ))
                         : loadHolder}
                 </StyledList>
             </Container>

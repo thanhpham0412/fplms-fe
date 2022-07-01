@@ -1,41 +1,22 @@
 import styled from 'styled-components';
 
-export const EditorWrapper = styled.div`
-    max-width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
+export const ToolBar = styled.div`
+    position: absolute;
+    top: ${({ top }) => top || 0}px;
+    left: ${({ left }) => left || 0}px;
+    display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
+    transform: translateY(-3.5rem) translateX(-50%);
+    padding: 0.5rem;
+    gap: 0.5rem;
+    background: red;
+    border-radius: 2px;
+    overflow: hidden;
+    z-index: 999;
+    height: 30px;
 
-    div.public-DraftStyleDefault-block {
-        margin-bottom: 1rem;
-    }
-
-    div.DraftEditor-root {
-        flex: 1 1 auto;
-        display: flex;
-        overflow: auto;
-        background: #fff;
-        ::-webkit-scrollbar-track {
-            background: #fff;
-        }
-        div.DraftEditor-editorContainer {
-            flex: 1 1 auto;
-            overflow: auto;
-        }
-        div.public-DraftEditor-content {
-            height: 100%;
-        }
-    }
-
-    .public-DraftEditorPlaceholder-root {
-        color: #999;
-        position: absolute;
-    }
-
-    [data-contents='true'] {
-        padding: ${({ padding }) => padding || '6rem 12rem'};
-        box-sizing: border-box;
+    button {
+        border: none;
+        width: 30px;
+        min-height: 100%;
     }
 `;
