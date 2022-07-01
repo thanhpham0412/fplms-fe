@@ -15,6 +15,7 @@ export const ToolBar = styled.div`
 
     button {
         border: none;
-        padding: 0.5rem;
+        width: 30px;
+        min-height: 100%;
     }
 `;
