@@ -45,7 +45,7 @@ export const SideBar = styled.div`
     position: sticky;
     top: 104px;
     height: fit-content;
-    z-index: 999;
+    z-index: 9;
 `;
 
 export const CommingContainer = styled.div`
@@ -269,9 +269,9 @@ export const StudentFeedBack = styled.div`
     overflow: auto;
     cursor: text;
     background: #fff;
-    .public-DraftStyleDefault-block {
+    /* .public-DraftStyleDefault-block {
         margin: 0;
-    }
+    } */
 `;
 
 export const Header = styled.div`

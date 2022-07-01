@@ -1,14 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 /* eslint-disable no-unused-vars */
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
+
+import { Editor, EditorState, convertToRaw, ContentState, convertFromRaw } from 'draft-js';
 
 import { Calendar, DraftEditor, Overlay, Selection, Expand, AvatarGroup } from '../../components';
+import { DraftRenderer } from '../../components/DraftEditor';
 import LoadOverLayContext from '../../contexts/loadOverlay';
 import { get, put, post } from '../../utils/request';
+import { stringToColour } from '../../utils/style';
 import { success, error } from '../../utils/toaster';
 import {
     Container,
+    EditorContainer,
+    EditorSideBar,
+    BottomSide,
+    Header,
     StyledList,
     StyledItem,
     Title,
@@ -20,8 +28,23 @@ import {
     RightSide,
     StyledH4,
     CommingTitle,
+    GoalContainer,
     Status,
     Round,
+    StyledItemLec,
+    ScoreBoard,
+    FeedBackView,
+    FeedBackContainer,
+    ScoreBar,
+    CommentInput,
+    GoalCounter,
+    GoalDes,
+    StatusBar,
+    BackBtn,
+    SendBtn,
+    GroupAvatar,
+    Avatar,
+    StudentFeedBack,
     Select,
     PickContainer,
     TopicList,
@@ -29,9 +52,9 @@ import {
     PickHeader,
     FeedBackBar,
     PickBtn,
-    StyledItemLec,
 } from './style';
 
+import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArticleIcon from '@mui/icons-material/Article';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
@@ -39,6 +62,9 @@ import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 const StudentView = ({ groupId, classId }) => {
     const loadOverlay = useContext(LoadOverLayContext);
     const [isPicked, setPicked] = useState(false);
+
+    const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const editor = useRef();
 
     const [list, setList] = useState([
         {
@@ -48,35 +74,25 @@ const StudentView = ({ groupId, classId }) => {
         },
     ]);
 
-    const [topicList, setTopicList] = useState([
-        {
-            content: 'Hello world',
-            type: 'feedback',
-            feedback: 'hello world',
-        },
-    ]);
+    const [topicList, setTopicList] = useState([]);
 
     const test = (date) => {
         console.log(date);
     };
 
     const submitCycle = (value) => {
-        post('/management/' + (type.value == 1 ? 'cycle-reports' : 'progress-reports'), {
+        const data = {
             title: 'DRAFT',
-            content: value,
+            content: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
             resourceLink: '',
             groupId: groupId,
-        })
+        };
+        post('/management/' + (value == 1 ? 'cycle-reports' : 'progress-reports'), data)
             .then((res) => {
                 if (res.data.code == 200) {
                     success(res.data.message);
                     setList((list) => {
-                        return list.concat({
-                            title: 'DRAFT',
-                            content: value,
-                            resourceLink: '',
-                            groupId: groupId,
-                        });
+                        return list.concat(data);
                     });
                 } else {
                     error(res.data.message);
@@ -87,7 +103,7 @@ const StudentView = ({ groupId, classId }) => {
             });
     };
 
-    const [draftIsShow, setDraftShow] = useState(false);
+    const [isDraftOpen, setDraft] = useState(false);
 
     const [reportType] = useState([
         {
@@ -124,7 +140,7 @@ const StudentView = ({ groupId, classId }) => {
     const [type, setType] = useState({ value: 1, content: 'progress-reports' });
 
     const onChange = (e) => {
-        setDraftShow(true);
+        setDraft(true);
         setType(e);
     };
 
@@ -136,7 +152,9 @@ const StudentView = ({ groupId, classId }) => {
                         <Title feedback={type}>
                             {(type ? 'FEEDBACK' : 'REPORT') + ' #' + index}
                         </Title>
-                        <Content>{content}</Content>
+                        {content && (
+                            <DraftRenderer editorState={JSON.parse(content)}></DraftRenderer>
+                        )}
                         <p>Feedback</p>
                         <Content>{feedback || '(This report has no feedback)'}</Content>
                     </StyledItem>
@@ -221,15 +239,48 @@ const StudentView = ({ groupId, classId }) => {
         );
     };
 
+    const avts = ['TP', 'NK', 'TN', 'TT', 'NH'];
+
     return (
         <>
-            <Overlay isOpen={draftIsShow}>
-                <DraftEditor
-                    groupId={groupId}
-                    setShow={setDraftShow}
-                    type={type}
-                    submit={submitCycle}
-                />
+            <Overlay isOpen={isDraftOpen} fullFill={true}>
+                <EditorContainer>
+                    <Header>
+                        <BackBtn onClick={() => setDraft(false)}>
+                            <ArrowBackIosNewIcon fontSize="small" /> Group View
+                        </BackBtn>
+                        <GroupAvatar>
+                            {avts.map((avatar, index) => (
+                                <Avatar
+                                    key={index}
+                                    size={32}
+                                    color={stringToColour(avatar + avts.join(''))}
+                                >
+                                    <span src="./ben.png">{avatar}</span>
+                                </Avatar>
+                            ))}
+                        </GroupAvatar>
+                    </Header>
+                    <BottomSide>
+                        <StudentFeedBack onClick={() => editor.current.focus()}>
+                            <DraftEditor
+                                editorRef={editor}
+                                editorState={editorState}
+                                setEditorState={setEditorState}
+                            />
+                        </StudentFeedBack>
+                        <EditorSideBar>
+                            <GoalContainer>
+                                <GoalDes>Reports Stats:</GoalDes>
+                                <StatusBar />
+                                <GoalCounter>
+                                    <span>100</span> / 700
+                                </GoalCounter>
+                            </GoalContainer>
+                            <SendBtn onClick={() => submitCycle(1)}>Send Report</SendBtn>
+                        </EditorSideBar>
+                    </BottomSide>
+                </EditorContainer>
             </Overlay>
             {isPicked && (
                 <Select>
