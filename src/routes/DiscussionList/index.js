@@ -33,23 +33,28 @@ const DiscussionList = () => {
     const topMember = [
         {
             name: 'Tran Nhat Hoang',
-            comments: '1k comments',
+            point: '15 point',
+            value: 15,
         },
         {
             name: 'Quach Heng To Ni',
-            comments: '305 comments',
+            point: '2 point',
+            value: 2,
         },
         {
             name: 'Mai Thanh Phuong',
-            comments: '300 comments',
+            point: '1 point',
+            value: 1,
         },
         {
             name: 'Pham Trong Thanh',
-            comments: '290 comments',
+            point: '25 point',
+            value: 25,
         },
         {
             name: 'Nguyen Thanh Kien',
-            comments: '102 comments',
+            point: '5 point',
+            value: 5,
         },
     ];
     const loadPage = [
@@ -249,7 +254,7 @@ const DiscussionList = () => {
                         )}
                     </Column>
                     <Column>
-                        <span>Top Activities</span>
+                        <span>Top Contributors</span>
                         <TopActivities arr={topMember} />
                     </Column>
                 </StyledBody>

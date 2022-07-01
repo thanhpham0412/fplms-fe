@@ -3,15 +3,17 @@ import { StyledContainer, ActiveMember, MemberInfo, Avatar, Comments } from './s
 const TopActivities = ({ arr }) => {
     return (
         <StyledContainer>
-            {arr.map((data) => (
-                <ActiveMember key={data.name}>
-                    <MemberInfo>
-                        <Avatar />
-                        <span>{data.name}</span>
-                    </MemberInfo>
-                    <Comments>{data.comments}</Comments>
-                </ActiveMember>
-            ))}
+            {arr
+                ?.sort((a, b) => b.value - a.value)
+                .map((item) => (
+                    <ActiveMember key={item.name}>
+                        <MemberInfo>
+                            <Avatar />
+                            <span>{item.name}</span>
+                        </MemberInfo>
+                        <Comments>{item.point}</Comments>
+                    </ActiveMember>
+                ))}
         </StyledContainer>
     );
 };
