@@ -68,6 +68,7 @@ export const Author = styled.div`
     font-size: 10px;
     cursor: pointer;
     color: ${COLOR.primary03};
+    gap: 5px;
     p {
         margin: 0 8px;
     }
@@ -79,9 +80,13 @@ export const Author = styled.div`
     }
     img {
         width: 21px;
+
         height: auto;
         object-fit: cover;
         border-radius: 50%;
+        &[alt] {
+            font-size: 0.5rem;
+        }
     }
 `;
 

@@ -34,28 +34,23 @@ const DiscussionView = () => {
     const topMember = [
         {
             name: 'Tran Nhat Hoang',
-            point: '15 point',
-            value: 15,
+            comments: '1k comments',
         },
         {
             name: 'Quach Heng To Ni',
-            point: '2 point',
-            value: 2,
+            comments: '305 comments',
         },
         {
             name: 'Mai Thanh Phuong',
-            point: '1 point',
-            value: 1,
+            comments: '300 comments',
         },
         {
             name: 'Pham Trong Thanh',
-            point: '25 point',
-            value: 25,
+            comments: '290 comments',
         },
         {
             name: 'Nguyen Thanh Kien',
-            point: '5 point',
-            value: 5,
+            comments: '102 comments',
         },
     ];
     const [question, setQuestion] = useState();
