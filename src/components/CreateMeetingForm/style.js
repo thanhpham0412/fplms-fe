@@ -7,7 +7,7 @@ export const Container = styled.div`
     height: auto;
     background: green;
     z-index: 10;
-    border-radius: 2px;
+    border-radius: 4px;
     background: ${COLOR.primary02};
     box-shadow: ${COLOR.blue[3]} 0px 4px 12px;
     display: block;

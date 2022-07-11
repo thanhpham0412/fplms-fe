@@ -59,6 +59,7 @@ export const CommentInput = styled(TextareaAutosize)`
 `;
 
 export const Dropdown = styled.div`
+    height: fit-content;
     position: relative;
     .sub-option {
         padding: 0;

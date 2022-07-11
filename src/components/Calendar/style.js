@@ -17,6 +17,8 @@ export const Container = styled.div`
     font-size: 13px;
     user-select: none;
     margin: 0 auto;
+    position: relative;
+    z-index: 9999;
     * {
         box-sizing: border-box;
     }

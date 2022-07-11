@@ -17,6 +17,7 @@ const StudentInfoModal = ({ isOpen, studentInfo, setOpen }) => {
                         </Label>
                         <Infomation>{studentInfo?.name}</Infomation>
                         <Infomation>{studentInfo?.email}</Infomation>
+                        <Infomation>Points: 0</Infomation>
                     </Right>
                 </Content>
             </Wrapper>

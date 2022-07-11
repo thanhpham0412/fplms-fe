@@ -1,14 +1,17 @@
 import { useState, useRef } from 'react';
 
 import { useClickOutside } from '../../hooks';
+import { COLOR } from '../../utils/style';
+import { Spinner } from '../Spinner';
 import { Container, StyledButton, StyledList, StyledItem } from './style';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-const Selection = ({ options, placeholder, onChange, disable, reset }) => {
+const Selection = ({ options, placeholder, onChange, disable, reset, maxHeight, isLoad }) => {
     const [picked, setPicked] = useState(placeholder || 'Pick an option');
-
     const [open, setOpen] = useState(false);
+
+    isLoad = isLoad || false;
 
     const pick = (item) => {
         if (!reset) setPicked(item.content);
@@ -28,15 +31,16 @@ const Selection = ({ options, placeholder, onChange, disable, reset }) => {
                 disable={disable}
                 open={open}
                 ref={ref}
+                isLoad={isLoad}
                 onClick={() => {
-                    if (disable) return;
+                    if (disable || isLoad) return;
                     setOpen(!open);
                 }}
             >
                 <span>{picked}</span>
-                <KeyboardArrowDownIcon />
+                {isLoad ? <Spinner radius={19} color={COLOR.blue[0]} /> : <KeyboardArrowDownIcon />}
             </StyledButton>
-            <StyledList open={open}>
+            <StyledList open={open} maxHeight={maxHeight}>
                 {options.map((item, index) => (
                     <StyledItem
                         onClick={() => {

@@ -77,9 +77,9 @@ const MyQuestions = () => {
     const user = getTokenInfo();
     let URL = process.env.REACT_APP_DISCUSSION_URL;
     if (user.role == 'Student') {
-        URL = URL + '/discussion/students/questions';
+        URL = URL + '/students/questions';
     } else {
-        URL = URL + '/discussion/lecturers/questions';
+        URL = URL + '/lecturers/questions';
     }
 
     const header = {

@@ -149,7 +149,7 @@ export const Right = styled.div`
 export const Label = styled.div`
     font-size: ${({ fS }) => fS || '1rem'};
     font-weight: ${({ bold }) => (bold ? 'bold' : 'normal')};
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     svg {
         font-size: 30px;
     }

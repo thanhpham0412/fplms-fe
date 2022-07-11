@@ -19,15 +19,16 @@ import {
     StyledButton,
     StyledInput,
     InputContainer,
+    MiniDetails,
+    Email,
+    JoinButton,
+    Front,
+    Back,
 } from './style';
 
-import AcUnitIcon from '@mui/icons-material/AcUnit';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
-import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
-import BookIcon from '@mui/icons-material/Book';
-import CollectionsBookmarkIcon from '@mui/icons-material/CollectionsBookmark';
+import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 
-const ClassSection = ({ className, fullClassName, lecture, join, id, subjectId, subjectsCode }) => {
+const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode }) => {
     const [open, setOpen] = useState(false);
     const [isCreate, setCreate] = useState(false);
     const buttonRef = useRef();
@@ -42,9 +43,12 @@ const ClassSection = ({ className, fullClassName, lecture, join, id, subjectId, 
 
     const openEnroll = () => {
         if (!join) {
-            inputRef.current.select();
             setOpen(true);
         }
+    };
+
+    const focus = () => {
+        inputRef.current.select();
     };
 
     const user = getTokenInfo();
@@ -56,7 +60,7 @@ const ClassSection = ({ className, fullClassName, lecture, join, id, subjectId, 
         };
         if (!join && open) {
             if (inputRef.current.value.trim().length) {
-                const API = process.env.REACT_APP_API_URL + `/management/classes/${id}/enroll`;
+                const API = process.env.REACT_APP_API_URL + `/classes/${id}/enroll`;
                 const enrollKey = inputRef.current.value;
                 axios
                     .post(API, enrollKey, {
@@ -98,7 +102,7 @@ const ClassSection = ({ className, fullClassName, lecture, join, id, subjectId, 
             navigate(`/class/${id}`);
         }
         if (join) {
-            const API = process.env.REACT_APP_API_URL + `/management/classes/${id}/groups/details`;
+            const API = process.env.REACT_APP_API_URL + `/classes/${id}/groups/details`;
             axios.get(API, { headers: header }).then((res) => {
                 const data = res.data.data;
                 if (data) {
@@ -112,32 +116,31 @@ const ClassSection = ({ className, fullClassName, lecture, join, id, subjectId, 
 
     return (
         <Container isEnroll={join}>
-            <Title>{className}</Title>
             <Row>
-                <AcUnitIcon />
-                <DetailText>{fullClassName}</DetailText>
+                <DetailText>{subjectId}</DetailText>
             </Row>
-            <Row>
-                <AccountBoxIcon />
-                <DetailText>{lecture}</DetailText>
-            </Row>
-            <Row>
-                <CollectionsBookmarkIcon />
-                <DetailText>
-                    {subjectsCode.filter((s) => s.value == subjectId)[0]?.content}
-                </DetailText>
-            </Row>
-            <Row onClick={openEnroll} ref={buttonRef} gap="0px">
-                <InputContainer open={open}>
-                    <StyledInput ref={inputRef} type="password" placeholder="Enroll Key" />
-                </InputContainer>
-                <StyledButton open={open} isEnroll={join} onClick={joinClass}>
-                    {user.role == 'Student' ? (
-                        <span>{join ? 'Joined' : 'Enroll'}</span>
-                    ) : (
-                        <span>View</span>
-                    )}
-                    <ArrowCircleRightIcon onClick={enroll} />
+            <MiniDetails>
+                <Row>
+                    <Title>{name}</Title>
+                </Row>
+                <Row>
+                    <Email>{lecture}</Email>
+                </Row>
+                <Row>
+                    <Email>{semesterCode}</Email>
+                </Row>
+            </MiniDetails>
+            <Row onClick={openEnroll} ref={buttonRef}>
+                <StyledButton open={open} onClick={joinClass}>
+                    <Front onClick={focus} isEnroll={join}>
+                        {user.role == 'Student' ? (join ? 'OPEN' : 'ENROLL') : 'VIEW'}
+                    </Front>
+                    <Back>
+                        <StyledInput ref={inputRef} type="password" placeholder="Enroll Key" />
+                        <JoinButton onClick={enroll}>
+                            <DoubleArrowIcon />
+                        </JoinButton>
+                    </Back>
                 </StyledButton>
             </Row>
         </Container>

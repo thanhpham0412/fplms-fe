@@ -4,37 +4,47 @@ import { COLOR } from '../../utils/style';
 
 export const Container = styled.div`
     width: 100%;
-    height: auto;
+    height: fit-content;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    background: green;
+    gap: 1.5rem;
     box-sizing: border-box;
-    background: ${({ isEnroll }) => (isEnroll ? COLOR.green[5] : COLOR.blue[5])};
+    /* background: ${({ isEnroll }) => (isEnroll ? COLOR.green[5] : COLOR.blue[0])}; */
     position: relative;
-    border-radius: 4px;
+    border-radius: 2px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    border: 2px solid ${COLOR.blue[0]};
 
     * {
         box-sizing: border-box;
         font-size: 1rem;
         color: ${COLOR.primary03};
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     }
 `;
 
 export const Title = styled.div`
     font-weight: bold;
+    font-size: 1.5rem;
 `;
 
 export const Row = styled.div`
     display: flex;
     gap: ${({ gap }) => gap || '8px'};
     align-items: center;
+    height: auto;
+    perspective: 550px;
 `;
 
 export const DetailText = styled.div`
     color: ${COLOR.primary03};
+    background: ${COLOR.blue[0]};
+    color: #fff;
+    padding: 0.5rem;
+    border-radius: 2px;
+    font-size: 0.75rem;
+    font-weight: 900;
 `;
 
 export const InputContainer = styled.div`
@@ -49,48 +59,13 @@ export const StyledInput = styled.input`
     padding: 0 0.5rem;
     outline: none;
     width: 100%;
-    border-radius: 4px 0 0 4px;
+    border-radius: 2px;
     height: 100%;
     box-sizing: border-box;
     background: transparent;
     color: ${COLOR.blue[0]};
     ::placeholder {
         font-family: Lato;
-    }
-`;
-
-export const StyledButton = styled.div`
-    padding: ${({ open }) => (open ? '0.5rem' : '0.5rem 1rem')};
-    border-radius: ${({ open }) => (open ? '0 4px 4px 0px' : '4px')};
-    border: none;
-    background: ${({ isEnroll }) => (isEnroll ? COLOR.green[0] : COLOR.blue[0])};
-    color: ${COLOR.primary02};
-    max-width: 100px;
-    width: ${({ open }) => (open ? '31px' : '70px')};
-    height: auto;
-    user-select: none;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.3s;
-    span {
-        color: white;
-        display: block;
-        width: ${({ open }) => (!open ? '100%' : '0px')};
-        overflow: hidden;
-        transition: all 0.3s;
-        text-align: center;
-    }
-    svg {
-        width: ${({ open }) => (open ? '17px' : '0px')};
-        height: 17px;
-        fill: ${COLOR.primary02};
-        overflow: hidden;
-        transition: all 0.3s;
-    }
-    :active {
-        background: ${COLOR.blue[1]};
     }
 `;
 
@@ -105,16 +80,16 @@ const placeHolderShimmer = keyframes`
 
 export const SkeletonContainer = styled.div`
     background: #f6f7f8;
-    min-height: 195px;
+    min-height: 223.38px;
     position: relative;
     overflow: hidden;
-    border-radius: 4px;
+    border-radius: 2px;
     box-sizing: border-box;
     padding: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    gap: 0.5rem;
+    gap: 1rem;
 `;
 
 export const HolderItem = styled.div`
@@ -128,4 +103,71 @@ export const HolderItem = styled.div`
     background: #f6f7f8;
     background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
     background-size: 1000px 104px;
+`;
+
+export const MiniDetails = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+`;
+
+export const Email = styled.div`
+    color: ${COLOR.gray[0]};
+`;
+
+const BtnSize = 3;
+
+export const StyledButton = styled.div`
+    width: 100%;
+    height: ${BtnSize}rem;
+    transform-style: preserve-3d;
+    position: relative;
+    transition: all 0.3s;
+    transform: translateZ(0) ${({ open }) => (open ? 'rotateX(-90deg)' : 'rotateX(0deg)')};
+    transform-origin: center center -${BtnSize / 2}rem;
+    > * {
+        border-radius: 2px;
+    }
+`;
+
+export const Front = styled.button`
+    transform: rotateY(0deg);
+    background: ${({ isEnroll }) => (isEnroll ? COLOR.green[0] : COLOR.blue[0])};
+    color: ${COLOR.primary02};
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    position: absolute;
+    transition: all 0.3s;
+    text-align: center;
+    cursor: pointer;
+`;
+
+export const Back = styled.div`
+    position: absolute;
+    transform: rotateX(90deg) translateZ(${BtnSize / 2}rem) translateY(-${BtnSize / 2}rem);
+    width: 100%;
+    height: 100%;
+`;
+
+export const JoinButton = styled.div`
+    width: ${BtnSize}rem;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: 0;
+    background: ${COLOR.blue[0]};
+    border-radius: 0 2px 2px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.5s;
+    svg {
+        fill: #fff;
+    }
+    :hover {
+        filter: brightness(95%);
+    }
 `;

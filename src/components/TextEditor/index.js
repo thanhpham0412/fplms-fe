@@ -25,14 +25,14 @@ const TextEditor = () => {
     const navigate = useNavigate();
     const editor = useRef(null);
     const questionId = new URLSearchParams(location.search).get('id');
-    const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions`;
+    const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions`;
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
 
     useEffect(() => {
         const getSubjects = () => {
-            const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/subjects`;
+            const URL = process.env.REACT_APP_DISCUSSION_URL + `/subjects`;
             axios
                 .get(URL, { headers: header })
                 .then((res) => {
@@ -49,8 +49,7 @@ const TextEditor = () => {
         };
         getSubjects();
         if (questionId != null) {
-            const URL =
-                process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${questionId}`;
+            const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions/${questionId}`;
             const header = {
                 Authorization: `${localStorage.getItem('token')}`,
             };
@@ -121,7 +120,7 @@ const TextEditor = () => {
                 URL + `/${questionId}`,
                 {
                     title: title,
-                    subjectName: subjectName.value,
+                    subjectName: subjectName.content,
                     content: content,
                 },
                 { headers: header }
@@ -145,13 +144,19 @@ const TextEditor = () => {
                 <Wrapper>
                     <Title>Title</Title>
                     <SubTitle>Main idea of the question which it describes for</SubTitle>
-                    <TitleBlock
-                        placeholder={
-                            questionId == null ? 'A title will briefly describe the issue' : title
-                        }
-                        onChange={(e) => setTitle(e.target.value)}
-                        required
-                    />
+                    {questionId != null ? (
+                        <TitleBlock
+                            value={title || ''}
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                        />
+                    ) : (
+                        <TitleBlock
+                            placeholder={'A title will briefly describe the issue'}
+                            onChange={(e) => setTitle(e.target.value)}
+                            required
+                        />
+                    )}
                     <Title>Subject</Title>
                     <div style={{ width: 'fit-content' }}>
                         <Selection

@@ -9,7 +9,17 @@ import { Container, ModalBox } from './style';
 
 const bezier = [0.4, 0, 0.2, 1];
 
-const Overlay = ({ children, isOpen, closeFn, dark, duration, blur, inDelay, outDelay }) => {
+const Overlay = ({
+    children,
+    isOpen,
+    closeFn,
+    dark,
+    duration,
+    blur,
+    inDelay,
+    outDelay,
+    fullFill,
+}) => {
     const node = useRef();
 
     dark = dark || 0.5;
@@ -62,11 +72,15 @@ const Overlay = ({ children, isOpen, closeFn, dark, duration, blur, inDelay, out
                             opacity: 1,
                             transform: 'translateY(0px)',
                             transition: { duration: duration, ease: bezier, delay: inDelay },
+                            width: fullFill ? '100%' : 'fit-content',
+                            height: fullFill ? '100%' : 'fit-content',
                         }}
                         exit={{
                             opacity: 0,
                             transform: 'translateY(40px)',
                             transition: { duration: duration, ease: bezier, delay: outDelay },
+                            width: fullFill ? '100%' : 'fit-content',
+                            height: fullFill ? '100%' : 'fit-content',
                         }}
                     >
                         {children}

@@ -1,5 +1,7 @@
+/* eslint-disable no-unused-vars */
 import { useState } from 'react';
 
+import Overlay from '../../components/Overlay';
 import { chunkArray } from '../../utils/array';
 import { COLOR } from '../../utils/color';
 import { getFullBoardDays, getMonthString } from '../../utils/dateTime';
@@ -36,65 +38,69 @@ const Calendar = ({ onChange }) => {
     };
 
     return (
-        <Container>
-            <StyledHeader>
-                <Flip
-                    onClick={() => {
-                        changeMonth(-1);
-                    }}
-                >
-                    <ArrowBackIosNewIcon fontSize="small" />
-                </Flip>
-                <StyledMonth>{getMonthString(today.getMonth())}</StyledMonth>
-                <Flip
-                    x="true"
-                    onClick={() => {
-                        changeMonth(1);
-                    }}
-                >
-                    <ArrowBackIosNewIcon fontSize="small" />
-                </Flip>
-            </StyledHeader>
-            <StyledDateTime>
-                <Row>
-                    {daysOfWeek.map((day, index) => (
-                        <StyledDay background="#fff" key={index}>
-                            {day}
-                        </StyledDay>
-                    ))}
-                </Row>
-                <RowContainer>
-                    {chunkArray(getFullBoardDays(today), 7).map((chunk, index) => (
-                        <Row key={index}>
-                            {chunk.map((day) => (
-                                <StyledDay
-                                    onClick={() => onChange(day)}
-                                    background={
-                                        today.getMonth() == day.getMonth()
-                                            ? COLOR.primary02
-                                            : COLOR.blue[5]
-                                    }
-                                    color={
-                                        today.getMonth() == day.getMonth()
-                                            ? COLOR.primary03
-                                            : COLOR.gray[2]
-                                    }
-                                    cursor={
-                                        today.getMonth() == day.getMonth()
-                                            ? 'pointer'
-                                            : 'not-allowed'
-                                    }
-                                    key={day.getTime()}
-                                    today={checkToday(day)}
-                                >
-                                    {day.getDate()}
-                                </StyledDay>
-                            ))}
-                        </Row>
-                    ))}
-                </RowContainer>
-            </StyledDateTime>
-        </Container>
+        <>
+            <Container>
+                <StyledHeader>
+                    <Flip
+                        onClick={() => {
+                            changeMonth(-1);
+                        }}
+                    >
+                        <ArrowBackIosNewIcon fontSize="small" />
+                    </Flip>
+                    <StyledMonth>{getMonthString(today.getMonth())}</StyledMonth>
+                    <Flip
+                        x="true"
+                        onClick={() => {
+                            changeMonth(1);
+                        }}
+                    >
+                        <ArrowBackIosNewIcon fontSize="small" />
+                    </Flip>
+                </StyledHeader>
+                <StyledDateTime>
+                    <Row>
+                        {daysOfWeek.map((day, index) => (
+                            <StyledDay background="#fff" key={index}>
+                                {day}
+                            </StyledDay>
+                        ))}
+                    </Row>
+                    <RowContainer>
+                        {chunkArray(getFullBoardDays(today), 7).map((chunk, index) => (
+                            <Row key={index}>
+                                {chunk.map((day) => (
+                                    <StyledDay
+                                        onClick={() => {
+                                            onChange(day);
+                                        }}
+                                        background={
+                                            today.getMonth() == day.getMonth()
+                                                ? COLOR.primary02
+                                                : COLOR.blue[5]
+                                        }
+                                        color={
+                                            today.getMonth() == day.getMonth()
+                                                ? COLOR.primary03
+                                                : COLOR.gray[2]
+                                        }
+                                        cursor={
+                                            today.getMonth() == day.getMonth()
+                                                ? 'pointer'
+                                                : 'not-allowed'
+                                        }
+                                        key={day.getTime()}
+                                        today={checkToday(day)}
+                                    >
+                                        {day.getDate()}
+                                    </StyledDay>
+                                ))}
+                            </Row>
+                        ))}
+                    </RowContainer>
+                </StyledDateTime>
+            </Container>
+        </>
     );
 };
 

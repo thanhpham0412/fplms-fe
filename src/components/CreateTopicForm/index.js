@@ -26,21 +26,23 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close';
 
-const CreateTopicForm = ({ showing, item, setOpen, save, disable, subject }) => {
+const CreateTopicForm = ({ showing, item, setOpen, save, disable, subject, subjects }) => {
     const [form, setForm] = useState({
         actor: '',
         context: '',
         name: '',
         problem: '',
-        requirement: '',
-        subjectId: '',
+        requirements: '',
+        subjectId: 0,
         theme: '',
+        ...item,
     });
 
     useEffect(() => {
         setForm({
             ...form,
-            name: item?.title || '',
+            name: item?.name || '',
+            requirements: item?.requirements || '',
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [item?.id]);
@@ -59,12 +61,19 @@ const CreateTopicForm = ({ showing, item, setOpen, save, disable, subject }) => 
         });
     };
 
+    const onSelectSubject = (e) => {
+        setForm({
+            ...form,
+            subjectId: e.value,
+        });
+    };
+
     return (
         <Overlay isOpen={showing}>
             <Container>
                 <StyledHeader>
                     <StyledJumbotron>
-                        <Title>TOPIC UPDATE #{subject}</Title>
+                        <Title>TOPIC UPDATE</Title>
                         <SubTitle>{form.name || 'Untitled'}</SubTitle>
                     </StyledJumbotron>
                     <CloseIcon onClick={close} />
@@ -87,7 +96,20 @@ const CreateTopicForm = ({ showing, item, setOpen, save, disable, subject }) => 
                                 <small>Context</small>
                                 <Error></Error>
                             </DataHeader>
-                            <StyledInput placeholder="Context" />
+                            <StyledInput
+                                placeholder="Context"
+                                onChange={(e) => changeHandler('context', e)}
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <small>Subject</small>
+                            <Selection
+                                options={subjects.slice(1)}
+                                onChange={onSelectSubject}
+                                placeholder="Pick a subject"
+                            ></Selection>
                         </Col>
                     </Row>
                     <Row>
@@ -101,9 +123,9 @@ const CreateTopicForm = ({ showing, item, setOpen, save, disable, subject }) => 
                                 minRows={7}
                                 aria-label="maximum height"
                                 placeholder="Project Requirement"
-                                defaultValue={item?.content}
+                                defaultValue={item?.requirements}
                                 style={{ width: '100%' }}
-                                onChange={(e) => changeHandler('requirement', e)}
+                                onChange={(e) => changeHandler('requirements', e)}
                             />
                         </Col>
                     </Row>
@@ -111,7 +133,7 @@ const CreateTopicForm = ({ showing, item, setOpen, save, disable, subject }) => 
                         <Col>
                             <StyledButton onClick={submit} disable={disable}>
                                 {disable ? (
-                                    <Spinner radius="32px" color={COLOR.primary02} />
+                                    <Spinner radius={32} color={COLOR.primary02} />
                                 ) : (
                                     'SAVE TOPIC'
                                 )}

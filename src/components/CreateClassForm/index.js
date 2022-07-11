@@ -25,7 +25,7 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close';
 
-const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
+const CreateClassForm = ({ showing, setCreate, setClass }) => {
     const [form, setForm] = useState({
         cycleDuration: 7,
         name: '',
@@ -33,6 +33,9 @@ const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
         subjectId: 1,
         semesterCode: 0,
     });
+
+    const [isLoad, setLoad] = useState(true);
+    const [subjects, setSubjects] = useState([]);
 
     const [validError, setError] = useState({
         name: '',
@@ -79,7 +82,7 @@ const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
             Authorization: `${localStorage.getItem('token')}`,
         };
 
-        const API = process.env.REACT_APP_API_URL + '/management/classes';
+        const API = process.env.REACT_APP_API_URL + '/classes';
 
         axios
             .post(API, form, {
@@ -90,8 +93,12 @@ const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
                 if (data.code == 200) {
                     setClass((classes) =>
                         classes.concat({
+                            id: data.data,
                             name: form.name,
                             semester: form.semester,
+                            enrollKey: form.enrollKey,
+                            subjectId: form.subjectId,
+                            semesterCode: form.semesterCode,
                         })
                     );
                     success(`Class ${form.name} created successfully`);
@@ -117,12 +124,24 @@ const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
     const [semester, setSemester] = useState([]);
 
     useEffect(() => {
-        get('/management/semesters').then((res) => {
-            const data = res.data.data.map((semester) => ({
-                value: semester.code,
-                content: semester.code,
-            }));
-            setSemester(data);
+        const sems = get('/semesters');
+        const subs = get('/subjects');
+        Promise.all([sems, subs]).then(([sems, subs]) => {
+            if (Array.isArray(sems.data.data))
+                setSemester(
+                    sems.data.data.map((semester) => ({
+                        value: semester.code,
+                        content: semester.code,
+                    }))
+                );
+            if (Array.isArray(subs.data.data))
+                setSubjects(
+                    subs.data.data.map((subject) => ({
+                        value: subject.id,
+                        content: subject.name,
+                    }))
+                );
+            if (sems.data.code == 200 && subs.data.code == 200) setLoad(false);
         });
     }, []);
 
@@ -158,6 +177,7 @@ const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
                                 <Error>{validError.enrollKey}</Error>
                             </DataHeader>
                             <StyledInput
+                                placeholder="123456"
                                 type="password"
                                 onChange={(e) => {
                                     handleChange(e, 'enrollKey');
@@ -172,6 +192,8 @@ const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
                                 options={subjects}
                                 placeholder="Subject Code"
                                 onChange={(e) => handleSelection('subjectId', e)}
+                                maxHeight="200px"
+                                isLoad={isLoad}
                             />
                         </Col>
                         <Col>
@@ -179,15 +201,16 @@ const CreateClassForm = ({ showing, setCreate, setClass, subjects }) => {
                             <Selection
                                 options={semester}
                                 placeholder="Semester"
+                                isLoad={isLoad}
                                 onChange={(e) => handleSelection('semesterCode', e)}
                             />
                         </Col>
                     </Row>
                     <Row>
                         <Col>
-                            <StyledButton onClick={submit} disable={disable}>
-                                {disable ? (
-                                    <Spinner radius="32px" color={COLOR.primary02} />
+                            <StyledButton onClick={submit}>
+                                {disable || isLoad ? (
+                                    <Spinner radius={24} color={COLOR.primary02} />
                                 ) : (
                                     'CREATE CLASS'
                                 )}

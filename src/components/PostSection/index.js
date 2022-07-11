@@ -36,8 +36,7 @@ const PostSection = ({ post, setOpen, setPosts, setStudentInfo, setRefresh }) =>
     const pathname = useLocation().pathname;
     const userInfo = JSON.parse(localStorage.getItem('user'));
     const user = getTokenInfo();
-
-    const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/questions/${post.id}`;
+    const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions/${post.id}`;
     const header = {
         Authorization: `${localStorage.getItem('token')}`,
     };
@@ -82,7 +81,7 @@ const PostSection = ({ post, setOpen, setPosts, setStudentInfo, setRefresh }) =>
     };
 
     const displayAuthorInfo = (studentId) => {
-        const URL = process.env.REACT_APP_DISCUSSION_URL + `/discussion/students/${studentId}`;
+        const URL = process.env.REACT_APP_DISCUSSION_URL + `/students/${studentId}`;
         axios
             .get(URL, { headers: header })
             .then((res) => {
@@ -131,7 +130,7 @@ const PostSection = ({ post, setOpen, setPosts, setStudentInfo, setRefresh }) =>
                         {(!removed &&
                             userInfo.email == post.student.email &&
                             pathname == '/my-questions') ||
-                        (!removed && user.role == 'Lecturer' && pathname == '/my-questions') ? (
+                        (!removed && user.role == 'Lecturer') ? (
                             <>
                                 <Dropdown>
                                     <button
@@ -142,9 +141,13 @@ const PostSection = ({ post, setOpen, setPosts, setStudentInfo, setRefresh }) =>
                                     </button>
                                     <DropdownMenu className="dropdown-menu">
                                         <DeleteIcon onClick={deleteQuestion} />
-                                        <EditIcon
-                                            onClick={() => navigate(`/add-question?id=${post?.id}`)}
-                                        />
+                                        {user.role != 'Lecturer' && (
+                                            <EditIcon
+                                                onClick={() =>
+                                                    navigate(`/add-question?id=${post?.id}`)
+                                                }
+                                            />
+                                        )}
                                     </DropdownMenu>
                                 </Dropdown>
                             </>
