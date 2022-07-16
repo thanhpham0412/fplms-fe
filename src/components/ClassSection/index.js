@@ -6,11 +6,14 @@ import { useState, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+import { AnimatePresence, motion } from 'framer-motion';
+
 import { useClickOutside } from '../../hooks';
 import { getTokenInfo } from '../../utils/account';
 import { error } from '../../utils/toaster';
 import EditClassForm from '../EditClassForm';
-// import { error } from '../../utils/toaster';
+import Skeleton from '../Skeleton';
+import { isBoolean } from '../../utils/valid';
 import {
     Container,
     Title,
@@ -27,6 +30,21 @@ import {
 } from './style';
 
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
+
+const bezier = [0.4, 0, 0.2, 1];
+
+const Motion = ({ children, delay }) => (
+    <motion.div
+        initial={{ opacity: 0, transform: 'translateX(10px)' }}
+        animate={{
+            opacity: 1,
+            transform: 'translateX(0px)',
+            transition: { duration: 1, delay: delay * 0.2, ease: bezier },
+        }}
+    >
+        {children}
+    </motion.div>
+)
 
 const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode }) => {
     const [open, setOpen] = useState(false);
@@ -115,35 +133,55 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode }) => {
     };
 
     return (
-        <Container isEnroll={join}>
-            <Row>
-                <DetailText>{subjectId}</DetailText>
-            </Row>
-            <MiniDetails>
+        <AnimatePresence>
+            <Container
+                isenroll={join}
+                initial={{ opacity: 0, transform: 'translateY(10px)' }}
+                animate={{
+                    opacity: 1,
+                    transform: 'translateY(0px)',
+                    transition: { duration: 0.5, ease: bezier },
+                }}
+            >
                 <Row>
-                    <Title>{name}</Title>
+                    {
+                        subjectId ? (
+                            <Motion><DetailText>{subjectId}</DetailText></Motion>
+                        ) : <Skeleton style={{ height: 26 }} />
+                    }
                 </Row>
-                <Row>
-                    <Email>{lecture}</Email>
+                <MiniDetails>
+                    <Row>
+                        <Title>
+                            {name ? <Motion delat={0}>{name}</Motion> : <Skeleton />}
+                        </Title>
+                    </Row>
+                    <Row>
+                        <Email>{lecture ? <Motion delay={1}>{lecture}</Motion> : <Skeleton />}</Email>
+                    </Row>
+                    <Row>
+                        <Email>{semesterCode ? <Motion delay={2}>{semesterCode}</Motion> : <Skeleton />}</Email>
+                    </Row>
+                </MiniDetails>
+                <Row onClick={openEnroll} ref={buttonRef}>
+                    {
+                        (isBoolean(join) || user.role == 'Lecturer') && name ? (
+                            <StyledButton open={open} onClick={joinClass}>
+                                <Front onClick={focus} isEnroll={join}>
+                                    {user.role == 'Student' ? (join ? 'OPEN' : 'ENROLL') : 'GO TO CLASS'}
+                                </Front>
+                                <Back>
+                                    <StyledInput ref={inputRef} type="password" placeholder="Enroll Key" />
+                                    <JoinButton onClick={enroll}>
+                                        <DoubleArrowIcon />
+                                    </JoinButton>
+                                </Back>
+                            </StyledButton>
+                        ) : <Skeleton style={{ height: 42, width: '100%' }} />
+                    }
                 </Row>
-                <Row>
-                    <Email>{semesterCode}</Email>
-                </Row>
-            </MiniDetails>
-            <Row onClick={openEnroll} ref={buttonRef}>
-                <StyledButton open={open} onClick={joinClass}>
-                    <Front onClick={focus} isEnroll={join}>
-                        {user.role == 'Student' ? (join ? 'OPEN' : 'ENROLL') : 'VIEW'}
-                    </Front>
-                    <Back>
-                        <StyledInput ref={inputRef} type="password" placeholder="Enroll Key" />
-                        <JoinButton onClick={enroll}>
-                            <DoubleArrowIcon />
-                        </JoinButton>
-                    </Back>
-                </StyledButton>
-            </Row>
-        </Container>
+            </Container>
+        </AnimatePresence>
     );
 };
 

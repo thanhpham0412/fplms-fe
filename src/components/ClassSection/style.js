@@ -1,10 +1,12 @@
+import { motion } from 'framer-motion';
 import styled, { keyframes } from 'styled-components';
 
 import { COLOR } from '../../utils/style';
 
-export const Container = styled.div`
+export const Container = styled(motion.div)`
     width: 100%;
-    height: fit-content;
+    height: 100%;
+    justify-content: space-between;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
@@ -13,12 +15,11 @@ export const Container = styled.div`
     /* background: ${({ isEnroll }) => (isEnroll ? COLOR.green[5] : COLOR.blue[0])}; */
     position: relative;
     border-radius: 2px;
-    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
-    border: 2px solid ${COLOR.blue[0]};
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+    /* border: 2px solid ${COLOR.blue[0]}; */
 
     * {
         box-sizing: border-box;
-        font-size: 1rem;
         color: ${COLOR.primary03};
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -141,6 +142,7 @@ export const Front = styled.button`
     position: absolute;
     transition: all 0.3s;
     text-align: center;
+    font-weight: 600;
     cursor: pointer;
 `;
 

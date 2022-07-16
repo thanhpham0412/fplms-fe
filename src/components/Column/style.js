@@ -5,11 +5,14 @@ import { COLOR } from '../../utils/style';
 export const Container = styled.div`
     padding: 1rem;
     background: ${({ type }) => (type == 0 ? COLOR.green[5] : COLOR.blue[5])};
-    border-radius: 4px;
+    border-radius: 2px;
     box-sizing: border-box;
-    height: fit-content;
     user-select: none;
     width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: auto;
 
     * {
         font-family: Lato;
@@ -66,7 +69,7 @@ export const Item = styled.div`
 
 export const DetailText = styled.button`
     color: ${COLOR.primary03};
-    background: ${COLOR.blue[0]};
+    background: ${({ red }) => (red ? COLOR.red[0] : COLOR.blue[0])};
     color: #fff;
     border: none;
     border-radius: 2px;
@@ -75,16 +78,14 @@ export const DetailText = styled.button`
     width: fit-content;
     white-space: nowrap;
     padding: 0.5rem;
+    letter-spacing: 0.05rem;
 `;
 
 export const DropContainer = styled.div`
     /* min-height: 250px;
     max-height: 500px; */
 
-    height: 100%;
-    min-height: 500px;
-    max-height: 500px;
-    overflow-y: auto;
+    flex: 0 1 auto;
 
     ::-webkit-scrollbar {
         display: none;
@@ -93,6 +94,11 @@ export const DropContainer = styled.div`
     > div:nth-last-of-type(1) {
         padding-bottom: 0;
     }
+`;
+
+export const DropableContainer = styled.div`
+    overflow: auto;
+    flex: 1;
 `;
 
 export const Details = styled.div`
@@ -151,4 +157,67 @@ export const Footer = styled.div`
             fill: #fff;
         }
     }
+`;
+
+export const SendBtn = styled.button`
+    border: none;
+    radius: 2px;
+    background: ${COLOR.green[0]};
+    color: #fff;
+    cursor: pointer;
+    font-family: Lato;
+    font-weight: 900;
+    letter-spacing: 0.05rem;
+    font-size: 1rem;
+    padding: 1rem;
+`;
+
+export const GoalContainer = styled.div`
+    width: 100%;
+    background: #fff;
+    box-sizing: border-box;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+
+    [data-target='container'] {
+        max-height: 47px;
+    }
+`;
+
+export const GoalDes = styled.span`
+    font-weight: 600;
+    font-size: 12px;
+`;
+
+export const ScoreBar = styled.input`
+    width: 100%;
+    height: auto;
+    outline: none;
+    border: none;
+    resize: none;
+    font-weight: bold;
+    border-radius: 2px;
+    font-size: 1rem;
+    padding: 1rem;
+    border: 1px solid ${COLOR.blue[0]};
+    font-family: Lato;
+    box-sizing: border-box;
+`;
+
+export const Input = styled.input`
+    width: 100%;
+    height: auto;
+    outline: none;
+    border: none;
+    resize: none;
+    font-weight: bold;
+    border-radius: 2px;
+    font-size: 1rem;
+    padding: 1rem;
+    border: 1px solid ${COLOR.blue[0]};
+    font-family: Lato;
+    box-sizing: border-box;
 `;

@@ -2,12 +2,19 @@
 import { useState, useRef, useEffect } from 'react';
 
 import axios from 'axios';
+import { Editor, EditorState, convertToRaw, ContentState, convertFromRaw } from 'draft-js';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { v4 as uuidv4 } from 'uuid';
 
+import { fromHTML } from '../../utils/draft';
+import { getRndInteger } from '../../utils/random';
 import { post, get } from '../../utils/request';
 import { success, error } from '../../utils/toaster';
+import AdvanceEditor from '../AdvanceEditor';
 import CreateTopicForm from '../CreateTopicForm';
+import Overlay from '../Overlay';
+import Selection from '../Selection';
+import Skeleton from '../Skeleton';
 import {
     Container,
     Header,
@@ -20,6 +27,11 @@ import {
     Plus,
     Footer,
     DetailText,
+    DropableContainer,
+    SendBtn,
+    GoalContainer,
+    GoalDes,
+    ScoreBar,
 } from './style';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -28,19 +40,24 @@ const header = {
     Authorization: `${localStorage.getItem('token')}`,
 };
 
+const TEMPLATE = '<b>(Project has no requirement)</b>';
+
 const Column = ({ list, droppableId, name, type, setColumns, subjects, setProjects }) => {
     const [isScroll, setScroll] = useState(false);
     const [isBot, setBot] = useState(true);
     const ref = useRef();
     const [isOpen, setOpen] = useState(false);
-    const [item, setItem] = useState();
+    const [title, setTitle] = useState();
+    const [item, setItem] = useState({});
     const [disable, setDisable] = useState(false);
+    const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
     const saveItem = (id) => {
         setColumns((col) => {
             const clone = col[droppableId].items;
             const index = clone.findIndex((item) => item.id === id);
-            clone[index].needUpdate = false;
+            console.log('saved: ' + index);
+            clone[index].needAdd = false;
             return {
                 ...col,
                 [droppableId]: {
@@ -51,70 +68,67 @@ const Column = ({ list, droppableId, name, type, setColumns, subjects, setProjec
         });
     };
 
-    const save = (id, data) => {
-        // get('/management/subjects', {
-        //     classId: 1,
-        // }).then((res) => {
-        //     console.log(res);
-        // });
-        const updates = list.filter((item) => item.id == id);
-        updates.forEach((item) => {
-            setColumns((col) => {
-                const clone = col[droppableId].items;
-                const index = clone.findIndex((item) => item.id === id);
-                clone[index] = {
-                    ...clone[index],
-                    ...data,
-                };
-                clone[index].name = data.name || 'Untitled';
-                clone[index].requirements = data.requirements || '(No requirement)';
+    const save = () => {
+        setColumns((col) => {
+            const clone = col[droppableId].items;
+            const index = clone.findIndex((_item) => _item.id === item.id);
+            clone[index] = {
+                ...clone[index],
+            };
+            clone[index].name = title || 'Untitled';
+            clone[index].requirements =
+                JSON.stringify(convertToRaw(editorState.getCurrentContent())) ||
+                JSON.stringify(convertToRaw(fromHTML(TEMPLATE)));
+            clone[index].subjectId = item.subjectId;
 
-                setDisable(true);
+            setDisable(true);
 
-                const API = process.env.REACT_APP_API_URL + '/projects';
-                axios[item.needAdd ? 'post' : 'put'](
-                    API,
-                    {
-                        actors: 'string',
-                        context: item.context || '',
-                        name: item.name,
-                        problem: item.problems,
-                        requirements: item.requirements,
-                        subjectId: item.subjectId,
-                        semesterCode: 'SP21',
-                        theme: 'string',
-                        ...data,
-                    },
-                    { headers: header }
-                )
-                    .then((res) => {
-                        const data = res.data;
-                        if (data.code == 200) {
-                            setProjects((projects) => projects.concat(clone[index]));
-                            console.log('concat');
-                            success(`Topic \`${item.name}\` ${item.needAdd ? 'added' : 'updated'}`);
-                            item.needAdd = false;
-                            saveItem(item.id);
-                            setOpen(false);
-                        } else {
-                            error(data.message);
-                            setOpen(false);
-                        }
-                        setDisable(false);
-                    })
-                    .catch(() => {
-                        error(`Topic \`${item.name}\` save error`);
-                        setDisable(false);
-                    });
+            const API = process.env.REACT_APP_API_URL + '/projects';
 
-                return {
-                    ...col,
-                    [droppableId]: {
-                        ...col[droppableId],
-                        items: clone,
-                    },
-                };
-            });
+            console.log(item.needAdd);
+
+            axios[item.needAdd ? 'post' : 'put'](
+                API,
+                {
+                    actors: 'string',
+                    context: '',
+                    name: title,
+                    problem: '',
+                    requirements: clone[index].requirements,
+                    subjectId: item.subjectId,
+                    semesterCode: 'SP21',
+                    theme: 'string',
+                },
+                { headers: header }
+            )
+                .then((res) => {
+                    const data = res.data;
+                    if (data.code == 200) {
+                        // setProjects((projects) => projects.concat(clone[index]));
+                        success(`Topic \`${item.name}\` ${item.needAdd ? 'added' : 'updated'}`);
+                        item.needAdd = false;
+                        saveItem(item.id);
+                        setOpen(false);
+                    } else {
+                        error(data.message);
+                        setOpen(false);
+                    }
+                    setDisable(false);
+                })
+                .catch(() => {
+                    error(`Topic \`${item.name}\` save error`);
+                    setDisable(false);
+                });
+
+            console.log(item);
+
+            return {
+                ...col,
+                [droppableId]: {
+                    ...col[droppableId],
+                    items: clone,
+                },
+            };
         });
     };
 
@@ -142,90 +156,156 @@ const Column = ({ list, droppableId, name, type, setColumns, subjects, setProjec
     };
 
     const add = () => {
-        setColumns((col) => ({
-            ...col,
-            [droppableId]: {
-                ...col[droppableId],
-                items: [
-                    ...col[droppableId].items,
-                    {
-                        id: uuidv4(),
-                        requirements: 'Topic description',
-                        name: `Topic title`,
-                        subjectId: 1,
-                        needAdd: true,
-                    },
-                ],
-            },
+        setColumns((col) => {
+            console.log(col);
+            return {
+                ...col,
+                [droppableId]: {
+                    ...col[droppableId],
+                    items: [
+                        ...col[droppableId].items,
+                        {
+                            id: uuidv4(),
+                            requirements: JSON.stringify(convertToRaw(fromHTML(TEMPLATE))),
+                            name: `Topic title`,
+                            subjectId: 1,
+                            needAdd: true,
+                        },
+                    ],
+                },
+            };
+        });
+    };
+
+    const change = (e) => {
+        setItem((item) => ({
+            ...item,
+            subjectId: e.value,
         }));
     };
 
     return (
         <>
-            <CreateTopicForm
-                disable={disable}
-                showing={isOpen}
-                item={item}
-                setOpen={setOpen}
-                save={save}
-                subject={name}
-                subjects={subjects}
-            />
+            <Overlay isOpen={isOpen} fullFill={true}>
+                <AdvanceEditor
+                    avatars={[]}
+                    editorState={editorState}
+                    setEditorState={setEditorState}
+                    closeFn={() => setOpen(false)}
+                >
+                    <GoalContainer>
+                        <GoalDes>Topic Title</GoalDes>
+                        <ScoreBar
+                            placeholder={"Topic's Title"}
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                        />
+                    </GoalContainer>
+                    <GoalContainer>
+                        <GoalDes>Subject</GoalDes>
+                        <Selection
+                            onChange={change}
+                            options={subjects.slice(1)}
+                            placeholder={
+                                subjects.reduce((pre, cur) => {
+                                    pre[cur.value] = cur.content;
+                                    return pre;
+                                }, [])[item.subjectId] || null
+                            }
+                        ></Selection>
+                    </GoalContainer>
+                    <SendBtn onClick={save}>Save Topic</SendBtn>
+                </AdvanceEditor>
+            </Overlay>
             <Container type={type}>
                 <Header isScroll={isScroll}>
                     {name} - {list.length} topics
                 </Header>
-                <Droppable droppableId={droppableId}>
-                    {(provided, snapshot) => (
-                        <DropContainer
-                            onScroll={scroll}
-                            {...provided.droppableProps}
-                            ref={(div) => {
-                                ref.current = div;
-                                provided.innerRef(div);
-                            }}
-                            isDragging={snapshot.isDragging}
-                        >
-                            {list.map((item, index) => (
-                                <Draggable key={item.id} draggableId={item.id + ''} index={index}>
-                                    {(provided, snapshot) => (
-                                        <ItemContainer
-                                            ref={provided.innerRef}
-                                            {...provided.draggableProps}
-                                            {...provided.dragHandleProps}
-                                        >
-                                            <Item
-                                                isDragging={snapshot.isDragging}
-                                                onDoubleClick={() => {
-                                                    setOpen(() => {
-                                                        setItem(item);
-                                                        return true;
-                                                    });
-                                                }}
+                <DropableContainer>
+                    <Droppable droppableId={droppableId}>
+                        {(provided, snapshot) => (
+                            <DropContainer
+                                onScroll={scroll}
+                                {...provided.droppableProps}
+                                ref={(div) => {
+                                    ref.current = div;
+                                    provided.innerRef(div);
+                                }}
+                                isDragging={snapshot.isDragging}
+                            >
+                                {list.map((item, index) => (
+                                    <Draggable
+                                        key={item.id}
+                                        draggableId={item.id + ''}
+                                        index={index}
+                                    >
+                                        {(provided, snapshot) => (
+                                            <ItemContainer
+                                                ref={provided.innerRef}
+                                                {...provided.draggableProps}
+                                                {...provided.dragHandleProps}
                                             >
-                                                <DetailText>
-                                                    {
-                                                        subjects.reduce((pre, cur) => {
-                                                            pre[cur.value] = cur.content;
-                                                            return pre;
-                                                        }, [])[item.subjectId]
-                                                    }
-                                                </DetailText>
-                                                <Title>{item.name}</Title>
-                                                {/* <Details>{item.content}</Details> */}
-                                                {/* {item.needUpdate ? <Status>Unsaved</Status> : null} */}
-                                            </Item>
-                                        </ItemContainer>
-                                    )}
-                                </Draggable>
-                            ))}
-                            {provided.placeholder}
-                            {/* <Plus type={type} isBot={isBot} bottom={0} onClick={add}>
+                                                <Item
+                                                    isDragging={snapshot.isDragging}
+                                                    onDoubleClick={() => {
+                                                        setOpen(() => {
+                                                            setItem((_item) => ({
+                                                                ..._item,
+                                                                ...item,
+                                                            }));
+                                                            setTitle(item.name || '');
+                                                            setEditorState(
+                                                                EditorState.createWithContent(
+                                                                    convertFromRaw(
+                                                                        JSON.parse(
+                                                                            item.requirements
+                                                                        )
+                                                                    )
+                                                                )
+                                                            );
+                                                            return true;
+                                                        });
+                                                    }}
+                                                >
+                                                    {item.subjectId ? (
+                                                        <DetailText>
+                                                            {
+                                                                subjects.reduce((pre, cur) => {
+                                                                    pre[cur.value] = cur.content;
+                                                                    return pre;
+                                                                }, [])[item.subjectId]
+                                                            }
+                                                        </DetailText>
+                                                    ) : (
+                                                        <Skeleton style={{ padding: '0.5rem' }} />
+                                                    )}
+                                                    {item.needAdd ? (
+                                                        <DetailText red>UNSAVED</DetailText>
+                                                    ) : null}
+                                                    <Title>
+                                                        {item.name || (
+                                                            <Skeleton
+                                                                style={{
+                                                                    width: `40ch`,
+                                                                }}
+                                                            />
+                                                        )}
+                                                    </Title>
+                                                    {/* <Details>{item.content}</Details> */}
+                                                    {/* {item.needUpdate ? <Status>Unsaved</Status> : null} */}
+                                                </Item>
+                                            </ItemContainer>
+                                        )}
+                                    </Draggable>
+                                ))}
+                                {provided.placeholder}
+                                {/* <Plus type={type} isBot={isBot} bottom={0} onClick={add}>
                                 <AddIcon />
                             </Plus> */}
-                        </DropContainer>
-                    )}
-                </Droppable>
+                            </DropContainer>
+                        )}
+                    </Droppable>
+                </DropableContainer>
                 <Footer onClick={add}>
                     <AddIcon /> Add topic
                 </Footer>

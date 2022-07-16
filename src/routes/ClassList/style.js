@@ -15,15 +15,33 @@ export const Hero = styled.div`
     border-radius: 8px;
 `;
 
+export const SearchBar = styled.div`
+    height: 100%;
+    width: 100%;
+    display: flex;
+
+    [data-target='styled-button'] {
+        border-right: none;
+        border-radius: 2px 0 0 2px;
+    }
+`;
+
 export const StyledInput = styled.input`
+    border-left: none;
+    border-radius: 0 2px 2px 0;
     font-size: 1rem;
     width: 100%;
-    color: ${COLOR.primary03};
-    border: none;
+    font-family: Lato;
+    border: 1px solid #5680f9;
+    padding: 1rem;
+    height: 100%;
     outline: none;
     box-sizing: border-box;
-    font-family: Lato;
-    font-size: 16px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    :focus {
+        background-color: ${COLOR.blue[5]};
+    }
 `;
 
 export const StyledList = styled.div`
@@ -46,7 +64,30 @@ export const StyledList = styled.div`
 export const ToolBar = styled.div`
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1.25rem;
+    margin-bottom: 2rem;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
+    height: 49px;
+`;
+
+export const SelectionContainer = styled.div`
+    height: 100%;
+    width: fit-content;
+    padding: 1rem;
+    box-sizing: border-box;
+    background: red;
+    justify-content: center;
+    align-items: center;
+
+    [data-target='styled-button'] {
+        padding: 0px;
+        svg {
+            fill: #000;
+        }
+    }
+
+    [data-target='list'] {
+        right: 0;
+        min-width: 200px;
+    }
 `;

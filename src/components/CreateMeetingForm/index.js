@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 
 import axios from 'axios';
+import moment from 'moment';
 
 import { get } from '../../utils/request';
 import { COLOR } from '../../utils/style';
@@ -26,10 +27,19 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close';
 
-const CreateMeetingForm = ({ showing, closeFn, form, setForm, groupId }) => {
+const CreateMeetingForm = ({ showing, closeFn, groupId }) => {
     const [isLoad, setLoad] = useState(false);
 
     const [disable, setDisable] = useState(false);
+
+    const [form, setForm] = useState({
+        date: moment().format('YYYY-MM-DD'),
+        time: moment().format('HH:mm'),
+        groupId: groupId,
+        link: '',
+        scheduleTime: `${moment().format('YYYY-MM-DD')} ${moment().format('HH:mm')}:00.000`,
+        title: '',
+    });
 
     const submit = () => {
         if (disable) return;
@@ -45,7 +55,7 @@ const CreateMeetingForm = ({ showing, closeFn, form, setForm, groupId }) => {
             .post(
                 API,
                 {
-                    groupId: groupId,
+                    groupId: parseInt(groupId),
                     link: form.link,
                     scheduleTime: `${form.date} ${form.time}:00.000`,
                     title: form.title,
@@ -65,6 +75,7 @@ const CreateMeetingForm = ({ showing, closeFn, form, setForm, groupId }) => {
             })
             .catch(() => {
                 error(`An error occured!`);
+                setDisable(false);
                 closeFn();
             });
     };
@@ -73,6 +84,20 @@ const CreateMeetingForm = ({ showing, closeFn, form, setForm, groupId }) => {
         setForm({
             ...form,
             [field]: parser(e.target.value),
+        });
+    };
+
+    const handleDateChange = (e) => {
+        setForm({
+            ...form,
+            date: e.target.value,
+        });
+    };
+
+    const handleTimeChange = (e) => {
+        setForm({
+            ...form,
+            time: e.target.value,
         });
     };
 
@@ -118,7 +143,7 @@ const CreateMeetingForm = ({ showing, closeFn, form, setForm, groupId }) => {
                                 type="date"
                                 defaultValue={form.date}
                                 onChange={(e) => {
-                                    handleChange(e, 'date');
+                                    handleDateChange(e);
                                 }}
                             />
                         </Col>
@@ -130,7 +155,7 @@ const CreateMeetingForm = ({ showing, closeFn, form, setForm, groupId }) => {
                                 type="time"
                                 defaultValue={form.time}
                                 onChange={(e) => {
-                                    handleChange(e, 'time');
+                                    handleTimeChange(e);
                                 }}
                             />
                         </Col>

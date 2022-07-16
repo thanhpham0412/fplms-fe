@@ -5,7 +5,6 @@ import axios from 'axios';
 import { get } from '../../utils/request';
 import { COLOR } from '../../utils/style';
 import { error, success } from '../../utils/toaster';
-import Overlay from '../Overlay';
 import Selection from '../Selection';
 import { Spinner } from '../Spinner';
 import {
@@ -25,13 +24,14 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close';
 
-const CreateClassForm = ({ showing, setCreate, setClass }) => {
+const CreateClassForm = ({ setCreate, setClass }) => {
     const [form, setForm] = useState({
         cycleDuration: 7,
         name: '',
         enrollKey: '',
         subjectId: 1,
         semesterCode: 0,
+        join: true,
     });
 
     const [isLoad, setLoad] = useState(true);
@@ -99,6 +99,7 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
                             enrollKey: form.enrollKey,
                             subjectId: form.subjectId,
                             semesterCode: form.semesterCode,
+                            join: false,
                         })
                     );
                     success(`Class ${form.name} created successfully`);
@@ -146,80 +147,78 @@ const CreateClassForm = ({ showing, setCreate, setClass }) => {
     }, []);
 
     return (
-        <Overlay isOpen={showing} closeFn={setCreate}>
-            <Container>
-                <StyledHeader>
-                    <StyledJumbotron>
-                        <Title>CREATE NEW CLASS</Title>
-                        <SubTitle>{form.name || 'Course name'}</SubTitle>
-                    </StyledJumbotron>
-                    <CloseIcon onClick={close} />
-                </StyledHeader>
-                <StyledBody>
-                    <Row>
-                        <Col>
-                            <DataHeader>
-                                <small>Classname</small>
-                                <Error>{validError.name}</Error>
-                            </DataHeader>
-                            <StyledInput
-                                placeholder="Software Development"
-                                onChange={(e) => {
-                                    handleChange(e, 'name');
-                                }}
-                            />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <DataHeader>
-                                <small>Enroll Key</small>
-                                <Error>{validError.enrollKey}</Error>
-                            </DataHeader>
-                            <StyledInput
-                                placeholder="123456"
-                                type="password"
-                                onChange={(e) => {
-                                    handleChange(e, 'enrollKey');
-                                }}
-                            />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <small>Subject Code</small>
-                            <Selection
-                                options={subjects}
-                                placeholder="Subject Code"
-                                onChange={(e) => handleSelection('subjectId', e)}
-                                maxHeight="200px"
-                                isLoad={isLoad}
-                            />
-                        </Col>
-                        <Col>
-                            <small>Semester</small>
-                            <Selection
-                                options={semester}
-                                placeholder="Semester"
-                                isLoad={isLoad}
-                                onChange={(e) => handleSelection('semesterCode', e)}
-                            />
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <StyledButton onClick={submit}>
-                                {disable || isLoad ? (
-                                    <Spinner radius={24} color={COLOR.primary02} />
-                                ) : (
-                                    'CREATE CLASS'
-                                )}
-                            </StyledButton>
-                        </Col>
-                    </Row>
-                </StyledBody>
-            </Container>
-        </Overlay>
+        <Container>
+            <StyledHeader>
+                <StyledJumbotron>
+                    <Title>CREATE NEW CLASS</Title>
+                    <SubTitle>{form.name || 'Course name'}</SubTitle>
+                </StyledJumbotron>
+                <CloseIcon onClick={close} />
+            </StyledHeader>
+            <StyledBody>
+                <Row>
+                    <Col>
+                        <DataHeader>
+                            <small>Classname</small>
+                            <Error>{validError.name}</Error>
+                        </DataHeader>
+                        <StyledInput
+                            placeholder="Software Development"
+                            onChange={(e) => {
+                                handleChange(e, 'name');
+                            }}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <DataHeader>
+                            <small>Enroll Key</small>
+                            <Error>{validError.enrollKey}</Error>
+                        </DataHeader>
+                        <StyledInput
+                            placeholder="123456"
+                            type="password"
+                            onChange={(e) => {
+                                handleChange(e, 'enrollKey');
+                            }}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <small>Subject Code</small>
+                        <Selection
+                            options={subjects}
+                            placeholder="Subject Code"
+                            onChange={(e) => handleSelection('subjectId', e)}
+                            maxHeight="200px"
+                            isLoad={isLoad}
+                        />
+                    </Col>
+                    <Col>
+                        <small>Semester</small>
+                        <Selection
+                            options={semester}
+                            placeholder="Semester"
+                            isLoad={isLoad}
+                            onChange={(e) => handleSelection('semesterCode', e)}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <StyledButton onClick={submit}>
+                            {disable || isLoad ? (
+                                <Spinner radius={24} color={COLOR.primary02} />
+                            ) : (
+                                'CREATE CLASS'
+                            )}
+                        </StyledButton>
+                    </Col>
+                </Row>
+            </StyledBody>
+        </Container>
     );
 };
 

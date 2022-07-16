@@ -10,4 +10,6 @@ const longerThan = (n, l) => {
     return n.trim().length > l;
 };
 
-export { isNumber, isEmptyString, longerThan };
+const isBoolean = (v) => typeof v == 'boolean';
+
+export { isNumber, isEmptyString, longerThan, isBoolean };

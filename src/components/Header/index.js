@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 
 import logo from '../../assets/fpt logo 1.jpg';
+import { getTokenInfo } from '../../utils/account';
 import {
     HContainer,
     HLogo,
@@ -26,27 +27,49 @@ const Header = () => {
 
     const [socket, setSocket] = useState(null);
 
-    // useEffect(() => {
-    //     const socket = io('ws://2.tcp.ngrok.io:17900', {
-    //         extraHeaders: {
-    //             Authorization: localStorage.getItem('token'),
-    //         },
-    //     });
+    const [list, setList] = useState([]);
 
-    //     socket.emit('notifications');
+    const user = getTokenInfo();
 
-    //     socket.on('notifications', (e) => console.log(e));
-    //     socket.on('disconnect', (e) => {
-    //         console.log('disconnect');
-    //     });
-    //     socket.on('connect', (e) => {
-    //         console.log('connected');
-    //     });
+    useEffect(() => {
+        const socket = io('ws://6.tcp.ngrok.io:18815', {
+            extraHeaders: {
+                Authorization: localStorage.getItem('token'),
+            },
+        });
 
-    //     setSocket(socket);
+        socket.emit('notifications');
 
-    //     return () => socket.close();
-    // }, [setSocket]);
+        socket.on('notifications', (e) => {
+            console.log('receive new notifications');
+            console.log(e);
+        });
+        socket.on('disconnect', (e) => {
+            console.log('disconnect');
+        });
+        socket.on('connect', (e) => {
+            console.log('connected');
+        });
+
+        setSocket(socket);
+
+        return () => socket.close();
+    }, [setSocket]);
+
+    const switchRole = () => {
+        console.log(user);
+        if (user.role == 'Lecturer') {
+            localStorage.setItem(
+                'token',
+                'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImtpZW5mcGxtcy5mZUBnbWFpbC5jb20iLCJyb2xlIjoiU3R1ZGVudCIsIm5iZiI6MTY1NjMzNDAyNywiZXhwIjoxNjU2OTM4ODI3LCJpYXQiOjE2NTYzMzQwMjd9.xVU6e2-54faeT40UZ9Hx1rkIaTJASdVDYfXKqJ5UdoU'
+            );
+        } else {
+            localStorage.setItem(
+                'token',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpZW5mcGxtcy5mZUBnbWFpbC5jb20iLCJyb2xlIjoiTGVjdHVyZXIiLCJuYmYiOjE2NTYzMzQwMjcsImV4cCI6MTY1NjkzODgyNywiaWF0IjoxNjU2MzM0MDI3fQ.dDgmEZOda447QPelcI_vDIyotnKB8lkbQ0Fe_wGVnLA'
+            );
+        }
+    };
 
     return (
         <div>
@@ -55,20 +78,19 @@ const Header = () => {
                     <img src={logo} alt="FPT Logo" />
                 </HLogo>
                 <HIcons>
-                    <HLink to={'/studentList'}>
-                        <NotificationsIcon
-                            style={{
-                                fontSize: 24,
-                                color: '#5680F9',
-                                backgroundColor: '#DDE6FE',
-                                borderRadius: '50%',
-                                padding: '8px',
-                                margin: '0 10px',
-                            }}
-                        />
-                    </HLink>
+                    <ForumIcon
+                        onClick={switchRole}
+                        style={{
+                            fontSize: 24,
+                            color: '#5680F9',
+                            backgroundColor: '#DDE6FE',
+                            borderRadius: '50%',
+                            padding: '8px',
+                            margin: '0 10px',
+                        }}
+                    />
                     <BtnContainer>
-                        <ForumIcon
+                        <NotificationsIcon
                             style={{
                                 fontSize: 24,
                                 color: '#5680F9',
