@@ -30,7 +30,11 @@
 
 <h3> Discussion Page<h3>
 
-![image](https://user-images.githubusercontent.com/77494428/180652891-05cb0b9d-ea1d-463a-b4f9-5f09eb387c5e.png)
+![image](https://user-images.githubusercontent.com/77494428/181936177-3becec7f-196e-47b8-b247-4ad0ac9f1136.png)
+
+![image](https://user-images.githubusercontent.com/77494428/181936225-95d37122-8496-4aa6-8939-b61b760ae52b.png)
+
+
 <h3>Add question Page<h3>
 
 ![image](https://user-images.githubusercontent.com/77494428/180652912-cbc94aeb-03d3-4e65-8939-e8a0311ab3e7.png)
