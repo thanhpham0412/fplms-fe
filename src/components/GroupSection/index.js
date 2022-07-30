@@ -129,17 +129,17 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
                     )}
                 </Header>
                 <Row>
-                    <BookIcon />
+                    <BookIcon className="book-icon" />
                     <Project style={{ color: group?.projectDTO?.name ? '#8B8B8B' : '#F776A5' }}>
                         {group?.projectDTO?.name || `UNASSIGNED`}
                     </Project>
                 </Row>
                 <Row>
-                    <PeopleIcon />
+                    <PeopleIcon className="people-icon" />
                     <Members>{`${slot}/${group.memberQuantity}Members`}</Members>
                 </Row>
                 <Row>
-                    <AccessTimeIcon />
+                    <AccessTimeIcon className="time-icon" />
                     <Members>{group.enrollTime && group.enrollTime.split('.')[0]}</Members>
                 </Row>
                 {role === 'Lecturer' ? (

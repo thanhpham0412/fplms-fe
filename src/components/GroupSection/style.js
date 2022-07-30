@@ -23,10 +23,6 @@ const Container = styled.div`
     border-radius: 4px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
     position: relative;
-    div,
-    button {
-        animation: ${fadeIn} 300ms ease-in-out forwards;
-    }
 `;
 
 const Header = styled.div`
@@ -37,6 +33,7 @@ const Header = styled.div`
     margin-bottom: 8px;
     display: flex;
     align-items: center;
+    animation: ${fadeIn} 300ms ease-in-out forwards;
 `;
 
 const Row = styled.div`
@@ -47,21 +44,39 @@ const Row = styled.div`
         color: ${COLOR.gray[0]};
         margin-right: 5px;
     }
+
+    .book-icon {
+        opacity: 0;
+        animation: ${fadeIn} 300ms ease-in-out 300ms forwards;
+    }
+    .people-icon {
+        opacity: 0;
+        animation: ${fadeIn} 300ms ease-in-out 500ms forwards;
+    }
+    .time-icon {
+        opacity: 0;
+        animation: ${fadeIn} 300ms ease-in-out 500ms forwards;
+    }
 `;
 
 const Project = styled.div`
+    opacity: 0;
     font-size: 1rem;
     color: ${COLOR.gray[0]};
     animation-delay: 300ms;
+    animation: ${fadeIn} 300ms ease-in-out 300ms forwards;
 `;
 
 const Members = styled.div`
+    opacity: 0;
     font-size: 1rem;
     color: ${COLOR.gray[0]};
     animation-delay: 500ms;
+    animation: ${fadeIn} 300ms ease-in-out 500ms forwards;
 `;
 
 const GroupBtn = styled.button`
+    opacity: 0;
     padding: 4px 16px;
     border: none;
     border-radius: 4px;
@@ -71,6 +86,7 @@ const GroupBtn = styled.button`
     margin-right: 10px;
     margin-top: 8px;
     color: ${COLOR.primary02};
+    animation: ${fadeIn} 300ms ease-in-out 800ms forwards;
     :hover {
         cursor: pointer;
     }

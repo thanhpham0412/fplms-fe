@@ -75,8 +75,8 @@ const Header = () => {
     };
 
     const handleLogout = async () => {
-        await localStorage.clear();
         await auth.setAuth(false);
+        await localStorage.clear();
         navigate('/login');
     };
 
