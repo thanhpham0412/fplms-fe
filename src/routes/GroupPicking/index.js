@@ -8,6 +8,7 @@ import banner from '../../assets/Asset 1.png';
 import { ConfirmModal } from '../../components';
 import CreateGroupForm from '../../components/CreateGroupForm';
 import GroupSection from '../../components/GroupSection';
+import { error } from '../../utils/toaster';
 import {
     Banner,
     Container,
@@ -45,7 +46,8 @@ const GroupPicking = () => {
                 setGroups(res.data.data);
                 setLoading(false);
             })
-            .catch(() => {
+            .catch((err) => {
+                error(err);
                 setLoading(false);
             });
         // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -93,6 +93,7 @@ const GroupBtn = styled.button`
 `;
 
 export const JoinBtn = styled.button`
+    opacity: 0;
     padding: 4px 16px;
     border: none;
     border-radius: 4px;
@@ -107,6 +108,7 @@ export const JoinBtn = styled.button`
     }
     pointer-events: ${({ disable }) => (disable ? 'none' : 'auto')};
     background-color: ${({ disable }) => disable && COLOR.gray[0]};
+    animation: ${fadeIn} 300ms ease-in-out 800ms forwards;
 `;
 
 const Dropdown = styled.div`

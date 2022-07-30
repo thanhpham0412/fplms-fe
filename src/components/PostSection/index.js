@@ -47,16 +47,19 @@ const PostSection = ({ post, setOpen, setPosts, setStudentInfo, setRefresh }) =>
         Authorization: `${localStorage.getItem('token')}`,
     };
     const deleteQuestion = () => {
-        axios.delete(URL, { headers: header }).then((res) => {
-            if (res.status >= 200 && res.status < 300) {
-                success(`Delete question successfully!`);
-                setRefresh((prev) => prev - 1);
-                setIsOpen(false);
-            } else {
-                error(`${res.message}`);
-                setIsOpen(false);
-            }
-        });
+        axios
+            .delete(URL, { headers: header })
+            .then((res) => {
+                if (res.status >= 200 && res.status < 300) {
+                    success(`Delete question successfully!`);
+                    setRefresh((prev) => prev - 1);
+                    setIsOpen(false);
+                } else {
+                    error(`${res.message}`);
+                    setIsOpen(false);
+                }
+            })
+            .finally(() => setIsOpen(false));
     };
 
     const handleVote = () => {

@@ -10,7 +10,6 @@ import Selection from '../../components/Selection';
 import StudentInfoModal from '../../components/StudentInfoModal';
 import TopActivities from '../../components/TopActivities';
 import { getTokenInfo } from '../../utils/account';
-import { success } from '../../utils/toaster';
 import {
     StyledContainer,
     StyledHeader,
@@ -95,7 +94,6 @@ const MyQuestions = () => {
                 .then((res) => {
                     if (res.status >= 200 && res.status < 300) {
                         setPosts(res.data);
-                        success(`Load post success`);
                         setLoading(false);
                     } else {
                         setLoading(false);

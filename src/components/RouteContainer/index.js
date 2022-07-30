@@ -1,3 +1,4 @@
+// import Footer from '../Footer';
 import Header from '../Header';
 import SideBar from '../Sidebar';
 import { StyledContainer, StyledHeader, HeaderContainer, BodyContainer } from './style';
@@ -15,6 +16,7 @@ const RouteContainer = ({ component, style }) => {
                 <BodyContainer style={style} data-target="body-container">
                     {component}
                 </BodyContainer>
+                {/* <Footer /> */}
             </StyledContainer>
         </>
     );
