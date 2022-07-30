@@ -85,22 +85,25 @@ const Column = ({ list, droppableId, name, type, setColumns, subjects, setProjec
 
             const API = process.env.REACT_APP_API_URL + '/projects';
 
-            console.log(item.needAdd);
+            console.log(item);
 
-            axios[item.needAdd ? 'post' : 'put'](
-                API,
-                {
-                    actors: 'string',
-                    context: '',
-                    name: title,
-                    problem: '',
-                    requirements: clone[index].requirements,
-                    subjectId: item.subjectId,
-                    semesterCode: 'SP21',
-                    theme: 'string',
-                },
-                { headers: header }
-            )
+            const req = {
+                actors: 'string',
+                context: '',
+                name: title,
+                problem: '',
+                requirements: clone[index].requirements,
+                subjectId: item.subjectId,
+                semesterCode: 'SP21',
+                theme: 'string',
+                id: item.id,
+            };
+
+            if (item.needAdd) {
+                delete req.id;
+            }
+
+            axios[item.needAdd ? 'post' : 'put'](API, req, { headers: header })
                 .then((res) => {
                     const data = res.data;
                     if (data.code == 200) {

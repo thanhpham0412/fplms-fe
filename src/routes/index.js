@@ -9,6 +9,7 @@ import DiscussionView from './DiscussionView';
 import GroupPicking from './GroupPicking';
 import GroupView from './GroupView';
 import Login from './Login';
+import MarkTable from './MarkTable';
 import MyQuestions from './MyQuestions';
 import NotFound from './NotFound';
 import PrivateRoute from './PrivateRoute';
@@ -31,6 +32,13 @@ export const privateRoute = [
         path: 'class',
         name: 'class',
         component: ClassList,
+        exact: true,
+        restrict: true,
+    },
+    {
+        path: '/mark-table/:classId',
+        name: 'Mark Table',
+        component: MarkTable,
         exact: true,
         restrict: true,
     },

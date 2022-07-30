@@ -72,17 +72,19 @@ export const ToolBar = styled.div`
 
 export const SelectionContainer = styled.div`
     height: 100%;
-    width: fit-content;
-    padding: 1rem;
-    box-sizing: border-box;
-    background: red;
-    justify-content: center;
-    align-items: center;
+    width: auto;
 
+    [data-target='container'] {
+        height: 100%;
+        background: ${COLOR.blue[0]};
+    }
     [data-target='styled-button'] {
-        padding: 0px;
+        padding: 1rem;
+        height: 100%;
+        box-sizing: border-box;
+        background: transparent;
         svg {
-            fill: #000;
+            fill: #fff;
         }
     }
 

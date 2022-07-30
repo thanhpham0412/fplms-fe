@@ -202,6 +202,7 @@ const CreateClassForm = ({ setCreate, setClass }) => {
                             options={semester}
                             placeholder="Semester"
                             isLoad={isLoad}
+                            maxHeight="200px"
                             onChange={(e) => handleSelection('semesterCode', e)}
                         />
                     </Col>

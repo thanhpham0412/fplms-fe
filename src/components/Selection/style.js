@@ -57,6 +57,7 @@ export const StyledList = styled.ul`
     list-style-type: none;
     flex-direction: column;
     position: absolute;
+    max-height: ${({ maxHeight }) => maxHeight};
     border-radius: 4px;
     z-index: 1;
     width: 100%;

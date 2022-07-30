@@ -26,7 +26,10 @@ const ClassList = () => {
             join: null,
         }
     )));
-    const [filter, setFilter] = useState('');
+    const [filter, setFilter] = useState({
+        name: '',
+        subjectId: -1,
+    });
     const [isModalOpen, setModalOpen] = useState(false);
     const [subjects, setSubjects] = useState([]);
 
@@ -84,11 +87,19 @@ const ClassList = () => {
     };
 
     const search = (e) => {
-        setFilter(e.target.value || '');
-        console.log(e.target.value);
-        console.log(classList);
-        console.log(classList.filter((item) => item.name.includes(filter)));
+        setFilter((filter) => ({
+            ...filter,
+            name: e.target.value || '',
+        }));
     };
+
+    const subjectFilter = (e) => {
+        console.log(e);
+        setFilter((filter) => ({
+            ...filter,
+            subjectId: e.value || -1,
+        }));
+    }
 
     const handleSearch = () => {
         //asd
@@ -113,32 +124,36 @@ const ClassList = () => {
                     </SearchBar>
                     <SelectionContainer>
                         <Selection
-                            options={subjects.map((subject, index) => ({ value: index, content: subject }))}
+                            options={[{ value: -1, content: 'All' }].concat(subjects.map((subject, index) => ({ value: index, content: subject })))}
                             placeholder="Filter by subject"
                             maxHeight="600px"
                             arrow={false}
                             icon={<FilterAltIcon />}
+                            onChange={subjectFilter}
                         />
                     </SelectionContainer>
                     {user.role == 'Lecturer' && <Button onClick={open} icon={<AddCircleIcon />}></Button>}
                 </ToolBar>
                 <StyledList>
                     {
-                        classList.filter((item) => item.name.includes(filter)).map((item) => (
-                            <Section
-                                key={item.id}
-                                name={item.name}
-                                lecture={
-                                    item.lecturerDto
-                                        ? `${item.lecturerDto.name} - ${item.lecturerDto.email}`
-                                        : item.enrollKey
-                                }
-                                subjectId={subjects[item.subjectId]}
-                                semesterCode={item.semesterCode}
-                                id={item.id}
-                                join={item.join}
-                            />
-                        ))
+                        classList
+                            .filter((item) => item.name.includes(filter.name))
+                            .filter((item) => filter.subjectId != -1 ? item.subjectId == filter.subjectId : true)
+                            .map((item) => (
+                                <Section
+                                    key={item.id}
+                                    name={item.name}
+                                    lecture={
+                                        item.lecturerDto
+                                            ? `${item.lecturerDto.name} - ${item.lecturerDto.email}`
+                                            : item.enrollKey
+                                    }
+                                    subjectId={subjects[item.subjectId]}
+                                    semesterCode={item.semesterCode}
+                                    id={item.id}
+                                    join={item.join}
+                                />
+                            ))
                     }
                 </StyledList>
             </Container>

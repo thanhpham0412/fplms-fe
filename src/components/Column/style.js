@@ -183,7 +183,10 @@ export const GoalContainer = styled.div`
     flex: 0 0 auto;
 
     [data-target='container'] {
-        max-height: 47px;
+        max-height: 53px;
+    }
+    [data-target='styled-button'] {
+        height: 100%;
     }
 `;
 
