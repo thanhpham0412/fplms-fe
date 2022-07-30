@@ -80,7 +80,7 @@ export const DropdownMenu = styled.div`
     right: 0;
     width: fit-content;
     padding: 0.75rem;
-    top: calc(100% + 0.1rem);
+    top: 80%;
     background-color: ${COLOR.primary02};
     border-radius: 4px;
     box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.1);

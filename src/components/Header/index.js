@@ -1,12 +1,14 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+
+import { useNavigate } from 'react-router-dom';
 
 import logo from '../../assets/fpt logo 1.jpg';
+import AuthContext from '../../contexts/auth';
 import {
     HContainer,
     HLogo,
     HIcons,
-    HLink,
     NotificationContainer,
     NotificationHeader,
     NotificationBody,
@@ -18,14 +20,15 @@ import {
 
 import ForumIcon from '@mui/icons-material/Forum';
 import InboxIcon from '@mui/icons-material/Inbox';
+import LogoutIcon from '@mui/icons-material/Logout';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { io } from 'socket.io-client';
 
 const Header = () => {
     const [isOpen, setOpen] = useState(false);
-
+    const navigate = useNavigate();
     const [socket, setSocket] = useState(null);
-
+    const auth = useContext(AuthContext);
     // useEffect(() => {
     //     const socket = io('ws://2.tcp.ngrok.io:17900', {
     //         extraHeaders: {
@@ -48,69 +51,60 @@ const Header = () => {
     //     return () => socket.close();
     // }, [setSocket]);
 
+    const handleLogout = async () => {
+        auth.setAuth(false);
+        await localStorage.clear();
+        navigate('/login');
+    };
+
     return (
-        <div>
-            <HContainer>
-                <HLogo>
-                    <img src={logo} alt="FPT Logo" />
-                </HLogo>
-                <HIcons>
-                    <HLink to={'/studentList'}>
-                        <NotificationsIcon
-                            style={{
-                                fontSize: 24,
-                                color: '#5680F9',
-                                backgroundColor: '#DDE6FE',
-                                borderRadius: '50%',
-                                padding: '8px',
-                                margin: '0 10px',
-                            }}
-                        />
-                    </HLink>
-                    <BtnContainer>
-                        <ForumIcon
-                            style={{
-                                fontSize: 24,
-                                color: '#5680F9',
-                                backgroundColor: '#DDE6FE',
-                                borderRadius: '50%',
-                                padding: '8px',
-                            }}
-                            onClick={() => {
-                                setOpen((e) => !e);
-                                console.log('oen');
-                            }}
-                        />
-                        <NotificationContainer isOpen={isOpen}>
-                            <NotificationHeader>Notification</NotificationHeader>
-                            <NotificationBody>
-                                <NotiContainer>
-                                    <InboxIcon />
-                                    <NotiInfo>
-                                        <NotiTarget>Kien answerd your question</NotiTarget>
-                                        <div>Today</div>
-                                    </NotiInfo>
-                                </NotiContainer>
-                                <NotiContainer>
-                                    <InboxIcon />
-                                    <NotiInfo>
-                                        <NotiTarget>Kien answerd your question</NotiTarget>
-                                        <div>Today</div>
-                                    </NotiInfo>
-                                </NotiContainer>
-                                <NotiContainer>
-                                    <InboxIcon />
-                                    <NotiInfo>
-                                        <NotiTarget>Kien answerd your question</NotiTarget>
-                                        <div>Today</div>
-                                    </NotiInfo>
-                                </NotiContainer>
-                            </NotificationBody>
-                        </NotificationContainer>
-                    </BtnContainer>
-                </HIcons>
-            </HContainer>
-        </div>
+        <HContainer>
+            <HLogo>
+                <img src={logo} alt="FPT Logo" />
+            </HLogo>
+            <HIcons>
+                <BtnContainer onClick={() => navigate('/studentList')}>
+                    <NotificationsIcon />
+                </BtnContainer>
+                <BtnContainer onClick={() => handleLogout()}>
+                    <LogoutIcon />
+                </BtnContainer>
+                <BtnContainer>
+                    <ForumIcon
+                        onClick={() => {
+                            setOpen((e) => !e);
+                            console.log('oen');
+                        }}
+                    />
+                    <NotificationContainer isOpen={isOpen}>
+                        <NotificationHeader>Notification</NotificationHeader>
+                        <NotificationBody>
+                            <NotiContainer>
+                                <InboxIcon />
+                                <NotiInfo>
+                                    <NotiTarget>Kien answerd your question</NotiTarget>
+                                    <div>Today</div>
+                                </NotiInfo>
+                            </NotiContainer>
+                            <NotiContainer>
+                                <InboxIcon />
+                                <NotiInfo>
+                                    <NotiTarget>Kien answerd your question</NotiTarget>
+                                    <div>Today</div>
+                                </NotiInfo>
+                            </NotiContainer>
+                            <NotiContainer>
+                                <InboxIcon />
+                                <NotiInfo>
+                                    <NotiTarget>Kien answerd your question</NotiTarget>
+                                    <div>Today</div>
+                                </NotiInfo>
+                            </NotiContainer>
+                        </NotificationBody>
+                    </NotificationContainer>
+                </BtnContainer>
+            </HIcons>
+        </HContainer>
     );
 };
 

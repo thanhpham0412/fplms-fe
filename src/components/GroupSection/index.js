@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+import { getTokenInfo } from '../../utils/account';
 import { error, success } from '../../utils/toaster';
 import AvatarGroup from '../AvatarGroup';
 import EditGroupForm from '../EditGroupForm';
@@ -34,7 +35,8 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
     const [group] = useState(data);
     const currentDate = new Date();
     const navigate = useNavigate();
-
+    const user = getTokenInfo();
+    console.log(user);
     const TOKEN = localStorage.getItem('token');
     const URL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups/${id}/join`;
     const URL_DELETE = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups/${group.id}`;
@@ -104,15 +106,17 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
             <Container>
                 <Header style={{ justifyContent: 'space-between' }}>
                     <div>GROUP {group.number}</div>
-                    <Dropdown>
-                        <button className="sub-option" onClick={(e) => e.stopPropagation}>
-                            <MoreVertIcon />
-                        </button>
-                        <DropdownMenu className="dropdown-menu">
-                            <DeleteIcon onClick={handleRemoveBtn} />
-                            <EditIcon onClick={() => setCreate(true)} />
-                        </DropdownMenu>
-                    </Dropdown>
+                    {user.role === 'Lecturer' && (
+                        <Dropdown>
+                            <button className="sub-option" onClick={(e) => e.stopPropagation}>
+                                <MoreVertIcon />
+                            </button>
+                            <DropdownMenu className="dropdown-menu">
+                                <DeleteIcon onClick={handleRemoveBtn} />
+                                <EditIcon onClick={() => setCreate(true)} />
+                            </DropdownMenu>
+                        </Dropdown>
+                    )}
                 </Header>
                 <Row>
                     <BookIcon />

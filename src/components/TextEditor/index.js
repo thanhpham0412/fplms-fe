@@ -30,6 +30,10 @@ const TextEditor = () => {
         Authorization: `${localStorage.getItem('token')}`,
     };
 
+    const focus = () => {
+        console.log(editor.current);
+    };
+
     useEffect(() => {
         const getSubjects = () => {
             const URL = process.env.REACT_APP_DISCUSSION_URL + `/subjects`;
@@ -167,7 +171,7 @@ const TextEditor = () => {
                     </div>
                     <Title>Body</Title>
                     <SubTitle>Describe the issue</SubTitle>
-                    <div className="editor">
+                    <div className="editor" onClick={focus}>
                         <Editor
                             editorState={editorState.editorState}
                             toolbar={{
@@ -182,7 +186,6 @@ const TextEditor = () => {
                             editorClassName="editorClassName"
                             onEditorStateChange={onEditorStateChange}
                             ref={editor}
-                            onClick={focus}
                         />
                     </div>
                 </Wrapper>
