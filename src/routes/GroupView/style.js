@@ -1,11 +1,13 @@
 import styled from 'styled-components';
 
+import { InputNumber } from '../../components';
 import { COLOR } from '../../utils/style';
 
 import { TextareaAutosize } from '@mui/material';
 
 export const Container = styled.div`
     width: 100%;
+    height: 100%;
     display: grid;
     grid-template-columns: 1fr 360px;
     gap: 24px;
@@ -16,10 +18,20 @@ export const Container = styled.div`
 `;
 
 export const StyledList = styled.div`
-    display: grid;
+    display: flex;
     gap: 1rem;
-    grid-template-columns: 1fr;
-    grid-auto-rows: min-content;
+    min-width: 100%;
+    overflow: auto;
+    flex-direction: column;
+`;
+
+export const NeResultContainer = styled.div`
+    width: 100%;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    flex: 1 0 auto;
+    align-items: center;
 `;
 
 export const StyledItem = styled.div`
@@ -28,7 +40,7 @@ export const StyledItem = styled.div`
     padding: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.5rem;
     height: fit-content;
     background: ${({ feedback }) => (feedback ? COLOR.green[5] : COLOR.blue[5])};
 `;
@@ -115,18 +127,23 @@ export const Round = styled.span`
 `;
 
 export const Select = styled.div`
-    margin-bottom: 1rem;
     max-width: 200px;
 `;
 
 export const PickContainer = styled.div`
     width: 100%;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 0 1 auto;
 `;
 
-export const UnPickTitle = styled.h3`
+export const UnPickTitle = styled.div`
     font-weight: 900;
     letter-spacing: 0.05rem;
+    font-size: 1.25rem;
+    color: ${COLOR.blue[0]};
 `;
 
 export const UnPickDes = styled.p``;
@@ -219,7 +236,7 @@ export const CommentInput = styled(TextareaAutosize)`
     box-sizing: border-box;
 `;
 
-export const ScoreBar = styled.input`
+export const ScoreBar = styled(InputNumber)`
     width: 100%;
     height: auto;
     outline: none;
@@ -233,6 +250,10 @@ export const ScoreBar = styled.input`
     font-family: Lato;
     color: #fff;
     box-sizing: border-box;
+
+    ::placeholder {
+        color: #f2f2f2;
+    }
 `;
 
 export const EditorContainer = styled.div`
@@ -242,6 +263,7 @@ export const EditorContainer = styled.div`
     height: 100%;
     gap: 0.5rem;
     display: grid;
+    position: relative;
     grid-template-rows: 60px 1fr;
 `;
 
@@ -259,6 +281,7 @@ export const EditorSideBar = styled.div`
     height: 100%;
     display: flex;
     flex-direction: column;
+    overflow: auto;
     gap: 0.5rem;
 `;
 
@@ -331,6 +354,30 @@ export const GoalContainer = styled.div`
     flex-direction: column;
     gap: 0.5rem;
     flex: 0 0 auto;
+
+    &[data-type='topic'] {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+
+        button {
+            border: 1px solid ${COLOR.blue[0]};
+            font-family: Lato;
+            color: #000;
+            border-radius: 2px;
+            outline: none;
+            background: #fff;
+            padding: 0.3rem 0.5rem;
+            cursor: pointer;
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+
+            :hover {
+                background: ${COLOR.blue[0]};
+                color: #fff;
+            }
+        }
+    }
 `;
 
 export const FeedBackView = styled.div`
@@ -404,4 +451,27 @@ export const Avatar = styled.li`
         text-align: center;
         width: ${({ size }) => size - 4 || 45}px;
     }
+`;
+
+export const Input = styled.input`
+    width: 100%;
+    height: auto;
+    outline: none;
+    border: none;
+    resize: none;
+    font-weight: bold;
+    border-radius: 2px;
+    font-size: 1rem;
+    padding: 1rem;
+    border: 1px solid ${COLOR.blue[0]};
+    font-family: Lato;
+    box-sizing: border-box;
+`;
+
+export const StudentViewContainer = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
 `;

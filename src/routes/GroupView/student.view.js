@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable react-hooks/exhaustive-deps */
 
 /* eslint-disable no-unused-vars */
@@ -5,12 +6,23 @@ import { useState, useEffect, useContext, useRef } from 'react';
 
 import { Editor, EditorState, convertToRaw, ContentState, convertFromRaw } from 'draft-js';
 
-import { Calendar, DraftEditor, Overlay, Selection, Expand, AvatarGroup } from '../../components';
+import {
+    Calendar,
+    DraftEditor,
+    Overlay,
+    Selection,
+    Skeleton,
+    NoResult,
+    AdvanceEditor,
+} from '../../components';
 import { DraftRenderer } from '../../components/DraftEditor';
 import LoadOverLayContext from '../../contexts/loadOverlay';
+import { getTokenInfo } from '../../utils/account';
+import { getRndInteger } from '../../utils/random';
 import { get, put, post } from '../../utils/request';
 import { stringToColour } from '../../utils/style';
 import { success, error } from '../../utils/toaster';
+import { fromHTML } from '../../utils/draft';
 import {
     Container,
     EditorContainer,
@@ -36,7 +48,7 @@ import {
     FeedBackView,
     FeedBackContainer,
     ScoreBar,
-    CommentInput,
+    NeResultContainer,
     GoalCounter,
     GoalDes,
     StatusBar,
@@ -46,12 +58,8 @@ import {
     Avatar,
     StudentFeedBack,
     Select,
-    PickContainer,
-    TopicList,
-    UnPickTitle,
-    PickHeader,
-    FeedBackBar,
-    PickBtn,
+    Input,
+    StudentViewContainer,
 } from './style';
 
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -59,55 +67,127 @@ import ArticleIcon from '@mui/icons-material/Article';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 
+const FeedBack = ({ list }) => {
+    return (
+        <StyledList>
+            {list.map(({ content, type, feedback, title }, index) => {
+                return (
+                    <StyledItem feedback={type} key={index}>
+                        <Title feedback={type}>{title}</Title>
+                        {content && (
+                            <DraftRenderer
+                                editorState={EditorState.createWithContent(convertFromRaw(JSON.parse(content)))}
+                            ></DraftRenderer>
+                        )}
+                        <div>Feedback</div>
+                        <Content>{feedback || <p>(This report has no feedback)</p>}</Content>
+                    </StyledItem>
+                );
+            })}
+        </StyledList>
+    );
+};
+
+const TopicList = ({
+    isOpen,
+    closeFn,
+    avatars,
+    editorState,
+    topicList,
+    viewTopic,
+    pickTopic,
+    setEditorState,
+}) => {
+    return (
+        <Overlay isOpen={isOpen} fullFill={true}>
+            <AdvanceEditor
+                avatars={avatars}
+                closeFn={closeFn}
+                editorState={editorState}
+                setEditorState={setEditorState}
+                readOnly
+            >
+                {topicList.length > 0 ? (
+                    topicList.map((item) => (
+                        <GoalContainer data-type="topic" key={item.id} onClick={() => viewTopic(item)}>
+                            <GoalDes>
+                                {item.name || <Skeleton style={{ width: `${getRndInteger(20, 40)}ch` }} />}
+                            </GoalDes>
+                            {item.name ? (
+                                <button onClick={() => pickTopic(item)}>Select</button>
+                            ) : (
+                                <Skeleton style={{ width: '6ch' }} />
+                            )}
+                        </GoalContainer>
+                    ))
+                ) : (
+                    <NeResultContainer>
+                        <NoResult>
+                            <h4>There is no topic for now</h4>
+                        </NoResult>
+                    </NeResultContainer>
+                )}
+            </AdvanceEditor>
+        </Overlay>
+    );
+};
+
+const TEMPLATE = '<h1>Pick a topic for your team:</h1>' +
+    '<h2>Choose your own topic on the pannel on the left</h2>' +
+    '<p>Once you picked, the topic will apply to all of your team member</p>' +
+    '<p>Be carefully because this action can\'t be undone</p>'
+
 const StudentView = ({ groupId, classId }) => {
     const loadOverlay = useContext(LoadOverLayContext);
     const [isPicked, setPicked] = useState(false);
-    const [draftIsShow, setDraftShow] = useState(false);
+    const [isEditorOpen, setEditorOpen] = useState(false);
+    const [isTopicOpen, setTopicOpen] = useState(false);
+    const [topicState, setTopicState] = useState(EditorState.createWithContent(fromHTML(TEMPLATE)));
+    const [title, setTitle] = useState('');
 
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const editor = useRef();
 
-    const [list, setList] = useState([
-        {
-            content: 'Hello world',
-            type: 'feedback',
-            feedback: 'hello world',
-        },
-    ]);
+    const [list, setList] = useState([]);
 
-    const [topicList, setTopicList] = useState([]);
+    const [topicList, setTopicList] = useState(
+        new Array(20).fill('').map((k, i) => ({
+            name: '',
+            id: i,
+        }))
+    );
+
+    const user = getTokenInfo();
 
     const test = (date) => {
         console.log(date);
     };
 
-    const submitCycle = (value) => {
+    const submitCycle = (type) => {
         const data = {
-            title: 'DRAFT',
+            title: title,
             content: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
             resourceLink: '',
-            groupId: groupId,
+            groupId: parseInt(groupId),
         };
-        post('/' + (value == 1 ? 'cycle-reports' : 'progress-reports'), data)
+        post('/' + (type == 1 ? 'cycle-reports' : 'progress-reports'), data)
             .then((res) => {
                 if (res.data.code == 200) {
                     success(res.data.message);
                     setList((list) => {
                         return list.concat(data);
                     });
-                    setDraftShow(false);
+                    setEditorOpen(false);
                 } else {
                     error(res.data.message);
-                    setDraftShow(false);
+                    setEditorOpen(false);
                 }
             })
             .catch(() => {
                 error('An error occured');
-                setDraftShow(false);
+                setEditorOpen(false);
             });
     };
-
-    const [isDraftOpen, setDraft] = useState(false);
 
     const [reportType] = useState([
         {
@@ -144,164 +224,130 @@ const StudentView = ({ groupId, classId }) => {
     const [type, setType] = useState({ value: 1, content: 'progress-reports' });
 
     const onChange = (e) => {
-        setDraft(true);
+        setEditorOpen(true);
         setType(e);
     };
 
-    const topicPickedView = () => {
-        return (
-            <StyledList>
-                {list.map(({ content, type, feedback }, index) => (
-                    <StyledItem feedback={type} key={index}>
-                        <Title feedback={type}>
-                            {(type ? 'FEEDBACK' : 'REPORT') + ' #' + index}
-                        </Title>
-                        {content && (
-                            <DraftRenderer editorState={JSON.parse(content)}></DraftRenderer>
-                        )}
-                        <p>Feedback</p>
-                        <Content>{feedback || '(This report has no feedback)'}</Content>
-                    </StyledItem>
-                ))}
-            </StyledList>
-        );
-    };
-
-    const getCycleReport = () => {
-        const cycleReport = get('/cycle-reports', { classId, groupId });
-        const progressReport = get('/progress-reports', { classId, groupId });
-
-        Promise.all([cycleReport, progressReport]).then(([cycleReport, progressReport]) => {
-            setList(cycleReport.data.data.concat(progressReport.data.data));
+    const getReports = () => {
+        get('/cycle-reports', { classId, groupId }).then((res) => {
+            if (res.data.code == 200) {
+                setList((list) => list.concat(res.data.data || []));
+            }
         });
+        get('/progress-reports', { classId, groupId }).then((res) => {
+            if (res.data.code == 200) {
+                setList((list) => list.concat(res.data.data || []));
+            }
+        });
+        // Promise.all([cycleReport, progressReport]).then(([cycleReport, progressReport]) => {
+        //     setList(cycleReport.data.data.concat(progressReport.data.data));
+        // });
     };
 
     useEffect(() => {
-        loadOverlay.setText('Loading');
-        loadOverlay.setActive(true);
-
-        getCycleReport();
-
-        get('/projects', { classId }).then((res) => {
+        // loadOverlay.setText('Loading');
+        // loadOverlay.setActive(true);
+        get(`/classes/${classId}/groups/details`, { classId: classId }).then((res) => {
             const data = res.data.data;
-            console.log(data);
-            if (data) setTopicList(data);
-        });
-        get(`/classes/${classId}/groups/details`)
-            .then((res) => {
-                const data = res.data.data;
-                if (data.projectDTO) {
-                    setPicked(true);
+            if (res.data.code == 200) {
+                if (data.projectDTO == null) {
+                    const student = data.studentDtoSet.filter(
+                        (student) => student.email == user.email
+                    )[0];
+                    if (student && student.id == data.leaderId) {
+                        setTopicOpen(true);
+                        get('/projects', { classId }).then((res) => {
+                            const data = res.data;
+                            if (data.code == 200) setTopicList(data.data);
+                        });
+                    }
+                } else {
+                    getReports();
                 }
-                loadOverlay.setActive(false);
-            })
-            .catch(() => {
-                loadOverlay.setActive(false);
-            });
+            } else {
+                error('An error occurred while');
+            }
+        });
     }, []);
 
     const pickTopic = (topic) => {
-        put(`/projects/${topic.id}`, {}, { params: { classId } }).then((res) => {
-            const data = res.data.data;
-            if (res.data.code == 200) {
-                success(`Choose project successfully!`);
-            }
-        });
+        put(`/projects/${topic.id}`, {}, { params: { classId } })
+            .then((res) => {
+                const data = res.data.data;
+                if (res.data.code == 200) {
+                    success(`Choose project successfully!`);
+                } else {
+                    error('An error occurred while picking project. Please try agian');
+                }
+            })
+            .catch(() => {
+                error('An error occurred while picking project. Please try agian');
+            });
     };
 
-    const unPickView = () => {
-        return (
-            <PickContainer>
-                <UnPickTitle>Pick a topic for your team:</UnPickTitle>
-                <p>Once you picked a topic it will be applied to all of your team members.</p>
-                <p>Remember to pick a topic carefully because this action can&apos;t be undone.</p>
-                <TopicList>
-                    {Array.isArray(topicList) &&
-                        topicList.map((topic, index) => (
-                            <Expand
-                                key={index}
-                                isOpen={false}
-                                title={
-                                    <PickHeader>
-                                        <span>{topic.name}</span>
-                                        <PickBtn onClick={() => pickTopic(topic)}>
-                                            Choose Project
-                                        </PickBtn>
-                                    </PickHeader>
-                                }
-                            >
-                                <Expand isOpen={false} title="1. Context">
-                                    <p>{topic.context}</p>
-                                </Expand>
-                                <Expand isOpen={false} title="2. Problem">
-                                    <p>{topic.problem}</p>
-                                </Expand>
-                                <Expand isOpen={false} title="3. Requirements">
-                                    <p>{topic.requirements}</p>
-                                </Expand>
-                            </Expand>
-                        ))}
-                </TopicList>
-            </PickContainer>
-        );
+    const viewTopic = (item) => {
+        const raw = convertFromRaw(JSON.parse(item.requirements));
+        setTopicState(EditorState.createWithContent(raw));
     };
 
     const avts = ['TP', 'NK', 'TN', 'TT', 'NH'];
 
     return (
-        <>
-            <Overlay isOpen={isDraftOpen} fullFill={true}>
-                <EditorContainer>
-                    <Header>
-                        <BackBtn onClick={() => setDraft(false)}>
-                            <ArrowBackIosNewIcon fontSize="small" /> Group View
-                        </BackBtn>
-                        <GroupAvatar>
-                            {avts.map((avatar, index) => (
-                                <Avatar
-                                    key={index}
-                                    size={32}
-                                    color={stringToColour(avatar + avts.join(''))}
-                                >
-                                    <span src="./ben.png">{avatar}</span>
-                                </Avatar>
-                            ))}
-                        </GroupAvatar>
-                    </Header>
-                    <BottomSide>
-                        <StudentFeedBack onClick={() => editor.current.focus()}>
-                            <DraftEditor
-                                editorRef={editor}
-                                editorState={editorState}
-                                setEditorState={setEditorState}
-                            />
-                        </StudentFeedBack>
-                        <EditorSideBar>
-                            <GoalContainer>
-                                <GoalDes>Reports Stats:</GoalDes>
-                                <StatusBar />
-                                <GoalCounter>
-                                    <span>100</span> / 700
-                                </GoalCounter>
-                            </GoalContainer>
-                            <SendBtn onClick={() => submitCycle(1)}>Send Report</SendBtn>
-                        </EditorSideBar>
-                    </BottomSide>
-                </EditorContainer>
+        <StudentViewContainer>
+            <Overlay isOpen={isEditorOpen} fullFill={true}>
+                <AdvanceEditor
+                    closeFn={() => setEditorOpen(false)}
+                    avatars={avts}
+                    editorState={editorState}
+                    setEditorState={setEditorState}
+                >
+                    <GoalContainer>
+                        <GoalDes>Reports Stats:</GoalDes>
+                        <StatusBar />
+                        <GoalCounter>
+                            <span>100</span> / 700
+                        </GoalCounter>
+                    </GoalContainer>
+                    <GoalContainer>
+                        <GoalDes>Report Title</GoalDes>
+                        <Input
+                            placeholder={"Report's Title"}
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value || '')}
+                        />
+                    </GoalContainer>
+                    <SendBtn onClick={() => submitCycle(1)}>Send Report</SendBtn>
+                </AdvanceEditor>
             </Overlay>
-            {isPicked && (
-                <Select>
-                    <Selection
-                        options={reportType}
-                        placeholder="Write Report"
-                        fixed
-                        reset={true}
-                        onChange={onChange}
-                    ></Selection>
-                </Select>
-            )}
+            <Select>
+                <Selection
+                    options={reportType}
+                    placeholder="Write Report"
+                    fixed
+                    reset={true}
+                    onChange={onChange}
+                ></Selection>
+            </Select>
             <Container>
-                {isPicked ? topicPickedView() : unPickView()}
+                {list.length ? (
+                    <FeedBack list={list} />
+                ) : (
+                    <NeResultContainer>
+                        <NoResult>
+                            <h2>You have no reports</h2>
+                        </NoResult>
+                    </NeResultContainer>
+                )}
+                <TopicList
+                    isOpen={isTopicOpen}
+                    avatars={['TP', 'NK', 'TN', 'TT', 'NH']}
+                    editorState={topicState}
+                    topicList={topicList}
+                    viewTopic={viewTopic}
+                    pickTopic={pickTopic}
+                    closeFn={() => setTopicOpen(false)}
+                    setTopicState={setTopicState}
+                />
                 <SideBar>
                     <Calendar onChange={test} />
                     <StyledH4>
@@ -320,7 +366,7 @@ const StudentView = ({ groupId, classId }) => {
                     </CommingContainer>
                 </SideBar>
             </Container>
-        </>
+        </StudentViewContainer>
     );
 };
 

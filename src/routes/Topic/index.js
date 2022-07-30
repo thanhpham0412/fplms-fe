@@ -3,30 +3,24 @@ import { useEffect, useState } from 'react';
 
 import { DragDropContext } from 'react-beautiful-dnd';
 
-import { Column, CreateTopicForm, Selection } from '../../components';
+import { Column, Selection } from '../../components';
 import { get } from '../../utils/request';
 import { Container, SelectContainer, Header } from './style';
 
-const lorem =
-    'Lorem ipsum dolor sit amet, consectetur adipiscing' +
-    'elit, sed do eiusmod tempor incididunt ut labore et' +
-    'dolore magna aliqua. Accumsan lacus vel facilisis' +
-    'volutpat est velit egestas dui id. Aliquam purus sit' +
-    'Phasellus ultrices feugiat justo, non semper nunc tincidunt' +
-    'in. Etiam mauris nibh, egestas tristique viverra vitae, venenatis et metus' +
-    'amet luctus venenatis. Morbi tincidunt augue.';
-
-const getItems = (count, hash = Math.random()) =>
-    Array.from({ length: count }, (v, k) => k).map((k) => ({
-        id: `item-${k}-${hash}`,
-        content: lorem.slice(0, ~~(Math.random() * (lorem.length - 100)) + 100),
-        title: lorem.slice(0, ~~(Math.random() * 10) + 20),
-        subjectId: Math.floor(Math.random() * 4),
-        semesterCode: Math.floor(Math.random() * 10) > 5 ? 'SP21' : 'WI21',
-    }));
-
 const Topic = () => {
-    const [projects, setProjects] = useState([]);
+    const [projects, setProjects] = useState(
+        new Array(10).fill('').map((i, k) => ({
+            actors: null,
+            context: null,
+            id: k,
+            name: null,
+            problem: null,
+            requirements: null,
+            semesterCode: null,
+            subjectId: null,
+            theme: null,
+        }))
+    );
     const [isLoad, setLoad] = useState(true);
     const [subjects, setSubjects] = useState([
         {
@@ -50,13 +44,7 @@ const Topic = () => {
             content: 'All Semesters',
         },
     });
-    const [columns, setColumns] = useState({
-        all: {
-            name: 'All',
-            items: getItems(50),
-            type: 1,
-        },
-    });
+    const [columns, setColumns] = useState([]);
 
     useEffect(() => {
         const subjects = get('/subjects');
@@ -64,21 +52,27 @@ const Topic = () => {
         const semester = get('/semesters');
 
         Promise.all([subjects, projects, semester]).then(([subjects, projects, semester]) => {
-            subjects = subjects.data.data;
-            projects = projects.data.data;
-            semester = semester.data.data;
-            setSubjects((subs) =>
-                subs.concat(subjects.map(({ id, name }) => ({ value: id, content: name })))
-            );
-            setSemesters((sems) =>
-                sems.concat(
-                    semester.map((semester) => ({
-                        value: semester.code,
-                        content: semester.code,
-                    }))
-                )
-            );
-            setProjects((prjs) => (Array.isArray(projects) ? prjs.concat(projects) : []));
+            subjects = subjects.data;
+            projects = projects.data;
+            semester = semester.data;
+            if (subjects.code == 200) {
+                setSubjects((subs) =>
+                    subs.concat(subjects.data.map(({ id, name }) => ({ value: id, content: name })))
+                );
+            }
+            if (semester.code == 200) {
+                setSemesters((sems) =>
+                    sems.concat(
+                        semester.data.map((semester) => ({
+                            value: semester.code,
+                            content: semester.code,
+                        }))
+                    )
+                );
+            }
+            if (projects.code == 200) {
+                setProjects(projects.data);
+            }
             setLoad(false);
         });
     }, []);
@@ -90,6 +84,7 @@ const Topic = () => {
                 name: `${filter.subject.content} of ${filter.semester.content}`,
                 items: (() => {
                     let list = projects;
+                    console.log(list);
                     if (filter.semester.value != -1) {
                         list = list.filter(
                             (project) => project.semesterCode == filter.semester.value

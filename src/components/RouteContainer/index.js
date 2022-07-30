@@ -2,7 +2,7 @@ import Header from '../Header';
 import SideBar from '../Sidebar';
 import { StyledContainer, StyledHeader, HeaderContainer, BodyContainer } from './style';
 
-const RouteContainer = ({ component }) => {
+const RouteContainer = ({ component, style }) => {
     return (
         <>
             <StyledContainer>
@@ -12,7 +12,9 @@ const RouteContainer = ({ component }) => {
                 <HeaderContainer>
                     <SideBar />
                 </HeaderContainer>
-                <BodyContainer>{component}</BodyContainer>
+                <BodyContainer style={style} data-target="body-container">
+                    {component}
+                </BodyContainer>
             </StyledContainer>
         </>
     );

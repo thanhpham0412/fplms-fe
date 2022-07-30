@@ -6,8 +6,8 @@ export const Container = styled.div`
     height: 100%;
     margin: 0 auto;
     transition: all 0.5s;
-    display: grid;
-    grid-template-rows: 51px 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 1rem;
 `;
 

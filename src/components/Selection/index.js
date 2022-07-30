@@ -2,16 +2,28 @@ import { useState, useRef } from 'react';
 
 import { useClickOutside } from '../../hooks';
 import { COLOR } from '../../utils/style';
+import { isBoolean } from '../../utils/valid';
 import { Spinner } from '../Spinner';
 import { Container, StyledButton, StyledList, StyledItem } from './style';
 
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-const Selection = ({ options, placeholder, onChange, disable, reset, maxHeight, isLoad }) => {
+const Selection = ({
+    options,
+    placeholder,
+    onChange,
+    disable,
+    reset,
+    maxHeight,
+    isLoad,
+    arrow,
+    icon,
+}) => {
     const [picked, setPicked] = useState(placeholder || 'Pick an option');
     const [open, setOpen] = useState(false);
 
     isLoad = isLoad || false;
+    arrow = isBoolean(arrow) ? arrow : true;
 
     const pick = (item) => {
         if (!reset) setPicked(item.content);
@@ -26,7 +38,7 @@ const Selection = ({ options, placeholder, onChange, disable, reset, maxHeight, 
     });
 
     return (
-        <Container>
+        <Container data-target="container">
             <StyledButton
                 disable={disable}
                 open={open}
@@ -36,11 +48,16 @@ const Selection = ({ options, placeholder, onChange, disable, reset, maxHeight, 
                     if (disable || isLoad) return;
                     setOpen(!open);
                 }}
+                data-target="styled-button"
             >
-                <span>{picked}</span>
-                {isLoad ? <Spinner radius={19} color={COLOR.blue[0]} /> : <KeyboardArrowDownIcon />}
+                {icon || picked}
+                {isLoad ? (
+                    <Spinner radius={19} color={COLOR.blue[0]} />
+                ) : (
+                    arrow && <KeyboardArrowDownIcon />
+                )}
             </StyledButton>
-            <StyledList open={open} maxHeight={maxHeight}>
+            <StyledList open={open} maxHeight={maxHeight} data-target="list">
                 {options.map((item, index) => (
                     <StyledItem
                         onClick={() => {
