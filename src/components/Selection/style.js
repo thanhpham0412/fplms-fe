@@ -14,6 +14,7 @@ export const Container = styled.div`
 
 export const StyledButton = styled.div`
     padding: 1rem;
+    box-sizing: border-box;
     border-radius: 2px;
     background: ${({ open }) => (open ? COLOR.blue[0] : COLOR.primary02)};
     color: ${({ open }) => (open ? COLOR.primary02 : COLOR.primary03)};
@@ -26,7 +27,7 @@ export const StyledButton = styled.div`
     transition: all 300ms;
     opacity: ${({ isLoad }) => (isLoad ? 0.5 : 1)};
 
-    svg {
+    [data-testid='KeyboardArrowDownIcon'] {
         transition: all 300ms;
         transform: rotate(${({ open }) => (open ? 180 : 0)}deg);
     }
@@ -49,11 +50,14 @@ const scaleZ = keyframes`
 `;
 
 export const StyledList = styled.ul`
-    max-height: ${({ maxHeight }) => maxHeight || 'auto'};
-    color: #fff;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: fit-content;
+    min-width: fit-content;
     list-style-type: none;
     flex-direction: column;
     position: absolute;
+    max-height: ${({ maxHeight }) => maxHeight};
     border-radius: 4px;
     z-index: 1;
     width: 100%;
@@ -63,21 +67,21 @@ export const StyledList = styled.ul`
     border-radius: 2px;
     margin-block-end: 0.5em;
     display: ${({ open }) => (open ? 'flex' : 'none')};
-    overflow-y: auto;
-    overflow-x: hidden;
+    box-shadow: rgb(99 99 99 / 20%) 0px 2px 8px 0px;
+    transition: all 0.3s;
 
     ::-webkit-scrollbar {
-        background: ${COLOR.blue[0]};
+        background: #fff;
     }
 
     ::-webkit-scrollbar-thumb {
-        background-color: #fff;
+        background-color: #f2f2f2;
     }
 `;
 
 export const StyledItem = styled.li`
     padding: 1rem;
-    background: ${COLOR.blue[0]};
+    background: #fff;
     transition: all 0.1s;
 
     animation: ${scaleZ} 300ms ${({ delay }) => delay}ms ease-in-out forwards;

@@ -125,7 +125,7 @@ export const DropdownMenu = styled.div`
     box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    z-index: 99;
+    z-index: 10;
     transform: translateY(-10px);
     transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
     opacity: 0;

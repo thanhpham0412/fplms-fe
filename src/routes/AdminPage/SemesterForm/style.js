@@ -8,11 +8,6 @@ const scaleIn = (to, from) => keyframes`
         top: ${from.y}px;
         left: ${from.x}px;
     }
-    50%{
-        transform: scale(0.7);
-        top: ${to.y}px;
-        left: ${to.x}px;
-    }
     100%{
         transform: scale(1);
         top: 50%;
@@ -35,8 +30,8 @@ export const Overlay = styled.div`
 
 export const Wrapper = styled.div`
     position: absolute;
-    top: ${({ from }) => from.y || 0}px;
-    left: ${({ from }) => from.x || 0}px;
+    /* top: ${({ from }) => from.y || 0}px;
+    left: ${({ from }) => from.x || 0}px; */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -46,15 +41,8 @@ export const Wrapper = styled.div`
     z-index: 999;
     border-radius: 4px;
     animation: ${({ to, from }) => scaleIn(to, from)} 1.5s ease-in-out forwards;
-    color: ${COLOR.primary02};
+    color: ${COLOR.primary03};
 
-    background: linear-gradient(
-        135deg,
-        rgba(153, 179, 251, 1) 0%,
-        rgba(184, 202, 252, 1) 29%,
-        rgba(195, 210, 253, 1) 61%,
-        rgba(238, 242, 255, 1) 100%
-    );
     padding: 5px 0 20px;
 `;
 
@@ -74,12 +62,13 @@ export const SemsterCode = styled.h1`
 
 export const InputDate = styled.div`
     display: flex;
-    gap: 15px;
+    justify-content: space-between;
+    width: 80%;
     font-size: 1rem;
     margin-bottom: 10px;
     input[type='date'] {
         cursor: pointer;
-        border: 2px solid ${COLOR.blue[2]};
+        border: 2px solid ${COLOR.primary03};
         border-radius: 4px;
         font-family: 'Lato';
         color: ${COLOR.primary03};

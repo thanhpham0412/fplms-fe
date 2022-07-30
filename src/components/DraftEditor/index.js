@@ -39,6 +39,7 @@ const DraftEditor = ({
     placeholder,
     editorState,
     setEditorState,
+    readOnly,
 }) => {
     const [toolBar, setToolBar] = useState({
         top: 0,
@@ -61,7 +62,6 @@ const DraftEditor = ({
 
     const onChange = (editorState) => {
         const blocks = convertToRaw(editorState.getCurrentContent());
-        console.log(blocks);
         const selectionState = editorState.getSelection();
         const anchorKey = selectionState.getAnchorKey();
         const start = selectionState.getStartOffset();
@@ -70,8 +70,8 @@ const DraftEditor = ({
         if (anchorKey && start != end) {
             setToolBar({
                 ...toolBar,
-                top: offset.top,
-                left: offset.left + offset.width / 2,
+                top: offset?.top,
+                left: offset?.left + offset?.width / 2,
                 isOpen: true,
             });
         } else {
@@ -154,15 +154,14 @@ const DraftEditor = ({
                 handleKeyCommand={handleKeyCommand}
                 handleBeforeInput={handleBeforeInput}
                 placeholder={placeholder}
+                readOnly={readOnly}
             />
         </>
     );
 };
 
 export const DraftRenderer = ({ editorState }) => {
-    const raw = convertFromRaw(editorState);
-    const [state] = useState(EditorState.createWithContent(raw));
-    return <Editor editorState={state} readOnly></Editor>;
+    return <Editor editorState={editorState} readOnly></Editor>;
 };
 
 export default DraftEditor;

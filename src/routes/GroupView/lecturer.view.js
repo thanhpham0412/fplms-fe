@@ -15,6 +15,7 @@ import {
     AvatarGroup,
     Button,
     CreateMeetingForm,
+    AdvanceEditor,
 } from '../../components';
 import { DraftRenderer } from '../../components/DraftEditor';
 import { get, post, put } from '../../utils/request';
@@ -54,6 +55,7 @@ import {
     GroupAvatar,
     Avatar,
     StudentFeedBack,
+    Input,
 } from './style';
 
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -63,19 +65,33 @@ import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 
 const LecturerView = ({ groupId, classId }) => {
-    const [editorStateStudent, setEditorStateStudent] = useState(EditorState.createEmpty());
-    const [editorStateFeedback, setEditorStateFeedback] = useState(EditorState.createEmpty());
+    const [query, setQuery] = useState({
+        viewState: EditorState.createEmpty(),
+        editorState: EditorState.createEmpty(),
+        cycleNumber: 0,
+        mark: 0,
+        title: '',
+    });
 
     const [list, setList] = useState([]);
-    const [form, setForm] = useState({
-        date: moment().format('YYYY-MM-DD'),
-        time: moment().format('HH:mm'),
-        score: 0,
-    });
     const [isOpen, setOpen] = useState(false);
     const [isDraftOpen, setDraft] = useState(false);
     const edtior1 = useRef();
     const edtior2 = useRef();
+
+    const setViewState = (state) => {
+        setQuery((query) => ({
+            ...query,
+            viewState: state,
+        }));
+    };
+
+    const setEditorState = (state) => {
+        setQuery((query) => ({
+            ...query,
+            editorState: state,
+        }));
+    };
 
     const events = [
         {
@@ -99,17 +115,24 @@ const LecturerView = ({ groupId, classId }) => {
     ];
 
     const showDraft = (item) => {
+        console.log(item);
         setDraft(() => {
-            setEditorStateStudent(JSON.parse(item.content));
+            setViewState(EditorState.createWithContent(convertFromRaw(JSON.parse(item.content))));
+            item.feedback &&
+                setEditorState(
+                    EditorState.createWithContent(convertFromRaw(JSON.parse(item.feedback)))
+                );
             return true;
         });
-        setForm({
-            ...form,
+        setQuery({
+            ...query,
             reportId: parseInt(item.id),
+            title: item.title,
         });
     };
 
     const topicPickedView = () => {
+        console.log('render list');
         return (
             <>
                 <StyledList>
@@ -130,11 +153,15 @@ const LecturerView = ({ groupId, classId }) => {
     };
 
     const getReports = () => {
-        const cycleReport = get('/cycle-reports', { groupId });
-        const progressReport = get('/progress-reports', { classId, groupId });
-
-        Promise.all([cycleReport, progressReport]).then(([cycleReport, progressReport]) => {
-            setList(cycleReport.data.data.concat(progressReport.data.data));
+        get('/cycle-reports', { groupId }).then((res) => {
+            if (res.data.code == 200) {
+                setList((list) => list.concat(res.data.data || []));
+            }
+        });
+        get('/progress-reports', { classId, groupId }).then((res) => {
+            if (res.data.code == 200) {
+                setList((list) => list.concat(res.data.data || []));
+            }
         });
     };
 
@@ -143,21 +170,27 @@ const LecturerView = ({ groupId, classId }) => {
     }, []);
 
     const sendFeedback = () => {
-        post('/cycle-reports/feedback', {
-            content: JSON.stringify(convertToRaw(editorStateFeedback.getCurrentContent())),
-            title: 'Feedback',
+        put('/cycle-reports/feedback', {
+            feedback: JSON.stringify(convertToRaw(query.editorState.getCurrentContent())),
             groupId: parseInt(groupId),
-            resourceLink: '',
-            mark: parseInt(form.score),
-        }).then((res) => {
-            console.log(res);
-            success('Feedback success');
-        });
+            mark: parseInt(query.mark),
+            reportId: parseInt(query.reportId),
+        })
+            .then((res) => {
+                if (res.data.code == 200) {
+                    success('Feedback success');
+                } else {
+                    error('Feedback error');
+                }
+            })
+            .catch(() => {
+                error('An error occured while processing feedback');
+            });
     };
 
     const changeHandle = (field, value) => {
-        setForm({
-            ...form,
+        setQuery({
+            ...query,
             [field]: value,
         });
     };
@@ -168,12 +201,6 @@ const LecturerView = ({ groupId, classId }) => {
 
     const onDateChange = (date) => {
         setOpen(() => {
-            console.log(form);
-            setForm({
-                ...form,
-                date: moment().format('YYYY-MM-DD'),
-                time: moment().format('HH:mm'),
-            });
             return true;
         });
     };
@@ -184,90 +211,51 @@ const LecturerView = ({ groupId, classId }) => {
         <>
             {isDraftOpen ? (
                 <Overlay isOpen={true} fullFill={true}>
-                    <EditorContainer>
-                        <Header>
-                            <BackBtn onClick={() => setDraft(false)}>
-                                <ArrowBackIosNewIcon fontSize="small" /> Group View
-                            </BackBtn>
-                            <GroupAvatar>
-                                {avts.map((avatar, index) => (
-                                    <Avatar
-                                        key={index}
-                                        size={32}
-                                        color={stringToColour(avatar + avts.join(''))}
-                                    >
-                                        <span src="./ben.png">{avatar}</span>
-                                    </Avatar>
-                                ))}
-                            </GroupAvatar>
-                        </Header>
-                        <BottomSide>
-                            <StudentFeedBack onClick={() => edtior1.current.focus()}>
-                                <DraftRenderer editorState={editorStateStudent} />
-                            </StudentFeedBack>
-                            <EditorSideBar>
-                                <GoalContainer>
-                                    <GoalDes>Reports Stats:</GoalDes>
-                                    <StatusBar />
-                                    <GoalCounter>
-                                        <span>100</span> / 700
-                                    </GoalCounter>
-                                </GoalContainer>
-                                <GoalContainer>
-                                    <GoalDes>Reports Score:</GoalDes>
-                                    <ScoreBar
-                                        placeholder="Score"
-                                        value={form.score}
-                                        onChange={(e) => changeHandle('score', e.target.value)}
-                                    />
-                                    <GoalCounter>Progress reports need to be score</GoalCounter>
-                                </GoalContainer>
-                                <FeedBackContainer>
-                                    <GoalDes>Reports Feedback:</GoalDes>
-                                    <FeedBackView onClick={() => edtior2.current.focus()}>
-                                        <DraftEditor
-                                            id={`feedback_${groupId}_${classId}`}
-                                            editorRef={edtior2}
-                                            placeholder="Write your feedback..."
-                                            editorState={editorStateFeedback}
-                                            setEditorState={setEditorStateFeedback}
-                                        />
-                                    </FeedBackView>
-                                    <GoalCounter>Reports need to be feedback</GoalCounter>
-                                </FeedBackContainer>
-                                <SendBtn onClick={sendFeedback}>Send Feedback</SendBtn>
-                            </EditorSideBar>
-                        </BottomSide>
-                    </EditorContainer>
+                    <AdvanceEditor
+                        closeFn={() => setDraft(false)}
+                        editorState={query.viewState}
+                        setEditorState={setViewState}
+                        avatars={['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']}
+                        readOnly
+                    >
+                        <GoalContainer>
+                            <GoalDes>Reports Stats:</GoalDes>
+                            <StatusBar />
+                            <GoalCounter>
+                                <span>100</span> / 700
+                            </GoalCounter>
+                        </GoalContainer>
+                        <GoalContainer>
+                            <GoalDes>Report Title</GoalDes>
+                            <span>{query.title}</span>
+                        </GoalContainer>
+                        <FeedBackContainer>
+                            <GoalDes>Reports Feedback:</GoalDes>
+                            <FeedBackView onClick={() => edtior2.current.focus()}>
+                                <DraftEditor
+                                    id={`feedback_${groupId}_${classId}`}
+                                    editorRef={edtior2}
+                                    placeholder="Write your feedback..."
+                                    editorState={query.editorState}
+                                    setEditorState={setEditorState}
+                                />
+                            </FeedBackView>
+                            <GoalCounter>Reports need to be feedback</GoalCounter>
+                        </FeedBackContainer>
+                        <GoalContainer>
+                            <GoalDes>Reports Score:</GoalDes>
+                            <ScoreBar
+                                placeholder="Score"
+                                value={query.mark}
+                                onChange={(e) => changeHandle('mark', parseFloat(e.target.value))}
+                            />
+                            <GoalCounter>Progress reports need to be score</GoalCounter>
+                        </GoalContainer>
+                        <SendBtn onClick={sendFeedback}>Send Feedback</SendBtn>
+                    </AdvanceEditor>
                 </Overlay>
             ) : null}
-            <CreateMeetingForm showing={isOpen} closeFn={closeFn} form={form} />
-            {/* <Overlay isOpen={isDraftOpen}>
-                <FeedBackView>
-                    <DraftEditor
-                        groupId={groupId}
-                        setShow={setDraft}
-                        submit={submit}
-                        initValue={initValue}
-                        readonly={true}
-                    />
-                    <ScoreBoard>
-                        <CommentInput
-                            maxRows={14}
-                            minRows={7}
-                            aria-label="maximum height"
-                            placeholder="Feedback"
-                            value={form.feedback}
-                            onChange={(e) => changeHandle('feedback', e.target.value)}
-                        />
-                        <ScoreBar
-                            placeholder="Score"
-                            value={form.score}
-                            onChange={(e) => changeHandle('score', e.target.value)}
-                        />
-                    </ScoreBoard>
-                </FeedBackView>
-            </Overlay> */}
+            <CreateMeetingForm showing={isOpen} closeFn={closeFn} groupId={groupId} />
             <Container>
                 {topicPickedView()}
                 <SideBar>

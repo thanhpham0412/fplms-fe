@@ -1,6 +1,17 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import { COLOR } from '../../utils/color';
+
+const fadeIn = keyframes`
+    from{
+        transform: translateX(25px);
+        opacity: 0;
+    }
+    to{
+        transform: translateX(0);
+        opacity: 1;
+    }
+`;
 
 const Container = styled.div`
     width: 100%;
@@ -12,6 +23,10 @@ const Container = styled.div`
     border-radius: 4px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
     position: relative;
+    div,
+    button {
+        animation: ${fadeIn} 300ms ease-in-out forwards;
+    }
 `;
 
 const Header = styled.div`
@@ -37,11 +52,13 @@ const Row = styled.div`
 const Project = styled.div`
     font-size: 1rem;
     color: ${COLOR.gray[0]};
+    animation-delay: 300ms;
 `;
 
 const Members = styled.div`
     font-size: 1rem;
     color: ${COLOR.gray[0]};
+    animation-delay: 500ms;
 `;
 
 const GroupBtn = styled.button`
@@ -73,6 +90,7 @@ export const JoinBtn = styled.button`
         cursor: pointer;
     }
     pointer-events: ${({ disable }) => (disable ? 'none' : 'auto')};
+    background-color: ${({ disable }) => disable && COLOR.gray[0]};
 `;
 
 const Dropdown = styled.div`

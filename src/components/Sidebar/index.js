@@ -72,7 +72,7 @@ const SideBar = () => {
             submenu: [
                 {
                     title: 'My classes',
-                    path: '/group-picking',
+                    path: '/class',
                     isExpand: true,
                     submenu: [],
                 },
@@ -91,11 +91,6 @@ const SideBar = () => {
                 {
                     title: 'My questions',
                     path: '/my-questions',
-                    submenu: [],
-                },
-                {
-                    title: 'My answers',
-                    path: '#',
                     submenu: [],
                 },
             ],

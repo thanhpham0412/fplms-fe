@@ -3,14 +3,13 @@ import { useEffect, useRef, useState } from 'react';
 
 import axios from 'axios';
 
-import autumnBG from '../../assets/autumnBg.jpg';
-import snowBG from '../../assets/snowbg.jpg';
-import springBG from '../../assets/springBG.jpg';
-import sunBG from '../../assets/sunBg.jpg';
-import { Header } from '../../components';
-import { useClickOutside } from '../../hooks';
+import { Header, Selection } from '../../components';
+import { error, success } from '../../utils/toaster';
 import SemesterForm from './SemesterForm';
+import { ButtonList, InputDate, SemsterCode } from './SemesterForm/style';
 import {
+    AddingCard,
+    Button,
     CardTitle,
     Container,
     LeftSetting,
@@ -23,17 +22,28 @@ import {
     Wrapper,
 } from './style';
 
+import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import SaveIcon from '@mui/icons-material/Save';
+import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 
 const AdminPage = () => {
     const [loading, setLoading] = useState(true);
     const [semesters, setSemesters] = useState();
     const [subjects, setSubjects] = useState();
-    const [values, setValues] = useState();
-    const [opts, setOpts] = useState([]);
+    const [subject, setSubject] = useState();
+    const [newSubjectName, setNewSubjectName] = useState('');
     const [show, setShow] = useState(true);
+    const [isAddingSubject, setIsAdding] = useState(false);
+    const [showSemsterForm, setShowSemesterForm] = useState(false);
 
     const [semester, setSemester] = useState();
+
+    const [semesterCode, setSemesterCode] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     //Set form position
     const [from, setFrom] = useState();
@@ -91,8 +101,117 @@ const AdminPage = () => {
         setOpen(true);
     };
 
+    const updateSubject = () => {
+        if (newSubjectName !== '' && subject) {
+            axios
+                .put(
+                    `${process.env.REACT_APP_API_URL}/subjects`,
+                    {
+                        id: subject.value,
+                        name: newSubjectName,
+                    },
+                    {
+                        headers: {
+                            Authorization: `${localStorage.getItem('token')}`,
+                        },
+                    }
+                )
+                .then((res) => {
+                    if (res.data.code == 200) {
+                        setSubjects((prev) => {
+                            return prev
+                                .filter((item) => item.value !== subject.value)
+                                .concat([{ value: subject.value, content: newSubjectName }]);
+                        });
+                        success(`Edit subject successfully!`);
+                    }
+                });
+        } else {
+            error(`Please input valid subject name`);
+        }
+    };
+
+    const createSubject = () => {
+        if (newSubjectName !== '') {
+            axios
+                .post(
+                    `${process.env.REACT_APP_API_URL}/subjects`,
+                    {
+                        name: newSubjectName,
+                    },
+                    {
+                        headers: {
+                            Authorization: `${localStorage.getItem('token')}`,
+                        },
+                    }
+                )
+                .then((res) => {
+                    if (res.data.code === 200) {
+                        success(`Add subject ${newSubjectName} successfully!`);
+                        setIsAdding(false);
+                        setNewSubjectName('');
+                    }
+                });
+        }
+    };
+
+    const deleteSubject = () => {
+        if (subject) {
+            axios
+                .delete(`${process.env.REACT_APP_API_URL}/subjects/${subject.value}`, {
+                    headers: {
+                        Authorization: `${localStorage.getItem('token')}`,
+                    },
+                })
+                .then((res) => {
+                    if (res.data.code == 200) {
+                        setSubjects((prev) => {
+                            return prev.filter((item) => item.value !== subject.value);
+                        });
+                        success(`Delete subject ${subject.content} successfully!`);
+                        location.reload();
+                    }
+                });
+        } else {
+            error(`Something wrong happens when deleting subject!`);
+        }
+    };
+
+    const createSemester = () => {
+        axios
+            .post(
+                `${process.env.REACT_APP_API_URL}/semesters`,
+                {
+                    code: semesterCode,
+                    endDate: endDate,
+                    startDate: startDate,
+                },
+                {
+                    headers: {
+                        Authorization: `${localStorage.getItem('token')}`,
+                    },
+                }
+            )
+            .then((res) => {
+                if (res.data.code === 200) {
+                    success(`Add semester successfully!`);
+
+                    setSemesters((prev) =>
+                        prev.concat([
+                            { code: semesterCode, endDate: endDate, startDate: startDate },
+                        ])
+                    );
+                    setSemester('');
+                    setEndDate('');
+                    setStartDate('');
+                    setShowSemesterForm(false);
+                }
+            });
+    };
+
     useEffect(() => {
         const fetchSemesters = async () => {
+            semesterRef.current.classList.add('active');
             try {
                 const res = await axios.get(`${process.env.REACT_APP_API_URL}/semesters`, {
                     headers: {
@@ -101,13 +220,11 @@ const AdminPage = () => {
                 });
 
                 if (res.data.code === 200) {
-                    await setSemesters(res.data.data);
-                    console.log(res.data);
                     setSemesters(res.data.data);
                     setLoading(false);
                 }
-            } catch (error) {
-                console.log(error);
+            } catch (err) {
+                error(err);
             }
         };
 
@@ -120,12 +237,18 @@ const AdminPage = () => {
                 });
 
                 if (res.data.code === 200) {
-                    await setSubjects(res.data.data);
+                    const datas = await res.data.data.map((item) => ({
+                        value: item.id,
+                        content: item.name,
+                    }));
+                    setSubjects(datas);
+                    setLoading(false);
                 }
-            } catch (error) {
-                console.log(error);
+            } catch (err) {
+                error(err);
             }
         };
+
         fetchSemesters();
         fetchSubjects();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -151,13 +274,90 @@ const AdminPage = () => {
                             </div>
                         </SemesterCard>
                     ))}
+                    <AddingCard isShow={showSemsterForm}>
+                        {showSemsterForm && (
+                            <>
+                                <CloseIcon
+                                    className="close-icon"
+                                    onClick={() => setShowSemesterForm(false)}
+                                />
+                                <input
+                                    id="semester-input"
+                                    placeholder="Semester Code"
+                                    value={semesterCode || ''}
+                                    onChange={(e) => setSemesterCode(e.target.value)}
+                                />
+                                <InputDate>
+                                    <span>Start Date:</span>
+                                    <input
+                                        type={'date'}
+                                        value={startDate || ''}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                    />
+                                </InputDate>
+                                <InputDate>
+                                    <span>End Date:</span>
+                                    <input
+                                        type={'date'}
+                                        value={endDate || ''}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                    />
+                                </InputDate>
+                                <ButtonList>
+                                    <Button
+                                        disabled={
+                                            semesterCode === '' ||
+                                            startDate === '' ||
+                                            endDate === ''
+                                        }
+                                        onClick={createSemester}
+                                    >
+                                        Save
+                                    </Button>
+                                </ButtonList>
+                            </>
+                        )}
+                        <AddIcon className="add-icon" onClick={() => setShowSemesterForm(true)} />
+                    </AddingCard>
                 </SettingBody>
             </>
         );
     };
 
     const renderSubjectSetting = () => {
-        return <div>Halo</div>;
+        return (
+            <>
+                <SettingTitle>Subject</SettingTitle>
+                <SettingBody
+                    style={{ gridTemplateColumns: '1fr auto 1fr' }}
+                    isAdding={isAddingSubject}
+                >
+                    <input
+                        id="add-subject"
+                        placeholder="Subject Name"
+                        onChange={(e) => setNewSubjectName(e.target.value)}
+                    />
+                    <Selection
+                        options={subjects}
+                        placeholder={'Subject' || newSubjectName}
+                        onChange={setSubject}
+                    />
+                    <TrendingFlatIcon style={{ alignSelf: 'center' }} />
+                    <input
+                        type="text"
+                        id="subject-name-input"
+                        onChange={(e) => setNewSubjectName(e.target.value)}
+                    />
+                    <div></div>
+                    <div></div>
+                    <div className="subject-icon">
+                        <AddIcon onClick={() => setIsAdding(!isAddingSubject)} />
+                        <SaveIcon onClick={isAddingSubject ? createSubject : updateSubject} />
+                        {subject && <DeleteIcon onClick={deleteSubject} />}
+                    </div>
+                </SettingBody>
+            </>
+        );
     };
 
     const renderForm = () => {
@@ -170,6 +370,7 @@ const AdminPage = () => {
                 h={height}
                 from={from}
                 to={to}
+                setSemesters={setSemesters}
             />
         );
     };
@@ -181,11 +382,7 @@ const AdminPage = () => {
             <Wrapper>
                 <Container>
                     <RightSetting>
-                        <SettingLabel
-                            className="active"
-                            ref={semesterRef}
-                            onClick={() => showSemesterSetting()}
-                        >
+                        <SettingLabel ref={semesterRef} onClick={() => showSemesterSetting()}>
                             Semester Settings
                         </SettingLabel>
                         <SettingLabel ref={subjectRef} onClick={() => showSubjectSetting()}>

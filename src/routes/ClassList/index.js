@@ -5,20 +5,32 @@ import { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
-import { ClassSection as Section, CreateClassForm, Button } from '../../components';
-import ClassSectionHolder from '../../components/ClassSection/holder';
+import { ClassSection as Section, CreateClassForm, Button, Selection, Overlay } from '../../components';
 import { getTokenInfo } from '../../utils/account';
 import { get } from '../../utils/request';
-import { Container, StyledList, StyledInput, ToolBar } from './style';
+import { error } from '../../utils/toaster';
+import { Container, StyledList, StyledInput, ToolBar, SelectionContainer, SearchBar } from './style';
+
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import SearchIcon from '@mui/icons-material/Search';
 
 const ClassList = () => {
-    const [classList, setList] = useState(null);
-    const [loadHolder] = useState(
-        new Array(10).fill(ClassSectionHolder).map((Load, i) => <Load key={i} />)
-    );
-    const [filter, setFilter] = useState('');
-    const [isCreate, setCreate] = useState(false);
-    const [searchClass, setSearch] = useState('');
+    const [classList, setList] = useState(new Array(10).fill('').map((item, index) => (
+        {
+            name: '',
+            lecture: null,
+            subjectId: null,
+            semesterCode: null,
+            id: index,
+            join: null,
+        }
+    )));
+    const [filter, setFilter] = useState({
+        name: '',
+        subjectId: -1,
+    });
+    const [isModalOpen, setModalOpen] = useState(false);
     const [subjects, setSubjects] = useState([]);
 
     const user = getTokenInfo();
@@ -32,35 +44,62 @@ const ClassList = () => {
         const API_STUDENT = process.env.REACT_APP_API_URL + `/classes/student`;
         const CLASS_API = user.role == 'Lecturer' ? API_LECTURER : API_STUDENT;
 
-        const subs = get('/subjects');
-        const list = axios.get(CLASS_API, {
+        get('/subjects').then((subs) => {
+            if (subs.data.code == 200) {
+                setSubjects(
+                    subs.data.data.reduce((pre, cur) => {
+                        pre[cur.id] = cur.name;
+                        return pre;
+                    }, [])
+                );
+            }
+        }).catch(() => {
+            error('An error occured while processing subjects list')
+        });
+        axios.get(CLASS_API, {
             headers: header,
             params: {
-                search: searchClass,
+                search: '',
             },
+        }).then((list) => {
+            if (list.data.code == 200) {
+                setList(list.data.data);
+            }
+        }).catch(() => {
+            error('An error occured while processing class list')
         });
 
-        Promise.all([subs, list]).then(([subs, list]) => {
-            console.log('done');
-            setSubjects(
-                subs?.data.data.reduce((pre, cur) => {
-                    pre[cur.id] = cur.name;
-                    return pre;
-                }, [])
-            );
-            setList(list.data.data);
-        });
+        // Promise.all([subs, list]).then(([subs, list]) => {
+        //     setSubjects(
+        //         subs?.data.data.reduce((pre, cur) => {
+        //             pre[cur.id] = cur.name;
+        //             return pre;
+        //         }, [])
+        //     );
+        //     setList(list.data.data);
+        // });
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const open = () => {
-        setCreate(true);
+        setModalOpen(true);
     };
 
     const search = (e) => {
-        setFilter(e.target.value);
-        setSearch(e.target.value);
+        setFilter((filter) => ({
+            ...filter,
+            name: e.target.value || '',
+        }));
     };
+
+    const subjectFilter = (e) => {
+        console.log(e);
+        setFilter((filter) => ({
+            ...filter,
+            subjectId: e.value || -1,
+        }));
+    }
 
     const handleSearch = () => {
         //asd
@@ -68,36 +107,54 @@ const ClassList = () => {
 
     return (
         <>
-            <CreateClassForm showing={isCreate} setCreate={setCreate} setClass={setList} />
+            <Overlay isOpen={isModalOpen} closeFn={setModalOpen}>
+                <CreateClassForm showing={isModalOpen} setCreate={setModalOpen} setClass={setList} />
+            </Overlay>
             <Container>
                 <ToolBar>
-                    <StyledInput
-                        type="text"
-                        placeholder="Search for class..."
-                        spellcheck="false"
-                        onChange={search}
-                        onKeyUp={handleSearch}
-                    ></StyledInput>
-                    {user.role == 'Lecturer' && <Button onClick={open}>Create New Class</Button>}
+                    <SearchBar>
+                        <Button icon={<SearchIcon />}></Button>
+                        <StyledInput
+                            type="text"
+                            placeholder="Search for class by name..."
+                            spellcheck="false"
+                            onChange={search}
+                            onKeyUp={handleSearch}
+                        />
+                    </SearchBar>
+                    <SelectionContainer>
+                        <Selection
+                            options={[{ value: -1, content: 'All' }].concat(subjects.map((subject, index) => ({ value: index, content: subject })))}
+                            placeholder="Filter by subject"
+                            maxHeight="600px"
+                            arrow={false}
+                            icon={<FilterAltIcon />}
+                            onChange={subjectFilter}
+                        />
+                    </SelectionContainer>
+                    {user.role == 'Lecturer' && <Button onClick={open} icon={<AddCircleIcon />}></Button>}
                 </ToolBar>
                 <StyledList>
-                    {Array.isArray(classList)
-                        ? classList.map((item) => (
-                            <Section
-                                key={item.id}
-                                name={item.name}
-                                lecture={
-                                    item.lecturerDto
-                                        ? `${item.lecturerDto.name} - ${item.lecturerDto.email}`
-                                        : item.enrollKey
-                                }
-                                subjectId={subjects[item.subjectId]}
-                                semesterCode={item.semesterCode}
-                                id={item.id}
-                                join={item.join}
-                            />
-                        ))
-                        : loadHolder}
+                    {
+                        classList
+                            .filter((item) => item.name.includes(filter.name))
+                            .filter((item) => filter.subjectId != -1 ? item.subjectId == filter.subjectId : true)
+                            .map((item) => (
+                                <Section
+                                    key={item.id}
+                                    name={item.name}
+                                    lecture={
+                                        item.lecturerDto
+                                            ? `${item.lecturerDto.name} - ${item.lecturerDto.email}`
+                                            : item.enrollKey
+                                    }
+                                    subjectId={subjects[item.subjectId]}
+                                    semesterCode={item.semesterCode}
+                                    id={item.id}
+                                    join={item.join}
+                                />
+                            ))
+                    }
                 </StyledList>
             </Container>
         </>

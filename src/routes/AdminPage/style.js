@@ -2,6 +2,28 @@ import styled, { keyframes } from 'styled-components';
 
 import { COLOR } from '../../utils/style';
 
+const openInput = keyframes`
+    0%{
+        width: 10px;
+        height: 0px;
+    }
+    10%{
+        top: 0;
+        height: 58px;
+    }
+    80%{
+        top: 0;
+        height: 58px;
+    }
+    100%{
+        top: 0;
+        width: 100%;
+        height: 58px;
+        background-color: ${COLOR.primary02};
+        border: 1px solid ${COLOR.blue[0]};
+    }
+`;
+
 const loader = keyframes`
     from{
         transform: rotate(1turn);
@@ -43,7 +65,7 @@ export const Container = styled.div`
     background-color: ${COLOR.primary02};
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     display: flex;
-    overflow: hidden;
+    /* overflow: hidden; */
 `;
 
 export const RightSetting = styled.div`
@@ -80,6 +102,54 @@ export const SettingBody = styled.div`
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
+    position: relative;
+    #subject-name-input {
+        min-height: 55px;
+        outline: none;
+        border: 1px solid ${COLOR.blue[0]};
+        padding: 0 1rem;
+        font-size: 1rem;
+        color: ${COLOR.primary03};
+    }
+    .subject-icon {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 10px;
+        svg:nth-of-type(1) {
+            color: ${({ isAdding }) => (isAdding ? COLOR.red[0] : COLOR.blue[0])};
+            transform: rotate(${({ isAdding }) => (isAdding ? '135deg' : '0')});
+            transition: transform 1s ease-in-out;
+        }
+        svg:nth-of-type(2) {
+            fill: ${COLOR.green[0]};
+        }
+        svg:nth-of-type(3) {
+            fill: ${COLOR.red[0]};
+        }
+        svg {
+            cursor: pointer;
+            :hover {
+                transform: scale(1.2);
+                transition: transform 150ms ease-in-out;
+            }
+        }
+    }
+    #add-subject {
+        outline: none;
+        border: none;
+        color: ${COLOR.primary03};
+        font-size: 1.2rem;
+        padding: 0 1rem;
+        display: ${({ isAdding }) => (isAdding ? 'block' : 'none')};
+        position: absolute;
+        top: 25px;
+        left: 0;
+        z-index: 2;
+        background-color: ${COLOR.blue[0]};
+        transform-origin: center;
+        animation: ${openInput} 1.5s ease-in-out forwards;
+    }
 `;
 
 export const SettingTitle = styled.div`
@@ -93,6 +163,7 @@ export const SettingLabel = styled.div`
     justify-content: space-between;
     padding: 10px 15px;
     border-radius: 100px;
+    pointer-events: ${({ disabled }) => (disabled ? 'none' : 'auto')};
     :hover {
         color: ${COLOR.primary02};
         background-color: ${COLOR.blue[0]};
@@ -123,20 +194,13 @@ export const SemesterCard = styled.div`
     gap: 10px;
     border-radius: 4px;
     overflow: hidden;
-    background: linear-gradient(
-        135deg,
-        rgba(153, 179, 251, 1) 0%,
-        rgba(184, 202, 252, 1) 29%,
-        rgba(195, 210, 253, 1) 61%,
-        rgba(238, 242, 255, 1) 100%
-    );
     min-height: 120px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     padding: 15px;
     position: relative;
     cursor: pointer;
     transition: transform 200ms ease-in-out;
-    color: ${COLOR.primary02};
+    color: ${COLOR.primary03};
     :hover {
         transform: scale(1.05);
     }
@@ -144,7 +208,7 @@ export const SemesterCard = styled.div`
         position: absolute;
         top: 15px;
         right: 15px;
-        color: ${COLOR.primary02};
+        color: ${COLOR.primary03};
     }
     & span {
         margin-left: 20px;
@@ -152,8 +216,61 @@ export const SemesterCard = styled.div`
 `;
 
 export const CardTitle = styled.h3`
-    font-weight: 400;
+    font-weight: 600;
     font-size: 1rem;
-    color: ${COLOR.primary02};
+    color: ${COLOR.primary03};
     margin: 0;
+`;
+
+export const AddingCard = styled.div`
+    max-width: 100%;
+    border-radius: 4px;
+    overflow: hidden;
+    min-height: 120px;
+    border: 2px solid ${COLOR.gray[0]};
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    .add-icon {
+        display: ${({ isShow }) => (!isShow ? 'block' : 'none')};
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 4rem;
+        color: ${COLOR.gray[0]};
+        cursor: pointer;
+    }
+    .close-icon {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        :hover {
+            transform: scale(1.2);
+        }
+    }
+
+    #semester-input {
+        width: 70%;
+        margin-bottom: 15px;
+    }
+`;
+
+export const Button = styled.button`
+    outline: none;
+    background-color: transparent;
+    border: 1px solid ${COLOR.green[0]};
+    padding: 5px 15px;
+    border-radius: 4px;
+
+    :hover {
+        cursor: pointer;
+        background-color: ${COLOR.green[0]};
+        color: ${COLOR.primary02};
+    }
+    :disabled {
+        cursor: default;
+    }
 `;

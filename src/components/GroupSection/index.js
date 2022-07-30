@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { getTokenInfo } from '../../utils/account';
 import { error, success } from '../../utils/toaster';
 import AvatarGroup from '../AvatarGroup';
+import ConfirmModal from '../ConfirmModal';
 import EditGroupForm from '../EditGroupForm';
 import {
     Container,
@@ -28,15 +29,18 @@ import PeopleIcon from '@mui/icons-material/People';
 
 const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefresh }) => {
     const { id } = data;
+
     const [isCreate, setCreate] = useState(false);
     const [disable, setDisable] = useState(false);
     const [btnStyle, setBtnStyle] = useState(false);
     const [slot, setSlot] = useState(data.currentNumber);
+    const [isOpen, setIsOpen] = useState(false);
     const [group] = useState(data);
     const currentDate = new Date();
+
     const navigate = useNavigate();
     const user = getTokenInfo();
-    console.log(user);
+
     const TOKEN = localStorage.getItem('token');
     const URL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups/${id}/join`;
     const URL_DELETE = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups/${group.id}`;
@@ -73,8 +77,10 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
             axios
                 .delete(URL_DELETE, { headers: header })
                 .then((res) => {
-                    if (res.data.code == 200) success(`Remove group${group.number} successfully!`);
-                    else error(`${res.data.message}`);
+                    if (res.data.code == 200) {
+                        success(`Remove group${group.number} successfully!`);
+                        setIsOpen(false);
+                    } else error(`${res.data.message}`);
                 })
                 .finally(() => {
                     setRefresh((prev) => prev - 1);
@@ -84,8 +90,10 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
             axios
                 .put(URL_DISABLE, { userEmail: email }, { headers: header })
                 .then((res) => {
-                    if (res.data.code == 200) success(`Disable group${group.number} successfully!`);
-                    else error(`${res.data.message}`);
+                    if (res.data.code == 200) {
+                        success(`Disable group${group.number} successfully!`);
+                        setIsOpen(false);
+                    } else error(`${res.data.message}`);
                 })
                 .finally(() => {
                     setRefresh((prev) => prev - 1);
@@ -93,6 +101,7 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
             error(`Group ${group.number} is having ${group.currentNumber} member(s)!`);
         }
     };
+
     return (
         <>
             <EditGroupForm
@@ -103,6 +112,7 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
                 email={email}
                 setRefresh={setRefresh}
             />
+            <ConfirmModal isOpen={isOpen} setIsOpen={setIsOpen} action={handleRemoveBtn} />
             <Container>
                 <Header style={{ justifyContent: 'space-between' }}>
                     <div>GROUP {group.number}</div>
@@ -112,7 +122,7 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
                                 <MoreVertIcon />
                             </button>
                             <DropdownMenu className="dropdown-menu">
-                                <DeleteIcon onClick={handleRemoveBtn} />
+                                <DeleteIcon onClick={() => setIsOpen(true)} />
                                 <EditIcon onClick={() => setCreate(true)} />
                             </DropdownMenu>
                         </Dropdown>
@@ -130,7 +140,7 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
                 </Row>
                 <Row>
                     <AccessTimeIcon />
-                    <Members>{group.enrollTime.split('.')[0]}</Members>
+                    <Members>{group.enrollTime && group.enrollTime.split('.')[0]}</Members>
                 </Row>
                 {role === 'Lecturer' ? (
                     <Row>
@@ -146,7 +156,7 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
                     <Row style={{ justifyContent: 'space-between' }}>
                         <AvatarGroup slot={slot} members={group.memberQuantity} />
                         <JoinBtn onClick={handleJoinBtn} disable={disable} btnStyle={btnStyle}>
-                            {slot == group.memberQuantity ? 'Full' : 'Join'}
+                            {slot == group.memberQuantity ? 'Full' : disable ? 'Closed' : 'Join'}
                         </JoinBtn>
                     </Row>
                 )}

@@ -34,4 +34,5 @@ export const HeaderContainer = styled.div`
 export const BodyContainer = styled.div`
     box-sizing: border-box;
     padding: 24px;
+    min-height: 0; // make children fit to parent max height
 `;

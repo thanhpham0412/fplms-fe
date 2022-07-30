@@ -7,10 +7,10 @@ import { useClickOutside } from '../../../hooks';
 import { error, success } from '../../../utils/toaster';
 import { Wrapper, Container, Overlay, ButtonList, Button, SemsterCode, InputDate } from './style';
 
-const SemesterForm = ({ open, setOpen, w, h, from, to, semester }) => {
+const SemesterForm = ({ open, setOpen, w, h, from, to, semester, setSemesters }) => {
     const formRef = useRef();
-    const [startDate, setStartDate] = useState();
-    const [endDate, setEndDate] = useState();
+    const [startDate, setStartDate] = useState(semester.startDate);
+    const [endDate, setEndDate] = useState(semester.endDate);
 
     const handleDeleteSemester = async () => {
         try {
@@ -20,8 +20,14 @@ const SemesterForm = ({ open, setOpen, w, h, from, to, semester }) => {
                     headers: { Authorization: `${localStorage.getItem('token')}` },
                 }
             );
-            await success(`Delete semester successfully!`);
-            setOpen(false);
+            if (res.data.code === 200) {
+                setSemesters((prev) => prev.filter((item) => item.code != semester.code));
+                success(`Delete semester successfully!`);
+                setOpen(false);
+            } else {
+                error(`Something wrong!`);
+                setOpen(false);
+            }
         } catch (err) {
             await error(err);
             setOpen(false);
@@ -29,17 +35,28 @@ const SemesterForm = ({ open, setOpen, w, h, from, to, semester }) => {
     };
     const handleEditSemester = async () => {
         try {
-            const res = await axios.put(`${process.env.REACT_APP_API_URL}/semesters`, {
-                headers: {
-                    Authorization: `${localStorage.getItem('token')}`,
-                },
-                params: {
+            const res = await axios.put(
+                `${process.env.REACT_APP_API_URL}/semesters`,
+                {
                     code: semester.code,
                     endDate: endDate,
                     startDate: startDate,
                 },
+                {
+                    headers: {
+                        Authorization: `${localStorage.getItem('token')}`,
+                    },
+                }
+            );
+            await setSemesters((prev) => {
+                prev.find((item) => item.code === semester.code).code = semester.code;
+                prev.find((item) => item.code === semester.code).endDate = endDate;
+                prev.find((item) => item.code === semester.code).startDate = startDate;
+                return prev;
             });
+
             success(`Edit semester successfully`);
+            setOpen(false);
         } catch (err) {
             await error(err);
             await setOpen(false);
@@ -85,7 +102,7 @@ const SemesterForm = ({ open, setOpen, w, h, from, to, semester }) => {
                         />
                     </InputDate>
                     <InputDate>
-                        <span>Start Date:</span>
+                        <span>End Date:</span>
                         <input
                             type={'date'}
                             defaultValue={semester.endDate}

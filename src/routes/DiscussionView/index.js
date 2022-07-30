@@ -8,6 +8,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { Jumbotron, TopActivities } from '../../components';
 import AnswerSection from '../../components/AnswerSection';
+import ConfirmModal from '../../components/ConfirmModal';
 import PostLoader from '../../components/PostSection/loader';
 import { error, success } from '../../utils/toaster';
 import {
@@ -55,6 +56,7 @@ const DiscussionView = () => {
     ];
     const [question, setQuestion] = useState();
     const [isLoading, setLoading] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const [refresh, setRefresh] = useState(0);
     let editorState;
     let raw;
@@ -100,14 +102,17 @@ const DiscussionView = () => {
             if (res.status >= 200 && res.status < 300) {
                 success(`Delete question successfully!`);
                 navigate(-1);
+                setIsOpen(false);
             } else {
                 error(`${res.message}`);
+                setIsOpen(false);
             }
         });
     };
 
     return (
         <>
+            <ConfirmModal isOpen={isOpen} setIsOpen={setIsOpen} action={deleteQuestion} />
             <StyledContainer>
                 <Jumbotron title={'discussion'} subtitle={question?.title} />
 
@@ -140,7 +145,9 @@ const DiscussionView = () => {
                                                             <MoreVertIcon />
                                                         </button>
                                                         <DropdownMenu className="dropdown-menu">
-                                                            <DeleteIcon onClick={deleteQuestion} />
+                                                            <DeleteIcon
+                                                                onClick={() => setIsOpen(true)}
+                                                            />
                                                             <EditIcon
                                                                 onClick={() =>
                                                                     navigate(

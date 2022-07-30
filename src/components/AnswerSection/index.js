@@ -6,6 +6,7 @@ import ReactTimeAgo from 'react-time-ago';
 
 import { error } from '../../utils/toaster';
 import ButtonLoader from '../ButtonLoader';
+import ConfirmModal from '../ConfirmModal';
 import {
     Container,
     CommentInput,
@@ -35,6 +36,8 @@ const AnswerSection = ({ questionId, answers, setRefresh }) => {
     TimeAgo.addLocale(ru);
     const [answer, setAnswer] = useState();
     const [isLoading, setLoading] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [deleteData, setDeleteDate] = useState();
     const refs = useRef(new Array());
     const dropdownRefs = useRef(new Array());
     const userInfo = JSON.parse(localStorage.getItem('user'));
@@ -65,13 +68,15 @@ const AnswerSection = ({ questionId, answers, setRefresh }) => {
             });
     };
 
-    const handleDeleteAnswer = (data) => {
-        axios.delete(`${URL}/${data.id}`, { headers: header }).then((res) => {
+    const handleDeleteAnswer = () => {
+        axios.delete(`${URL}/${deleteData.id}`, { headers: header }).then((res) => {
             if (res.status >= 200 && res.status < 300) {
                 setRefresh((prev) => prev - 1);
+                setIsOpen(false);
             } else {
                 error(`An error occured!`);
                 setRefresh((prev) => prev - 1);
+                setIsOpen(false);
             }
         });
     };
@@ -138,93 +143,101 @@ const AnswerSection = ({ questionId, answers, setRefresh }) => {
     };
 
     return (
-        <Container>
-            <Answers>
-                <img src={userInfo?.imageUrl} />
-                <Comment isLoading={isLoading}>
-                    <ButtonLoader isLoading={isLoading} />
-                    <CommentInput onChange={(e) => setAnswer(e.target.value)} value={answer} />
+        <>
+            <ConfirmModal isOpen={isOpen} setIsOpen={setIsOpen} action={handleDeleteAnswer} />
+            <Container>
+                <Answers>
+                    <img src={userInfo?.imageUrl} />
+                    <Comment isLoading={isLoading}>
+                        <ButtonLoader isLoading={isLoading} />
+                        <CommentInput onChange={(e) => setAnswer(e.target.value)} value={answer} />
 
-                    {/* <AttachmentIcon /> */}
-                    <SendIcon onClick={handlePostAnswer} />
-                </Comment>
-            </Answers>
+                        {/* <AttachmentIcon /> */}
+                        <SendIcon onClick={handlePostAnswer} />
+                    </Comment>
+                </Answers>
 
-            {answers
-                ?.sort((a, b) => b.upvotes - a.upvotes)
-                .sort((a) => (a.accepted ? -1 : 1))
-                .map((data, index) => (
-                    <Answers key={data.id}>
-                        <Col>
-                            <img src={data.student?.picture} alt="Student Avatar" />
-                        </Col>
-                        <Col>
-                            <Row>
-                                <Comment>
-                                    <CommentInput
-                                        disabled
-                                        defaultValue={data.content}
-                                        ref={(el) => refs.current.push(el)}
-                                        onChange={(e) =>
-                                            (refs.current[index].value = e.target.value)
-                                        }
-                                    />
-                                    {userInfo.email === data.student.email && (
-                                        <Dropdown>
-                                            <button
-                                                className="sub-option"
-                                                ref={(el) => dropdownRefs.current.push(el)}
-                                                onClick={(e) => e.stopPropagation}
-                                            >
-                                                <MoreVertIcon />
-                                            </button>
-                                            <DropdownMenu className="dropdown-menu">
-                                                <DeleteIcon
-                                                    onClick={() => handleDeleteAnswer(data)}
-                                                />
-                                                <EditIcon onClick={() => handleEditAnswer(index)} />
-                                            </DropdownMenu>
-                                        </Dropdown>
-                                    )}
+                {answers
+                    ?.sort((a, b) => b.upvotes - a.upvotes)
+                    .sort((a) => (a.accepted ? -1 : 1))
+                    .map((data, index) => (
+                        <Answers key={data.id}>
+                            <Col>
+                                <img src={data.student?.picture} alt="Student Avatar" />
+                            </Col>
+                            <Col>
+                                <Row>
+                                    <Comment>
+                                        <CommentInput
+                                            disabled
+                                            defaultValue={data.content}
+                                            ref={(el) => refs.current.push(el)}
+                                            onChange={(e) =>
+                                                (refs.current[index].value = e.target.value)
+                                            }
+                                        />
+                                        {userInfo.email === data.student.email && (
+                                            <Dropdown>
+                                                <button
+                                                    className="sub-option"
+                                                    ref={(el) => dropdownRefs.current.push(el)}
+                                                    onClick={(e) => e.stopPropagation}
+                                                >
+                                                    <MoreVertIcon />
+                                                </button>
+                                                <DropdownMenu className="dropdown-menu">
+                                                    <DeleteIcon
+                                                        onClick={() => {
+                                                            setIsOpen(true);
+                                                            setDeleteDate(data);
+                                                        }}
+                                                    />
+                                                    <EditIcon
+                                                        onClick={() => handleEditAnswer(index)}
+                                                    />
+                                                </DropdownMenu>
+                                            </Dropdown>
+                                        )}
 
-                                    <SaveIcon
-                                        sx={{ display: 'none' }}
-                                        className={`save-btn-${index}`}
-                                        onClick={() => handleSaveAnswer(data.id, index)}
-                                    />
-                                </Comment>
-                            </Row>
-                            <Row>
-                                <Action>
-                                    <input
-                                        type={'radio'}
-                                        name="Like"
-                                        id={data.id}
-                                        onClick={(e) => handleAcceptAnswer(data, e)}
-                                        defaultChecked={data.accepted ? true : false}
-                                    />
-                                    <label htmlFor={data.id}>
-                                        <DoneIcon />
-                                    </label>
-                                </Action>
-                                <Action>
-                                    <span>{data.student.name}</span>
-                                </Action>
-                                <Action>
-                                    <ReactTimeAgo
-                                        date={Date.parse(data.createdDate)}
-                                        locale="en-US"
-                                    />
-                                </Action>
-                            </Row>
-                        </Col>
-                        <Vote upvoted={data.upvoted}>
-                            <ArrowDropUpIcon onClick={() => handleVote(data)} />
-                            <div>{data.upvotes}</div>
-                        </Vote>
-                    </Answers>
-                ))}
-        </Container>
+                                        <SaveIcon
+                                            sx={{ display: 'none' }}
+                                            className={`save-btn-${index}`}
+                                            onClick={() => handleSaveAnswer(data.id, index)}
+                                        />
+                                    </Comment>
+                                </Row>
+                                <Row>
+                                    <Action>
+                                        <input
+                                            type={'radio'}
+                                            name="Like"
+                                            id={data.id}
+                                            onClick={(e) => handleAcceptAnswer(data, e)}
+                                            defaultChecked={data.accepted ? true : false}
+                                        />
+                                        <label htmlFor={data.id}>
+                                            <DoneIcon />
+                                        </label>
+                                    </Action>
+                                    <Action>
+                                        <span>{data.student.name}</span>
+                                    </Action>
+                                    <Action>
+                                        <ReactTimeAgo
+                                            date={Date.parse(data.createdDate)}
+                                            locale="en-US"
+                                        />
+                                    </Action>
+                                </Row>
+                            </Col>
+                            <Vote upvoted={data.upvoted}>
+                                <ArrowDropUpIcon onClick={() => handleVote(data)} />
+                                <div>{data.upvotes}</div>
+                            </Vote>
+                        </Answers>
+                    ))}
+            </Container>
+        </>
     );
 };
 
