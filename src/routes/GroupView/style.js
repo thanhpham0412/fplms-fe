@@ -58,12 +58,21 @@ export const SideBar = styled.div`
     top: 104px;
     height: fit-content;
     z-index: 9;
+    display: flex;
+    flex-direction: column;
 `;
 
 export const CommingContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    max-height: 300px;
+    overflow: auto;
+
+    [data-target='styled-button'] {
+        align-items: center;
+        justify-content: center;
+    }
 `;
 
 export const Icon = styled.div`
@@ -401,7 +410,7 @@ export const StatusBar = styled.div`
     ::before {
         content: '';
         position: absolute;
-        width: calc(100% * (1 / 7));
+        width: calc(100% * (${({ progress }) => progress[0] / progress[1]}));
         height: 100%;
         background: ${COLOR.blue[0]};
         border-radius: 2rem;

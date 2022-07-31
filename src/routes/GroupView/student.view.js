@@ -15,6 +15,9 @@ import {
     NoResult,
     AdvanceEditor,
 } from '../../components';
+
+import moment from 'moment';
+
 import { DraftRenderer } from '../../components/DraftEditor';
 import LoadOverLayContext from '../../contexts/loadOverlay';
 import { getTokenInfo } from '../../utils/account';
@@ -68,6 +71,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 
 const FeedBack = ({ list }) => {
+    console.log(list[0].type);
     return (
         <StyledList>
             {list.map(({ content, type, feedback, title }, index) => {
@@ -133,9 +137,26 @@ const TopicList = ({
 };
 
 const TEMPLATE = '<h1>Pick a topic for your team:</h1>' +
-    '<h2>Choose your own topic on the pannel on the left</h2>' +
+    '<h2>Choose your own topic on the pannel on the right</h2>' +
     '<p>Once you picked, the topic will apply to all of your team member</p>' +
     '<p>Be carefully because this action can\'t be undone</p>'
+
+const TEMPLATE2 = `
+<h1>Reports agenda</h1>
+<p>
+Whether you’re meeting in-person or meeting asynchronously, these four agenda items will keep you and your team on top of your sprint.
+</p>
+<ol>
+	<h2>1. Blockers</h2>
+    <p>Is there anything preventing contributors from getting work done? Things to bring up here might be technical limitations, departmental and team dependencies, and personal limitations (like vacations booked, people out sick, etc.).</p>
+    <h2>2. What you have done?</h2>
+    <p>This is a quick rundown of what got done (and if anything didn’t get done, then why). This isn’t the time for each person to run down their whole to-do list – they should focus on the large chunks of work that made up their deep focus time, and the activities that are relevant to your team as a whole.</p>
+    <h2>3. What are your goals?</h2>
+    <p>Here, each team member will say what they want to accomplish – in other words, what they can be held accountable for in tomorrow’s daily scrum meeting.</p>
+    <h2>4. How close are we to hitting our sprint goals? What’s your comfort level?</h2>
+    <p>This agenda item will help the scrum master get an idea of how the team is feeling about how their day-to-day activities are impacting overall goals for the team, and how contributors are feeling about the pace of the sprint.</p>
+</ol>
+`
 
 const StudentView = ({ groupId, classId }) => {
     const loadOverlay = useContext(LoadOverLayContext);
@@ -150,10 +171,12 @@ const StudentView = ({ groupId, classId }) => {
             content: 'Progress report',
         },
     ]);
+    const [progress, setProgress] = useState([1, 10]);
     const [list, setList] = useState([]);
     const [type, setType] = useState({ value: 1, content: 'progress-reports' });
+    const [events, setEvents] = useState([]);
 
-    const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const [editorState, setEditorState] = useState(EditorState.createWithContent(fromHTML(TEMPLATE2)));
     const editor = useRef();
 
     const [topicList, setTopicList] = useState(
@@ -165,8 +188,27 @@ const StudentView = ({ groupId, classId }) => {
 
     const user = getTokenInfo();
 
-    const test = (date) => {
-        console.log(date);
+    const calendarChange = (date) => {
+        get('/meetings', {
+            classId: parseInt(classId),
+            endDate: moment(date).add(1, 'd').format('yyyy-MM-DD HH:mm:ss.SSS'),
+            startDate: moment(date).format('yyyy-MM-DD HH:mm:ss.SSS'),
+            groupId: parseInt(groupId),
+        }).then((res) => {
+            if (res.data.code == 200) {
+                const data = res.data.data.map((event) => (
+                    {
+                        link: event.link,
+                        id: event.id,
+                        icon: <AssignmentIcon />,
+                        title: event.title,
+                        status: moment(new Date()).isAfter(event.scheduleTime) ? 'Done' : 'Incoming',
+                        time: moment(event.scheduleTime).fromNow(),
+                    }
+                ))
+                setEvents(data);
+            }
+        })
     };
 
     const submitCycle = (type) => {
@@ -195,28 +237,10 @@ const StudentView = ({ groupId, classId }) => {
             });
     };
 
-    const events = [
-        {
-            icon: <ArticleIcon />,
-            title: 'Report your tasks',
-            status: 'Upcomming',
-            time: 'Today at 16h10',
-        },
-        {
-            icon: <RadioButtonCheckedIcon />,
-            title: 'Meeting with lecturers',
-            status: 'Upcomming',
-            time: 'Today at 20h00',
-        },
-        {
-            icon: <AssignmentIcon />,
-            title: 'Done your tasks',
-            status: 'done',
-            time: 'Tomorrow',
-        },
-    ];
-
     const onChange = (e) => {
+        setProgress((progress) => {
+            return [list.filter((report) => report.type == 'cycle').length, progress[1]];
+        })
         setEditorOpen(true);
         setType(e);
     };
@@ -224,12 +248,18 @@ const StudentView = ({ groupId, classId }) => {
     const getReports = () => {
         get('/cycle-reports', { classId, groupId }).then((res) => {
             if (res.data.code == 200) {
-                setList((list) => list.concat(res.data.data || []));
+                setList((list) => list.concat(res.data.data.map((data) => ({
+                    ...data,
+                    type: 'cycle',
+                }))));
             }
         });
         get('/progress-reports', { classId, groupId }).then((res) => {
             if (res.data.code == 200) {
-                setList((list) => list.concat(res.data.data || []));
+                setList((list) => list.concat(res.data.data.map((data) => ({
+                    ...data,
+                    type: 'progress',
+                }))));
             }
         });
         // Promise.all([cycleReport, progressReport]).then(([cycleReport, progressReport]) => {
@@ -238,8 +268,33 @@ const StudentView = ({ groupId, classId }) => {
     };
 
     useEffect(() => {
-        // loadOverlay.setText('Loading');
-        // loadOverlay.setActive(true);
+        loadOverlay.setText('Looking for your group...');
+        loadOverlay.setActive(true);
+        get('/meetings', {
+            classId: parseInt(classId),
+            endDate: moment(new Date()).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).add(1, 'd').format('yyyy-MM-DD HH:mm:ss.SSS'),
+            startDate: moment(new Date()).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).format('yyyy-MM-DD HH:mm:ss.SSS'),
+            groupId: parseInt(groupId),
+        }).then((res) => {
+            if (res.data.code == 200) {
+                const data = res.data.data.map((event) => (
+                    {
+                        link: event.link,
+                        id: event.id,
+                        icon: <AssignmentIcon />,
+                        title: event.title,
+                        status: moment(new Date()).isAfter(event.scheduleTime) ? 'Done' : 'Incoming',
+                        time: moment(event.scheduleTime).fromNow(),
+                    }
+                ))
+                setEvents(data);
+            }
+        })
+        get(`/classes/${classId}`).then((res) => {
+            if (res.data.code == 200) {
+                setProgress((progress) => [progress[0], res.data.data.cycleDuration]);
+            }
+        });
         get(`/classes/${classId}/groups/details`, { classId: classId }).then((res) => {
             const data = res.data.data;
             if (res.data.code == 200) {
@@ -248,18 +303,14 @@ const StudentView = ({ groupId, classId }) => {
                         (student) => student.email == user.email
                     )[0];
                     if (student && student.id == data.leaderId) {
-                        setReportType((reportType) => {
-                            return reportType.concat({
-                                value: 1,
-                                content: 'Cycle report',
-                            })
-                        })
                         setTopicOpen(true);
+                        setPicked(false);
                         get('/projects', { classId }).then((res) => {
                             const data = res.data;
                             if (data.code == 200) setTopicList(data.data);
                         });
                     }
+                    loadOverlay.setActive(false);
                 } else {
                     const student = data.studentDtoSet.filter(
                         (student) => student.email == user.email
@@ -272,6 +323,8 @@ const StudentView = ({ groupId, classId }) => {
                             })
                         })
                     }
+                    setPicked(true);
+                    loadOverlay.setActive(false);
                     getReports();
                 }
             } else {
@@ -285,6 +338,7 @@ const StudentView = ({ groupId, classId }) => {
             .then((res) => {
                 const data = res.data.data;
                 if (res.data.code == 200) {
+                    setPicked(true);
                     success(`Choose project successfully!`);
                 } else {
                     error('An error occurred while picking project. Please try agian');
@@ -296,7 +350,6 @@ const StudentView = ({ groupId, classId }) => {
     };
 
     const viewTopic = (item) => {
-        console.log(item);
         const raw = convertFromRaw(JSON.parse(item.requirements));
         setTopicState(EditorState.createWithContent(raw));
     };
@@ -314,9 +367,9 @@ const StudentView = ({ groupId, classId }) => {
                 >
                     <GoalContainer>
                         <GoalDes>Reports Stats:</GoalDes>
-                        <StatusBar />
+                        <StatusBar progress={progress} />
                         <GoalCounter>
-                            <span>100</span> / 700
+                            <span>{progress[0]}</span> / {progress[1]}
                         </GoalCounter>
                     </GoalContainer>
                     <GoalContainer>
@@ -332,6 +385,7 @@ const StudentView = ({ groupId, classId }) => {
             </Overlay>
             <Select>
                 <Selection
+                    disable={!isPicked}
                     options={reportType}
                     placeholder="Write Report"
                     fixed
@@ -360,13 +414,13 @@ const StudentView = ({ groupId, classId }) => {
                     setTopicState={setTopicState}
                 />
                 <SideBar>
-                    <Calendar onChange={test} />
+                    <Calendar onChange={calendarChange} />
                     <StyledH4>
-                        UP COMMING TASKS <Round>3</Round>
+                        UP COMMING TASKS <Round>{events.length}</Round>
                     </StyledH4>
                     <CommingContainer>
-                        {events.map(({ icon, title, status, time }, index) => (
-                            <CommingSection key={index}>
+                        {events.map(({ icon, title, status, time, id, link }) => (
+                            <CommingSection key={id}>
                                 <Icon>{icon}</Icon>
                                 <RightSide>
                                     <CommingTitle>{title}</CommingTitle>

@@ -2,6 +2,7 @@
 import { useEffect, useState, useRef, useContext } from 'react';
 
 import axios from 'axios';
+import moment from 'moment';
 import { useNavigate } from 'react-router-dom';
 
 import logo from '../../assets/fpt logo 1.jpg';
@@ -12,6 +13,7 @@ import {
     HContainer,
     HLogo,
     HIcons,
+    NotiNews,
     HLink,
     NotificationContainer,
     NotificationHeader,
@@ -36,6 +38,8 @@ const Header = () => {
     const [socket, setSocket] = useState(null);
 
     const [list, setList] = useState([]);
+
+    const [newNoti, setNewNoti] = useState(0);
 
     const notiRef = useRef();
     const userRef = useRef();
@@ -77,11 +81,16 @@ const Header = () => {
                 });
         }, 300000);
 
-        socket.emit('notifications');
+        socket.emit('notifications', {});
 
         socket.on('notifications', (e) => {
-            console.log('receive new notifications');
-            console.log(e);
+            if (Array.isArray(e)) {
+                setList((list) => list.concat(e));
+                setNewNoti((noti) => noti + e.length);
+            } else {
+                setList((list) => list.concat(JSON.parse(e)));
+                setNewNoti((noti) => noti + 1);
+            }
         });
         socket.on('disconnect', (e) => {
             console.log('disconnect');
@@ -127,8 +136,7 @@ const Header = () => {
                                 color: '#5680F9',
                                 backgroundColor: '#DDE6FE',
                                 borderRadius: '50%',
-                                padding: '8px',
-                                margin: '0 10px',
+                                padding: '1rem',
                             }}
                         />
                         <UserContainer isOpen={isUserOpen}>
@@ -143,7 +151,7 @@ const Header = () => {
                             </NotiInfo>
                         </UserContainer>
                     </BtnContainer>
-                    <ForumIcon
+                    {/* <ForumIcon
                         onClick={switchRole}
                         style={{
                             fontSize: 24,
@@ -153,7 +161,7 @@ const Header = () => {
                             padding: '8px',
                             margin: '0 10px',
                         }}
-                    />
+                    /> */}
                     <BtnContainer ref={notiRef}>
                         <NotificationsIcon
                             style={{
@@ -161,36 +169,29 @@ const Header = () => {
                                 color: '#5680F9',
                                 backgroundColor: '#DDE6FE',
                                 borderRadius: '50%',
-                                padding: '8px',
+                                padding: '1rem',
                             }}
                             onClick={(e) => {
+                                setNewNoti(0);
                                 setNotiOpen((e) => !e);
                             }}
                         />
+                        <NotiNews isDisplay={newNoti > 0}>{newNoti}</NotiNews>
                         <NotificationContainer isOpen={isNotiOpen}>
                             <NotificationHeader>Notification</NotificationHeader>
                             <NotificationBody>
-                                <NotiContainer>
-                                    <InboxIcon />
-                                    <NotiInfo>
-                                        <NotiTarget>Kien answerd your question</NotiTarget>
-                                        <div>Today</div>
-                                    </NotiInfo>
-                                </NotiContainer>
-                                <NotiContainer>
-                                    <InboxIcon />
-                                    <NotiInfo>
-                                        <NotiTarget>Kien answerd your question</NotiTarget>
-                                        <div>Today</div>
-                                    </NotiInfo>
-                                </NotiContainer>
-                                <NotiContainer>
-                                    <InboxIcon />
-                                    <NotiInfo>
-                                        <NotiTarget>Kien answerd your question</NotiTarget>
-                                        <div>Today</div>
-                                    </NotiInfo>
-                                </NotiContainer>
+                                {list.map((noti) => (
+                                    <>
+                                        <NotiContainer key={noti.id}>
+                                            {/* <InboxIcon /> */}
+                                            <NotiInfo>
+                                                <small>{noti.userEmail}</small>
+                                                <div>{noti.title}</div>
+                                                <small>{moment(noti.createAt).fromNow()}</small>
+                                            </NotiInfo>
+                                        </NotiContainer>
+                                    </>
+                                ))}
                             </NotificationBody>
                         </NotificationContainer>
                     </BtnContainer>

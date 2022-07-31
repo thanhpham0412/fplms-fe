@@ -180,6 +180,7 @@ const Topic = () => {
                             list={data.items}
                             key={id}
                             subjects={subjects}
+                            semesters={semesters}
                             setColumns={setColumns}
                             droppableId={id}
                             setProjects={setProjects}

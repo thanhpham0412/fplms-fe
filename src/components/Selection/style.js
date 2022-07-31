@@ -59,7 +59,7 @@ export const StyledList = styled.ul`
     position: absolute;
     max-height: ${({ maxHeight }) => maxHeight};
     border-radius: 4px;
-    z-index: 1;
+    z-index: 2;
     width: 100%;
     padding: 0;
     transform: translateY(0.5rem);

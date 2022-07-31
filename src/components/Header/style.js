@@ -27,8 +27,9 @@ const HLogo = styled.div`
 `;
 
 const HIcons = styled.div`
-    margin: 10px;
     display: flex;
+    gap: 1rem;
+    padding: 0 1rem;
     justify-content: space-between;
 `;
 
@@ -52,8 +53,9 @@ export const BtnContainer = styled.div`
 export const NotificationContainer = styled.div`
     display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
     position: absolute;
+    overflow: auto;
     width: 300px;
-    height: 500px;
+    max-height: 500px;
     padding: 1rem;
     right: 0px;
     top: 80px;
@@ -72,16 +74,18 @@ export const NotificationHeader = styled.div`
 
 export const NotificationBody = styled.div`
     display: flex;
-    gap: 1rem;
+    gap: 1px;
     width: 100%;
-    height: 100%;
+    height: auto;
+    background: ${COLOR.blue[0]};
     flex-direction: column;
 `;
 
 export const NotiContainer = styled.div`
     display: flex;
-    gap: 0.5rem;
     height: fit-content;
+    background: #fff;
+    padding: 1rem 0;
 
     svg {
         background: ${COLOR.blue[0]};
@@ -94,7 +98,10 @@ export const NotiContainer = styled.div`
 export const NotiInfo = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 0.1rem;
+    gap: 0.5rem;
+    small {
+        color: gray;
+    }
 `;
 
 export const NotiTarget = styled.div`
@@ -113,6 +120,22 @@ export const UserContainer = styled.div`
     border-radius: 2px;
     background: #fff;
     box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+`;
+
+export const NotiNews = styled.div`
+    display: ${({ isDisplay }) => (isDisplay ? 'flex' : 'none')};
+    width: 14px;
+    height: 14px;
+    font-size: 10px;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #fff;
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #fff;
+    border-radius: 50%;
+    background: ${COLOR.red[0]};
 `;
 
 export { HContainer, HLogo, HIcons, HLink };
