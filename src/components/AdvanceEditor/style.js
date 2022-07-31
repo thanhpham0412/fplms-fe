@@ -33,7 +33,7 @@ export const Container = styled.div`
     gap: 0.5rem;
     display: grid;
     position: relative;
-    grid-template-rows: 60px 1fr;
+    grid-template-rows: 80px 1fr;
 `;
 
 export const EditorSideBar = styled.div`
@@ -48,7 +48,7 @@ export const EditorSideBar = styled.div`
 
 export const Header = styled.div`
     width: 100%;
-    height: 60px;
+    height: 100%;
     background: #fff;
     box-sizing: border-box;
     display: none;

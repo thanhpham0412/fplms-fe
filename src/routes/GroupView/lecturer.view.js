@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 /* eslint-disable no-unused-vars */
-import { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import { Editor, EditorState, convertToRaw, ContentState, convertFromRaw } from 'draft-js';
 import moment from 'moment';
@@ -12,10 +12,13 @@ import {
     Overlay,
     Selection,
     Expand,
-    AvatarGroup,
+    Avatars,
     Button,
     CreateMeetingForm,
     AdvanceEditor,
+    Table,
+    Row,
+    TableHeader,
 } from '../../components';
 import { DraftRenderer } from '../../components/DraftEditor';
 import { get, post, put } from '../../utils/request';
@@ -56,6 +59,7 @@ import {
     Avatar,
     StudentFeedBack,
     Input,
+    Type,
 } from './style';
 
 import AddIcon from '@mui/icons-material/Add';
@@ -123,40 +127,58 @@ const LecturerView = ({ groupId, classId }) => {
         setQuery({
             ...query,
             reportId: parseInt(item.id),
+            type: item.type,
             title: item.title,
         });
     };
 
-    const topicPickedView = () => {
-        console.log('render list');
+    const TopicPickedView = React.memo(() => {
         return (
-            <>
-                <StyledList>
-                    {list &&
-                        list.map((item, index) => (
-                            <StyledItemLec
-                                feedback={item.type}
-                                key={index}
-                                onClick={() => showDraft(item)}
-                            >
-                                <Title feedback={item.type}>{item.title}</Title>
-                                <AvatarGroup slot={3} />
-                            </StyledItemLec>
-                        ))}
-                </StyledList>
-            </>
+            <Table columns="200px 1fr 200px 200px">
+                <TableHeader>
+                    <div>Type</div>
+                    <div>Report Title</div>
+                    <div>Report Time</div>
+                    <div>Write by</div>
+                </TableHeader>
+                {list &&
+                    list.map((item, index) => (
+                        <Row feedback={item.type} key={index} onClick={() => showDraft(item)}>
+                            <Type type={item.type}>
+                                {item.type == 'cycle' ? 'Cycle Report' : 'Progress Report'}
+                            </Type>
+                            <Title>{item.title}</Title>
+                            <Title>{item.reportTime}</Title>
+                            <Avatars list={['TP', 'NK', 'TN', 'TT', 'NH']} />
+                        </Row>
+                    ))}
+            </Table>
         );
-    };
+    });
 
     const getReports = () => {
         get('/cycle-reports', { groupId }).then((res) => {
             if (res.data.code == 200) {
-                setList((list) => list.concat(res.data.data || []));
+                setList((list) =>
+                    list.concat(
+                        res.data.data.map((data) => ({
+                            ...data,
+                            type: 'cycle',
+                        }))
+                    )
+                );
             }
         });
         get('/progress-reports', { classId, groupId }).then((res) => {
             if (res.data.code == 200) {
-                setList((list) => list.concat(res.data.data || []));
+                setList((list) =>
+                    list.concat(
+                        res.data.data.map((data) => ({
+                            ...data,
+                            type: 'progress',
+                        }))
+                    )
+                );
             }
         });
     };
@@ -189,7 +211,9 @@ const LecturerView = ({ groupId, classId }) => {
     }, []);
 
     const sendFeedback = () => {
-        put('/cycle-reports/feedback', {
+        const API =
+            query.type == 'cycle' ? '/cycle-reports/feedback' : '/progress-reports/feedback';
+        put(API, {
             feedback: JSON.stringify(convertToRaw(query.editorState.getCurrentContent())),
             groupId: parseInt(groupId),
             mark: parseInt(query.mark),
@@ -334,7 +358,7 @@ const LecturerView = ({ groupId, classId }) => {
                 setEvents={setEvents}
             />
             <Container>
-                {topicPickedView()}
+                <TopicPickedView />
                 <SideBar>
                     <Calendar onChange={onDateChange} />
                     <StyledH4>

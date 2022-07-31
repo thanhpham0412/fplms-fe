@@ -7,6 +7,7 @@ import { TextareaAutosize } from '@mui/material';
 
 export const Container = styled.div`
     width: 100%;
+    height: 100%;
     display: grid;
     grid-template-columns: 1fr 360px;
     gap: 24px;
@@ -19,7 +20,7 @@ export const Container = styled.div`
 
 export const StyledList = styled.div`
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
     min-width: 100%;
     overflow: auto;
     flex-direction: column;
@@ -45,12 +46,6 @@ export const StyledItem = styled.div`
     background: ${({ feedback }) => (feedback ? COLOR.green[5] : COLOR.blue[5])};
 `;
 
-export const Title = styled.div`
-    color: ${COLOR.green[0]};
-    font-weight: bold;
-    color: ${({ feedback }) => (feedback ? COLOR.green[0] : COLOR.blue[0])};
-`;
-
 export const Content = styled.div``;
 
 export const SideBar = styled.div`
@@ -60,16 +55,21 @@ export const SideBar = styled.div`
     z-index: 9;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    min-height: 100%;
 `;
 
 export const CommingContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    max-height: 300px;
+    flex: 1;
     overflow: auto;
 
     [data-target='styled-button'] {
+        position: sticky;
+        bottom: 0;
+        max-height: 56px;
         align-items: center;
         justify-content: center;
     }
@@ -199,22 +199,50 @@ export const PickBtn = styled.button`
     }
 `;
 
+export const Title = styled.div``;
+export const Type = styled.div`
+    padding: 0.5rem;
+    background: ${({ type }) => (type == 'cycle' ? COLOR.blue[0] : COLOR.green[0])};
+    width: fit-content;
+    border-radius: 2px;
+    font-weight: bold;
+    color: white;
+`;
+
+const columns = `200px 1fr 200px 200px`;
+
+export const TableHeader = styled.div`
+    font-weight: bold;
+    display: grid;
+    align-items: center;
+    grid-template-columns: ${columns};
+    gap: 1rem;
+    box-sizing: border-box;
+    padding: 1.5rem;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #fff;
+`;
+
 export const StyledItemLec = styled.div`
     box-sizing: border-box;
     font-size: 1rem;
-    padding: 1rem;
+    padding: 0rem 1.5rem;
     border-radius: 2px;
-    display: flex;
+    display: grid;
     align-items: center;
-    background: ${COLOR.blue[5]};
-    justify-content: space-between;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+    grid-template-columns: ${columns};
     gap: 1rem;
     height: fit-content;
     transition: all 0.3s;
     cursor: pointer;
+    color: #434343;
 
     :hover {
-        background: ${COLOR.blue[4]};
+        background: #f1f1f1;
     }
 `;
 

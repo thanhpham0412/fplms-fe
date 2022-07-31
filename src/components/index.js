@@ -27,6 +27,7 @@ import SideBar from './Sidebar';
 import Skeleton from './Skeleton';
 import { Spinner } from './Spinner';
 import StudentRow from './StudentRow';
+import Table, { Row, TableHeader } from './Table';
 import TopActivities from './TopActivities';
 
 export {
@@ -61,4 +62,7 @@ export {
     Expand,
     Spinner,
     Avatars,
+    Row,
+    TableHeader,
+    Table,
 };
