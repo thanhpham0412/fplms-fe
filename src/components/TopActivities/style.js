@@ -8,6 +8,7 @@ export const StyledContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
+    visibility: hidden;
     @media (max-width: 768px) {
         display: none;
     }

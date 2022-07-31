@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
+import badge from '../../assets/ribbon.png';
 import Overlay from '../Overlay';
-import { Avatar, Content, Wrapper, Left, Right, Label, Infomation } from './style';
+import { Avatar, Content, Wrapper, Left, Right, Label, Infomation, Badge } from './style';
 
 const StudentInfoModal = ({ isOpen, studentInfo, setOpen }) => {
     return (
@@ -9,6 +10,10 @@ const StudentInfoModal = ({ isOpen, studentInfo, setOpen }) => {
                 <Avatar>
                     <img src={studentInfo?.picture} />
                 </Avatar>
+                <Badge>
+                    <img src={badge} />
+                    <div>{studentInfo?.point}</div>
+                </Badge>
                 <Content>
                     <Left></Left>
                     <Right>
@@ -17,7 +22,6 @@ const StudentInfoModal = ({ isOpen, studentInfo, setOpen }) => {
                         </Label>
                         <Infomation>{studentInfo?.name}</Infomation>
                         <Infomation>{studentInfo?.email}</Infomation>
-                        <Infomation>Points: 0</Infomation>
                     </Right>
                 </Content>
             </Wrapper>

@@ -45,9 +45,10 @@ const Login = () => {
                 if (data.isAuthSuccessful) {
                     auth.setAuth(true);
                     loadContext.setActive(false);
-                    navigate('/class');
+
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(response.profileObj));
+                    navigate('/class');
                 }
             })
             .catch(() => {

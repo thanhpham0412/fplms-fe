@@ -31,7 +31,7 @@ import SendIcon from '@mui/icons-material/Send';
 import en from 'javascript-time-ago/locale/en.json';
 import ru from 'javascript-time-ago/locale/ru.json';
 
-const AnswerSection = ({ questionId, answers, setRefresh }) => {
+const AnswerSection = ({ questionId, answers, setRefresh, setStudent, setOpenStudentInfo }) => {
     TimeAgo.addLocale(en);
     TimeAgo.addLocale(ru);
     const [answer, setAnswer] = useState();
@@ -81,21 +81,49 @@ const AnswerSection = ({ questionId, answers, setRefresh }) => {
         });
     };
 
-    const handleAcceptAnswer = (data, e) => {
+    const handleAcceptAnswer = async (data, e) => {
         e.preventDefault();
-        axios
-            .put(`${URL}/${data.id}/accept`, {}, { headers: header })
-            .then((res) => {
+        try {
+            const acceptData = answers.find((item) => item.accepted === true);
+            if (acceptData && acceptData.id !== data.id) {
+                const res = await axios.put(
+                    `${URL}/${acceptData.id}/accept`,
+                    {},
+                    { headers: header }
+                );
+
+                if (res.status >= 200 && res.status < 300) {
+                    const res2 = await axios.put(
+                        `${URL}/${data.id}/accept`,
+                        {},
+                        { headers: header }
+                    );
+                    if (res2.status >= 200 && res2.status < 300) {
+                        e.target.checked = true;
+                        setRefresh((prev) => prev - 1);
+                    } else {
+                        error(`Error occured`);
+                    }
+                } else {
+                    error(`Error occured`);
+                }
+            } else {
+                const res = await axios.put(`${URL}/${data.id}/accept`, {}, { headers: header });
+
                 if (res.status >= 200 && res.status < 300) {
                     e.target.checked = true;
                     setRefresh((prev) => prev - 1);
                 } else {
                     error(`Error occured`);
                 }
-            })
-            .catch((err) => {
-                error(`${err.message}`);
-            });
+            }
+
+            if (e.target.checked) {
+                e.target.checked = false;
+            }
+        } catch (err) {
+            error(err);
+        }
     };
 
     const handleVote = (data) => {
@@ -207,20 +235,28 @@ const AnswerSection = ({ questionId, answers, setRefresh }) => {
                                     </Comment>
                                 </Row>
                                 <Row>
-                                    <Action>
+                                    <Action checked={data.accepted}>
                                         <input
                                             type={'radio'}
                                             name="Like"
                                             id={data.id}
                                             onClick={(e) => handleAcceptAnswer(data, e)}
-                                            defaultChecked={data.accepted ? true : false}
+                                            defaultChecked={data.accepted}
                                         />
                                         <label htmlFor={data.id}>
-                                            <DoneIcon />
+                                            <DoneIcon className="check-icon" />
                                         </label>
                                     </Action>
                                     <Action>
-                                        <span>{data.student.name}</span>
+                                        <span
+                                            style={{ cursor: 'pointer' }}
+                                            onClick={() => {
+                                                setStudent(data.student);
+                                                setOpenStudentInfo(true);
+                                            }}
+                                        >
+                                            {data.student.name}
+                                        </span>
                                     </Action>
                                     <Action>
                                         <ReactTimeAgo
