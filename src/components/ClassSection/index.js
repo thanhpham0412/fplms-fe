@@ -39,14 +39,14 @@ const Motion = ({ children, delay }) => (
         animate={{
             opacity: 1,
             transform: 'translateX(0px)',
-            transition: { duration: 1, delay: delay * 0.2, ease: bezier },
+            transition: { duration: 1, delay: delay * 0.1, ease: bezier },
         }}
     >
         {children}
     </motion.div>
 )
 
-const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode }) => {
+const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode, email, enrollKey }) => {
     const [open, setOpen] = useState(false);
     const [isCreate, setCreate] = useState(false);
     const buttonRef = useRef();
@@ -132,10 +132,12 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode }) => {
         }
     };
 
+    let delay = 0;
+
     return (
         <AnimatePresence>
             <Container
-                isenroll={join}
+                isenroll={join ? 1 : 0} // special case dont change 'e' into 'E' please
                 initial={{ opacity: 0, transform: 'translateY(10px)' }}
                 animate={{
                     opacity: 1,
@@ -153,14 +155,30 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode }) => {
                 <MiniDetails>
                     <Row>
                         <Title>
-                            {name ? <Motion delat={0}>{name}</Motion> : <Skeleton />}
+                            {name ? <Motion delay={delay++}>{name}</Motion> : <Skeleton />}
                         </Title>
                     </Row>
+                    {lecture != undefined && (
+                        <Row>
+                            <Email>{lecture ? <Motion delay={delay++}>{lecture}</Motion> : <Skeleton />}</Email>
+                        </Row>
+                    )}
+                    {email != undefined && (
+                        <Row>
+                            <Email>{lecture ? <Motion delay={delay++}>{email}</Motion> : <Skeleton />}</Email>
+                        </Row>
+                    )}
+                    {enrollKey != undefined && (
+                        <Row>
+                            <Email>
+                                <Motion delay={delay++}>
+                                    Enroll key: <input onFocus={(e) => { e.target.type = 'text' }} readOnly type="password" defaultValue={enrollKey.toString()} onBlur={(e) => e.target.type = 'password'} />
+                                </Motion>
+                            </Email>
+                        </Row>
+                    )}
                     <Row>
-                        <Email>{lecture ? <Motion delay={1}>{lecture}</Motion> : <Skeleton />}</Email>
-                    </Row>
-                    <Row>
-                        <Email>{semesterCode ? <Motion delay={2}>{semesterCode}</Motion> : <Skeleton />}</Email>
+                        <Email>{semesterCode ? <Motion delay={delay++}>{semesterCode}</Motion> : <Skeleton />}</Email>
                     </Row>
                 </MiniDetails>
                 <Row onClick={openEnroll} ref={buttonRef}>

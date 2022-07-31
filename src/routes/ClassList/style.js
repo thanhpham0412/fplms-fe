@@ -50,10 +50,10 @@ export const StyledList = styled.div`
     grid-auto-rows: fit-content;
     gap: 24px;
 
-    @media (max-width: 1400px) {
+    @media (max-width: 1600px) {
         grid-template-columns: 1fr 1fr 1fr;
     }
-    @media (max-width: 1200px) {
+    @media (max-width: 1300px) {
         grid-template-columns: 1fr 1fr;
     }
     @media (max-width: 992px) {

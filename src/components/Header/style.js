@@ -102,4 +102,17 @@ export const NotiTarget = styled.div`
     font-weight: bold;
 `;
 
+export const UserContainer = styled.div`
+    display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+    position: absolute;
+    width: 300px;
+    height: auto;
+    padding: 1rem;
+    right: 0px;
+    top: 80px;
+    border-radius: 2px;
+    background: #fff;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+`;
+
 export { HContainer, HLogo, HIcons, HLink };

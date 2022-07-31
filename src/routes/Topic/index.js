@@ -72,6 +72,8 @@ const Topic = () => {
             }
             if (projects.code == 200) {
                 setProjects(projects.data);
+            } else {
+                setProjects([]);
             }
             setLoad(false);
         });

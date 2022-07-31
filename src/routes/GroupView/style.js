@@ -7,10 +7,10 @@ import { TextareaAutosize } from '@mui/material';
 
 export const Container = styled.div`
     width: 100%;
-    height: 100%;
     display: grid;
     grid-template-columns: 1fr 360px;
     gap: 24px;
+    padding-bottom: 24px;
 
     * {
         font-family: Lato;

@@ -36,6 +36,14 @@ export const Row = styled.div`
     align-items: center;
     height: auto;
     perspective: 550px;
+
+    input {
+        border: none;
+        background: transparent;
+        padding: 0;
+        font-size: 1rem;
+        outline: none;
+    }
 `;
 
 export const DetailText = styled.div`

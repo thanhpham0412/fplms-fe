@@ -144,11 +144,17 @@ const StudentView = ({ groupId, classId }) => {
     const [isTopicOpen, setTopicOpen] = useState(false);
     const [topicState, setTopicState] = useState(EditorState.createWithContent(fromHTML(TEMPLATE)));
     const [title, setTitle] = useState('');
+    const [reportType, setReportType] = useState([
+        {
+            value: 2,
+            content: 'Progress report',
+        },
+    ]);
+    const [list, setList] = useState([]);
+    const [type, setType] = useState({ value: 1, content: 'progress-reports' });
 
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const editor = useRef();
-
-    const [list, setList] = useState([]);
 
     const [topicList, setTopicList] = useState(
         new Array(20).fill('').map((k, i) => ({
@@ -170,7 +176,7 @@ const StudentView = ({ groupId, classId }) => {
             resourceLink: '',
             groupId: parseInt(groupId),
         };
-        post('/' + (type == 1 ? 'cycle-reports' : 'progress-reports'), data)
+        post('/' + (type.value == 1 ? 'cycle-reports' : 'progress-reports'), data)
             .then((res) => {
                 if (res.data.code == 200) {
                     success(res.data.message);
@@ -188,17 +194,6 @@ const StudentView = ({ groupId, classId }) => {
                 setEditorOpen(false);
             });
     };
-
-    const [reportType] = useState([
-        {
-            value: 1,
-            content: 'Cycle report',
-        },
-        {
-            value: 2,
-            content: 'Progress report',
-        },
-    ]);
 
     const events = [
         {
@@ -220,8 +215,6 @@ const StudentView = ({ groupId, classId }) => {
             time: 'Tomorrow',
         },
     ];
-
-    const [type, setType] = useState({ value: 1, content: 'progress-reports' });
 
     const onChange = (e) => {
         setEditorOpen(true);
@@ -255,6 +248,12 @@ const StudentView = ({ groupId, classId }) => {
                         (student) => student.email == user.email
                     )[0];
                     if (student && student.id == data.leaderId) {
+                        setReportType((reportType) => {
+                            return reportType.concat({
+                                value: 1,
+                                content: 'Cycle report',
+                            })
+                        })
                         setTopicOpen(true);
                         get('/projects', { classId }).then((res) => {
                             const data = res.data;
@@ -262,10 +261,21 @@ const StudentView = ({ groupId, classId }) => {
                         });
                     }
                 } else {
+                    const student = data.studentDtoSet.filter(
+                        (student) => student.email == user.email
+                    )[0];
+                    if (student && student.id == data.leaderId) {
+                        setReportType((reportType) => {
+                            return reportType.concat({
+                                value: 1,
+                                content: 'Cycle report',
+                            })
+                        })
+                    }
                     getReports();
                 }
             } else {
-                error('An error occurred while');
+                error('An error occurred');
             }
         });
     }, []);
@@ -286,6 +296,7 @@ const StudentView = ({ groupId, classId }) => {
     };
 
     const viewTopic = (item) => {
+        console.log(item);
         const raw = convertFromRaw(JSON.parse(item.requirements));
         setTopicState(EditorState.createWithContent(raw));
     };
@@ -316,7 +327,7 @@ const StudentView = ({ groupId, classId }) => {
                             onChange={(e) => setTitle(e.target.value || '')}
                         />
                     </GoalContainer>
-                    <SendBtn onClick={() => submitCycle(1)}>Send Report</SendBtn>
+                    <SendBtn onClick={() => submitCycle(type)}>Send Report</SendBtn>
                 </AdvanceEditor>
             </Overlay>
             <Select>
