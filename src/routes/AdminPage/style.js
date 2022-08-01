@@ -189,6 +189,7 @@ export const Loader = styled.div`
 
 export const SemesterCard = styled.div`
     max-width: 100%;
+    height: fit-content;
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -258,7 +259,10 @@ export const AddingCard = styled.div`
 
     #semester-input {
         width: 70%;
+        border-radius: 4px;
+        border-color: rgba(0, 0, 0, 0.23);
         margin-bottom: 15px;
+        padding: 5px 15px;
     }
 `;
 

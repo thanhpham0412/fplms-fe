@@ -32,6 +32,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SaveIcon from '@mui/icons-material/Save';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
+import TextField from '@mui/material/TextField';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 const AdminPage = () => {
     const [loading, setLoading] = useState(true);
@@ -96,6 +100,11 @@ const AdminPage = () => {
     };
     const createSemester = () => {
         setLoadingAdd(true);
+        if (startDate > endDate) {
+            error(`Bengin date cannot greater than end date!`);
+            setLoadingAdd(false);
+            return;
+        }
         axios
             .post(
                 `${process.env.REACT_APP_API_URL}/semesters`,
@@ -116,19 +125,28 @@ const AdminPage = () => {
 
                     setSemesters((prev) =>
                         prev.concat([
-                            { code: semesterCode, endDate: endDate, startDate: startDate },
+                            {
+                                code: semesterCode,
+                                endDate: `${endDate.getFullYear()}-${(
+                                    '0' +
+                                    (endDate.getMonth() + 1)
+                                ).slice(-2)}-${('0' + endDate.getDate()).slice(-2)}`,
+                                startDate: `${startDate.getFullYear()}-${(
+                                    '0' +
+                                    (startDate.getMonth() + 1)
+                                ).slice(-2)}-${('0' + startDate.getDate()).slice(-2)}`,
+                            },
                         ])
                     );
+                    setSemesterCode('');
+                    setEndDate('');
+                    setStartDate('');
+                    setShowSemesterForm(false);
+                    setLoadingAdd(false);
                 } else {
                     error(`${res.data.message}`);
+                    setLoadingAdd(false);
                 }
-            })
-            .finally(() => {
-                setSemesterCode('');
-                setEndDate('');
-                setStartDate('');
-                setShowSemesterForm(false);
-                setLoadingAdd(false);
             });
     };
 
@@ -274,7 +292,6 @@ const AdminPage = () => {
                 <SettingTitle>Semester</SettingTitle>
                 <SettingBody id="setting-body">
                     {semesters?.map((item, index) => {
-                        console.log(item.startDate.split('-').reverse());
                         return (
                             <SemesterCard
                                 key={item.code}
@@ -323,20 +340,41 @@ const AdminPage = () => {
                                             onChange={(e) => setSemesterCode(e.target.value)}
                                         />
                                         <InputDate>
-                                            <span>Start Date:</span>
-                                            <input
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DesktopDatePicker
+                                                    label="Start date"
+                                                    inputFormat="MM/dd/yyyy"
+                                                    value={startDate || ''}
+                                                    onChange={(newValue) => {
+                                                        setStartDate(newValue);
+                                                        console.log(newValue);
+                                                    }}
+                                                    renderInput={(params) => (
+                                                        <TextField {...params} />
+                                                    )}
+                                                />
+                                            </LocalizationProvider>
+                                            {/* <input
                                                 type={'date'}
                                                 value={startDate || ''}
                                                 onChange={(e) => setStartDate(e.target.value)}
-                                            />
+                                            /> */}
                                         </InputDate>
                                         <InputDate>
-                                            <span>End Date:</span>
-                                            <input
-                                                type={'date'}
-                                                value={endDate}
-                                                onChange={(e) => setEndDate(e.target.value)}
-                                            />
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DesktopDatePicker
+                                                    label="End date"
+                                                    inputFormat="MM/dd/yyyy"
+                                                    value={endDate}
+                                                    onChange={(newValue) => {
+                                                        setEndDate(newValue);
+                                                        console.log(newValue);
+                                                    }}
+                                                    renderInput={(params) => (
+                                                        <TextField {...params} />
+                                                    )}
+                                                />
+                                            </LocalizationProvider>
                                         </InputDate>
                                         <ButtonList>
                                             <Button

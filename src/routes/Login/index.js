@@ -49,9 +49,9 @@ const Login = () => {
                         })
                         .then((res) => {
                             if (res.data.code === 200) {
-                                console.log(res);
+                                auth.setIsAdmin(true);
                             } else {
-                                error(`An error occured`);
+                                auth.setIsAdmin(false);
                             }
                         })
                         .then(() => {
