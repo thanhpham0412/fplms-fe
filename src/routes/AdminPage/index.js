@@ -9,6 +9,7 @@ import SemesterForm from './SemesterForm';
 import { ButtonList, InputDate, SemsterCode } from './SemesterForm/style';
 import {
     AddingCard,
+    AddingLoader,
     Button,
     CardTitle,
     Container,
@@ -31,6 +32,7 @@ import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 
 const AdminPage = () => {
     const [loading, setLoading] = useState(true);
+    const [loadingAdd, setLoadingAdd] = useState(false);
     const [semesters, setSemesters] = useState();
     const [subjects, setSubjects] = useState();
     const [subject, setSubject] = useState();
@@ -178,6 +180,7 @@ const AdminPage = () => {
     };
 
     const createSemester = () => {
+        setLoadingAdd(true);
         axios
             .post(
                 `${process.env.REACT_APP_API_URL}/semesters`,
@@ -201,10 +204,11 @@ const AdminPage = () => {
                             { code: semesterCode, endDate: endDate, startDate: startDate },
                         ])
                     );
-                    setSemester('');
+                    setSemesterCode('');
                     setEndDate('');
                     setStartDate('');
                     setShowSemesterForm(false);
+                    setLoadingAdd(false);
                 }
             });
     };
@@ -277,44 +281,51 @@ const AdminPage = () => {
                     <AddingCard isShow={showSemsterForm}>
                         {showSemsterForm && (
                             <>
-                                <CloseIcon
-                                    className="close-icon"
-                                    onClick={() => setShowSemesterForm(false)}
-                                />
-                                <input
-                                    id="semester-input"
-                                    placeholder="Semester Code"
-                                    value={semesterCode || ''}
-                                    onChange={(e) => setSemesterCode(e.target.value)}
-                                />
-                                <InputDate>
-                                    <span>Start Date:</span>
-                                    <input
-                                        type={'date'}
-                                        value={startDate || ''}
-                                        onChange={(e) => setStartDate(e.target.value)}
-                                    />
-                                </InputDate>
-                                <InputDate>
-                                    <span>End Date:</span>
-                                    <input
-                                        type={'date'}
-                                        value={endDate || ''}
-                                        onChange={(e) => setEndDate(e.target.value)}
-                                    />
-                                </InputDate>
-                                <ButtonList>
-                                    <Button
-                                        disabled={
-                                            semesterCode === '' ||
-                                            startDate === '' ||
-                                            endDate === ''
-                                        }
-                                        onClick={createSemester}
-                                    >
-                                        Save
-                                    </Button>
-                                </ButtonList>
+                                {loadingAdd ? (
+                                    <AddingLoader />
+                                ) : (
+                                    <>
+                                        {' '}
+                                        <CloseIcon
+                                            className="close-icon"
+                                            onClick={() => setShowSemesterForm(false)}
+                                        />
+                                        <input
+                                            id="semester-input"
+                                            placeholder="Semester Code"
+                                            value={semesterCode || ''}
+                                            onChange={(e) => setSemesterCode(e.target.value)}
+                                        />
+                                        <InputDate>
+                                            <span>Start Date:</span>
+                                            <input
+                                                type={'date'}
+                                                value={startDate || ''}
+                                                onChange={(e) => setStartDate(e.target.value)}
+                                            />
+                                        </InputDate>
+                                        <InputDate>
+                                            <span>End Date:</span>
+                                            <input
+                                                type={'date'}
+                                                value={endDate || ''}
+                                                onChange={(e) => setEndDate(e.target.value)}
+                                            />
+                                        </InputDate>
+                                        <ButtonList>
+                                            <Button
+                                                disabled={
+                                                    semesterCode === '' ||
+                                                    startDate === '' ||
+                                                    endDate === ''
+                                                }
+                                                onClick={createSemester}
+                                            >
+                                                Save
+                                            </Button>
+                                        </ButtonList>
+                                    </>
+                                )}
                             </>
                         )}
                         <AddIcon className="add-icon" onClick={() => setShowSemesterForm(true)} />

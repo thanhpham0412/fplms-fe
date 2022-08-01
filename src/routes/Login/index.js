@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useContext } from 'react';
 
 import axios from 'axios';
@@ -41,11 +42,10 @@ const Login = () => {
             })
             .then((res) => {
                 const data = res.data;
-
+                console.log(response);
                 if (data.isAuthSuccessful) {
                     auth.setAuth(true);
                     loadContext.setActive(false);
-
                     localStorage.setItem('token', data.token);
                     localStorage.setItem('user', JSON.stringify(response.profileObj));
                     navigate('/class');

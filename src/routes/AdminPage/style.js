@@ -232,7 +232,7 @@ export const AddingCard = styled.div`
     display: flex;
     flex-direction: column;
     position: relative;
-
+    justify-content: center;
     .add-icon {
         display: ${({ isShow }) => (!isShow ? 'block' : 'none')};
         position: absolute;
@@ -258,14 +258,23 @@ export const AddingCard = styled.div`
     }
 `;
 
+export const AddingLoader = styled.div`
+    height: 50px;
+    width: 50px;
+    border: 7px solid transparent;
+    border-top-color: ${COLOR.blue[0]};
+    border-radius: 50%;
+    align-self: center;
+    animation: ${loader} 1s ease-in-out infinite;
+`;
+
 export const Button = styled.button`
     outline: none;
     background-color: transparent;
     border: 1px solid ${COLOR.green[0]};
     padding: 5px 15px;
     border-radius: 4px;
-
-    :hover {
+    :hover:enabled {
         cursor: pointer;
         background-color: ${COLOR.green[0]};
         color: ${COLOR.primary02};

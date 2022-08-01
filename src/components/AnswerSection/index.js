@@ -58,13 +58,15 @@ const AnswerSection = ({ questionId, answers, setRefresh, setStudent, setOpenStu
                 { headers: header }
             )
             .then(() => {
-                setRefresh((prev) => prev + 1);
                 setAnswer('');
                 setLoading(false);
             })
             .catch((err) => {
                 error(`${err}`);
                 setLoading(false);
+            })
+            .finally(() => {
+                setRefresh((prev) => prev + 1);
             });
     };
 
@@ -185,93 +187,88 @@ const AnswerSection = ({ questionId, answers, setRefresh, setStudent, setOpenStu
                     </Comment>
                 </Answers>
 
-                {answers
-                    ?.sort((a, b) => b.upvotes - a.upvotes)
-                    .sort((a) => (a.accepted ? -1 : 1))
-                    .map((data, index) => (
-                        <Answers key={data.id}>
-                            <Col>
-                                <img src={data.student?.picture} alt="Student Avatar" />
-                            </Col>
-                            <Col>
-                                <Row>
-                                    <Comment>
-                                        <CommentInput
-                                            disabled
-                                            defaultValue={data.content}
-                                            ref={(el) => refs.current.push(el)}
-                                            onChange={(e) =>
-                                                (refs.current[index].value = e.target.value)
-                                            }
-                                        />
-                                        {userInfo.email === data.student.email && (
-                                            <Dropdown>
-                                                <button
-                                                    className="sub-option"
-                                                    ref={(el) => dropdownRefs.current.push(el)}
-                                                    onClick={(e) => e.stopPropagation}
-                                                >
-                                                    <MoreVertIcon />
-                                                </button>
-                                                <DropdownMenu className="dropdown-menu">
-                                                    <DeleteIcon
-                                                        onClick={() => {
-                                                            setIsOpen(true);
-                                                            setDeleteDate(data);
-                                                        }}
-                                                    />
-                                                    <EditIcon
-                                                        onClick={() => handleEditAnswer(index)}
-                                                    />
-                                                </DropdownMenu>
-                                            </Dropdown>
-                                        )}
+                {answers?.map((data, index) => (
+                    <Answers key={data.id}>
+                        <Col>
+                            <img src={data.student?.picture} alt="Student Avatar" />
+                        </Col>
+                        <Col>
+                            <Row>
+                                <Comment>
+                                    <CommentInput
+                                        disabled
+                                        defaultValue={data.content}
+                                        ref={(el) => refs.current.push(el)}
+                                        onChange={(e) =>
+                                            (refs.current[index].value = e.target.value)
+                                        }
+                                    />
+                                    {userInfo.email === data.student.email && (
+                                        <Dropdown>
+                                            <button
+                                                className="sub-option"
+                                                ref={(el) => dropdownRefs.current.push(el)}
+                                                onClick={(e) => e.stopPropagation}
+                                            >
+                                                <MoreVertIcon />
+                                            </button>
+                                            <DropdownMenu className="dropdown-menu">
+                                                <DeleteIcon
+                                                    onClick={() => {
+                                                        setIsOpen(true);
+                                                        setDeleteDate(data);
+                                                    }}
+                                                />
+                                                <EditIcon onClick={() => handleEditAnswer(index)} />
+                                            </DropdownMenu>
+                                        </Dropdown>
+                                    )}
 
-                                        <SaveIcon
-                                            sx={{ display: 'none' }}
-                                            className={`save-btn-${index}`}
-                                            onClick={() => handleSaveAnswer(data.id, index)}
-                                        />
-                                    </Comment>
-                                </Row>
-                                <Row>
-                                    <Action checked={data.accepted}>
-                                        <input
-                                            type={'radio'}
-                                            name="Like"
-                                            id={data.id}
-                                            onClick={(e) => handleAcceptAnswer(data, e)}
-                                            defaultChecked={data.accepted}
-                                        />
-                                        <label htmlFor={data.id}>
-                                            <DoneIcon className="check-icon" />
-                                        </label>
-                                    </Action>
-                                    <Action>
-                                        <span
-                                            style={{ cursor: 'pointer' }}
-                                            onClick={() => {
-                                                setStudent(data.student);
-                                                setOpenStudentInfo(true);
-                                            }}
-                                        >
-                                            {data.student.name}
-                                        </span>
-                                    </Action>
-                                    <Action>
-                                        <ReactTimeAgo
-                                            date={Date.parse(data.createdDate)}
-                                            locale="en-US"
-                                        />
-                                    </Action>
-                                </Row>
-                            </Col>
-                            <Vote upvoted={data.upvoted}>
-                                <ArrowDropUpIcon onClick={() => handleVote(data)} />
-                                <div>{data.upvotes}</div>
-                            </Vote>
-                        </Answers>
-                    ))}
+                                    <SaveIcon
+                                        sx={{ display: 'none' }}
+                                        className={`save-btn-${index}`}
+                                        onClick={() => handleSaveAnswer(data.id, index)}
+                                    />
+                                </Comment>
+                            </Row>
+                            <Row>
+                                <Action checked={data.accepted}>
+                                    <input
+                                        type={'radio'}
+                                        name="Like"
+                                        id={data.id}
+                                        onClick={(e) => handleAcceptAnswer(data, e)}
+                                        defaultChecked={data.accepted}
+                                    />
+                                    <label htmlFor={data.id}>
+                                        <DoneIcon className="check-icon" />
+                                    </label>
+                                </Action>
+                                <Action>
+                                    <span
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() => {
+                                            setStudent(data.student);
+                                            setOpenStudentInfo(true);
+                                        }}
+                                    >
+                                        {data.student.name}
+                                    </span>
+                                </Action>
+                                <Action>
+                                    <ReactTimeAgo
+                                        date={Date.parse(data.createdDate)}
+                                        locale="en-US"
+                                    />
+                                </Action>
+                            </Row>
+                        </Col>
+                        <Vote upvoted={data.upvoted}>
+                            <ArrowDropUpIcon onClick={() => handleVote(data)} />
+                            <div>{data.upvotes}</div>
+                        </Vote>
+                    </Answers>
+                ))}
             </Container>
         </>
     );

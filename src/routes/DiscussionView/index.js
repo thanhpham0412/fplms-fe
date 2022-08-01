@@ -89,6 +89,7 @@ const DiscussionView = () => {
                 .then((res) => {
                     if (res.status == 200) {
                         console.log(res);
+
                         setQuestion(res.data);
                         setLoading(false);
                     } else {
@@ -182,7 +183,9 @@ const DiscussionView = () => {
                                     <AnswerSection
                                         questionId={questionId}
                                         setQuestion={setQuestion}
-                                        answers={question.answers}
+                                        answers={question.answers
+                                            .sort((a, b) => b.upvotes - a.upvotes)
+                                            .sort((a) => (a.accepted ? -1 : 1))}
                                         student={question.student}
                                         setRefresh={setRefresh}
                                         setStudent={setStudent}

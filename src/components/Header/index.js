@@ -14,7 +14,6 @@ import {
     HLogo,
     HIcons,
     NotiNews,
-    HLink,
     NotificationContainer,
     NotificationHeader,
     NotificationBody,
@@ -25,9 +24,7 @@ import {
     UserContainer,
 } from './style';
 
-import ForumIcon from '@mui/icons-material/Forum';
 import InboxIcon from '@mui/icons-material/Inbox';
-import LogoutIcon from '@mui/icons-material/Logout';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PersonIcon from '@mui/icons-material/Person';
 import { io } from 'socket.io-client';
@@ -119,12 +116,6 @@ const Header = () => {
         }
     };
 
-    const handleLogout = async () => {
-        await auth.setAuth(false);
-        await localStorage.clear();
-        navigate('/login');
-    };
-
     return (
         <div>
             <HContainer>
@@ -181,16 +172,6 @@ const Header = () => {
                                 setNewNoti(0);
                                 setNotiOpen((e) => !e);
                             }}
-                        />
-                        <LogoutIcon
-                            style={{
-                                fontSize: 24,
-                                color: '#5680F9',
-                                backgroundColor: '#DDE6FE',
-                                borderRadius: '50%',
-                                padding: '8px',
-                            }}
-                            onClick={handleLogout}
                         />
                         <NotiNews isDisplay={newNoti > 0}>{newNoti}</NotiNews>
                         <NotificationContainer isOpen={isNotiOpen}>
