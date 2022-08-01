@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
 import { RouteContainer } from '../components';
 import TextEditor from '../components/TextEditor';
-import Admin from './Admin';
+import AdminPage from './AdminPage';
 import ClassList from './ClassList';
 import DiscussionList from './DiscussionList';
 import DiscussionView from './DiscussionView';
@@ -39,13 +39,6 @@ export const privateRoute = [
         path: '/mark-table/:classId',
         name: 'Mark Table',
         component: MarkTable,
-        exact: true,
-        restrict: true,
-    },
-    {
-        path: 'admin',
-        name: 'admin',
-        component: Admin,
         exact: true,
         restrict: true,
     },
@@ -126,6 +119,7 @@ export const RouterComponent = () => {
                             restrict={route.restrict}
                         />
                     ))}
+                    <Route path="/admin" element={<AdminPage />} />
                 </Route>
                 <Route exact path="/" element={<PublicRoute />}>
                     {publicRoute.map((route) => (

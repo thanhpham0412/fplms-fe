@@ -104,7 +104,7 @@ const DiscussionList = () => {
                             PageSize: pageSize,
                             sort: sort.value || 0,
                             Question: search || '',
-                            Subject: subject?.content || '',
+                            Subject: subject?.value || '',
                         },
                     })
                     .then((res) => {
@@ -135,10 +135,10 @@ const DiscussionList = () => {
                 .get(URL, { headers: header })
                 .then((res) => {
                     const datas = res.data.map((item) => ({
-                        value: item.id,
+                        value: item.name,
                         content: item.name,
                     }));
-                    setSubjects(datas);
+                    setSubjects([{ value: '', content: 'All' }].concat(datas));
                 })
                 .catch((err) => {
                     error(err);

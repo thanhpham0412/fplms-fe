@@ -68,6 +68,7 @@ export const Author = styled.div`
     font-size: 10px;
     cursor: pointer;
     color: ${COLOR.primary03};
+    gap: 5px;
     p {
         margin: 0 8px;
     }
@@ -79,9 +80,13 @@ export const Author = styled.div`
     }
     img {
         width: 21px;
+
         height: auto;
         object-fit: cover;
         border-radius: 50%;
+        &[alt] {
+            font-size: 0.5rem;
+        }
     }
 `;
 
@@ -140,13 +145,13 @@ export const DropdownMenu = styled.div`
     right: 0;
     width: fit-content;
     padding: 0.75rem;
-    top: calc(100% + 0.1rem);
+    top: 80%;
     background-color: ${COLOR.primary02};
     border-radius: 4px;
     box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    z-index: 99;
+    z-index: 10;
     transform: translateY(-10px);
     transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
     opacity: 0;

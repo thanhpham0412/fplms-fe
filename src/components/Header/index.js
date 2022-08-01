@@ -27,6 +27,7 @@ import {
 
 import ForumIcon from '@mui/icons-material/Forum';
 import InboxIcon from '@mui/icons-material/Inbox';
+import LogoutIcon from '@mui/icons-material/Logout';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PersonIcon from '@mui/icons-material/Person';
 import { io } from 'socket.io-client';
@@ -117,6 +118,12 @@ const Header = () => {
                 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpZW5mcGxtcy5mZUBnbWFpbC5jb20iLCJyb2xlIjoiTGVjdHVyZXIiLCJuYmYiOjE2NTYzMzQwMjcsImV4cCI6MTY1NjkzODgyNywiaWF0IjoxNjU2MzM0MDI3fQ.dDgmEZOda447QPelcI_vDIyotnKB8lkbQ0Fe_wGVnLA'
             );
         }
+    };
+
+    const handleLogout = async () => {
+        await auth.setAuth(false);
+        await localStorage.clear();
+        navigate('/login');
     };
 
     return (

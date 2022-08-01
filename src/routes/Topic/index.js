@@ -19,6 +19,7 @@ const Topic = () => {
             semesterCode: null,
             subjectId: null,
             theme: null,
+            onLoad: -1,
         }))
     );
     const [isLoad, setLoad] = useState(true);

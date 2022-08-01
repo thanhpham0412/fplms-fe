@@ -268,6 +268,10 @@ const Column = ({
                                                 ref={provided.innerRef}
                                                 {...provided.draggableProps}
                                                 {...provided.dragHandleProps}
+                                                style={{
+                                                    pointerEvents:
+                                                        item.onLoad == -1 ? 'none' : 'auto',
+                                                }}
                                             >
                                                 <Item
                                                     isDragging={snapshot.isDragging}

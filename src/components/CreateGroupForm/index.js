@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 
 import axios from 'axios';
@@ -24,12 +25,20 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import CloseIcon from '@mui/icons-material/Close';
 
 const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
+    const currentDate = new Date();
+
     const [groups, setGroups] = useState(1);
     const [members, setMembers] = useState(1);
-    const [date, setDate] = useState('');
-    const [time, setTime] = useState('');
+    const [date, setDate] = useState(
+        `${currentDate.getFullYear()}-${('0' + (currentDate.getMonth() + 1)).slice(-2)}-${(
+            '0' + currentDate.getDate()
+        ).slice(-2)}`
+    );
+    const [time, setTime] = useState('12:00:00.000');
     const [enrollTime, setEnrollTime] = useState('');
     const [isLoading, setLoading] = useState(false);
+    // eslint-disable-next-line no-unused-vars
+    const [errorForm, setErrorForm] = useState({ numErr: '', memberQuantityErr: '' });
 
     const URL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups`;
     const TOKEN = localStorage.getItem('token');
@@ -52,7 +61,6 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
             .then((res) => {
                 if (res.data.code == 200) {
                     success(`Create ${groups} group(s) successfully!`);
-                    setRefresh((prev) => prev + 1);
                 } else {
                     error(res.data.message);
                 }
@@ -61,6 +69,7 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
                 error(`An error occured!`);
             })
             .finally(() => {
+                setRefresh((prev) => prev + 1);
                 setLoading(false);
                 closeForm();
             });
@@ -74,9 +83,27 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
         e.preventPropagation();
     };
 
+    const incrementNumOfGroups = () => {
+        setGroups(groups + 1);
+        setErrorForm((prev) => ({ ...prev, numErr: '' }));
+    };
+    const decrementNumOfGroups = () => {
+        if (groups > 1) {
+            setGroups(groups - 1);
+        } else {
+            setErrorForm((prev) => {
+                return { ...prev, numErr: 'Number of groups must greater or equal 1!' };
+            });
+        }
+    };
+
     useEffect(() => {
         setEnrollTime(date + ' ' + time);
     }, [date, time]);
+
+    const renderError = (error) => {
+        return <span style={{ color: 'red', fontSize: '10px' }}>{error}</span>;
+    };
 
     return (
         <>
@@ -95,10 +122,11 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
                                 <small>Number of groups</small>
 
                                 <FormInput>
-                                    <ArrowBackIosIcon onClick={() => setGroups(groups - 1)} />
+                                    <ArrowBackIosIcon onClick={decrementNumOfGroups} />
                                     {groups}
-                                    <ArrowForwardIosIcon onClick={() => setGroups(groups + 1)} />
+                                    <ArrowForwardIosIcon onClick={incrementNumOfGroups} />
                                 </FormInput>
+                                {renderError(errorForm.numErr)}
                             </FormColumn>
                         </FormRow>
                         <FormRow>
@@ -106,10 +134,33 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
                                 <small>Min number of members</small>
 
                                 <FormInput>
-                                    <ArrowBackIosIcon onClick={() => setMembers(members - 1)} />
+                                    <ArrowBackIosIcon
+                                        onClick={() => {
+                                            if (members > 1) {
+                                                setMembers(members - 1);
+                                            } else {
+                                                setErrorForm((prev) => {
+                                                    return {
+                                                        ...prev,
+                                                        memberQuantityErr:
+                                                            'Min number of students in group must be greater or equal 1!',
+                                                    };
+                                                });
+                                            }
+                                        }}
+                                    />
                                     {members}
-                                    <ArrowForwardIosIcon onClick={() => setMembers(members + 1)} />
+                                    <ArrowForwardIosIcon
+                                        onClick={() => {
+                                            setMembers(members + 1);
+                                            setErrorForm((prev) => ({
+                                                ...prev,
+                                                memberQuantityErr: '',
+                                            }));
+                                        }}
+                                    />
                                 </FormInput>
+                                {renderError(errorForm.memberQuantityErr)}
                             </FormColumn>
                         </FormRow>
                         <FormRow>
@@ -117,7 +168,11 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
                                 <small>Closing date</small>
                                 <TimeInput
                                     type={'date'}
-                                    onChange={(e) => setDate(e.target.value)}
+                                    defaultValue={date}
+                                    onChange={(e) => {
+                                        setDate(e.target.value);
+                                        console.log(e.target.value);
+                                    }}
                                 />
                             </FormColumn>
                         </FormRow>
@@ -126,8 +181,11 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
                                 <small>Closing time</small>
                                 <TimeInput
                                     type={'time'}
-                                    onChange={(e) => setTime(e.target.value + ':00.000')}
-                                    defaultValue="00:00"
+                                    onChange={(e) => {
+                                        setTime(e.target.value + ':00.000');
+                                        console.log(e.target.value);
+                                    }}
+                                    defaultValue={time}
                                 />
                             </FormColumn>
                         </FormRow>

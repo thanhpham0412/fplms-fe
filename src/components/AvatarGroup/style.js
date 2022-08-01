@@ -1,8 +1,20 @@
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
+
+const fadeIn = keyframes`
+    from{
+        transform: translateX(25px);
+        opacity: 0;
+    }
+    to{
+        transform: translateX(0);
+        opacity: 1;
+    }
+`;
 
 const Container = styled.div`
     display: flex;
     align-items: center;
+    animation: ${fadeIn} 800ms ease-in-out forwards;
 `;
 
 const Avatar = styled.div`

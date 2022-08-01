@@ -8,7 +8,7 @@ export const StyledContainer = styled.div`
     height: 100%;
     display: grid;
     grid-template-columns: 275px 1fr;
-    grid-template-rows: 80px 1fr;
+    grid-template-rows: 80px 1fr 200px;
     z-index: 1;
 `;
 
@@ -35,4 +35,9 @@ export const BodyContainer = styled.div`
     box-sizing: border-box;
     padding: 24px;
     min-height: 0; // make children fit to parent max height
+`;
+
+export const FooterContainer = styled.div`
+    max-height: 200px;
+    width: 100%;
 `;

@@ -1,11 +1,10 @@
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { COLOR } from '../../utils/style';
 
 const HContainer = styled.header`
     width: 100%;
-    height: 80px;
+    max-height: 80px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -21,7 +20,7 @@ const HContainer = styled.header`
 const HLogo = styled.div`
     img {
         width: 100%;
-        height: auto;
+        max-height: 70px;
         object-fit: cover;
     }
 `;
@@ -33,14 +32,6 @@ const HIcons = styled.div`
     justify-content: space-between;
 `;
 
-const HLink = styled(Link)`
-    text-decoration: none;
-    border-radius: 50%;
-    position: relative;
-    :hover {
-        cursor: pointer;
-    }
-`;
 export const BtnContainer = styled.div`
     text-decoration: none;
     border-radius: 50%;
@@ -56,6 +47,14 @@ export const BtnContainer = styled.div`
 
     :hover {
         cursor: pointer;
+    }
+    svg {
+        font-size: 24;
+        color: #5680f9;
+        background-color: #dde6fe;
+        border-radius: 50%;
+        padding: 8px;
+        margin: 0 10px;
     }
 `;
 
@@ -147,4 +146,4 @@ export const NotiNews = styled.div`
     background: ${COLOR.red[0]};
 `;
 
-export { HContainer, HLogo, HIcons, HLink };
+export { HContainer, HLogo, HIcons };

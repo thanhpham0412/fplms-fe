@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 import axios from 'axios';
 import TimeAgo from 'javascript-time-ago';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -5,6 +7,7 @@ import ReactTimeAgo from 'react-time-ago';
 
 import { getTokenInfo } from '../../utils/account';
 import { error, success } from '../../utils/toaster';
+import ConfirmModal from '../ConfirmModal';
 import {
     Container,
     Row,
@@ -32,6 +35,9 @@ const PostSection = ({ post, setOpen, setPosts, setStudentInfo, setRefresh }) =>
     TimeAgo.addLocale(en);
     TimeAgo.addLocale(ru);
     const navigate = useNavigate();
+
+    const [isOpen, setIsOpen] = useState(false);
+
     const { title, student, subject, createdDate, removed, removedBy } = post;
     const pathname = useLocation().pathname;
     const userInfo = JSON.parse(localStorage.getItem('user'));
@@ -41,14 +47,19 @@ const PostSection = ({ post, setOpen, setPosts, setStudentInfo, setRefresh }) =>
         Authorization: `${localStorage.getItem('token')}`,
     };
     const deleteQuestion = () => {
-        axios.delete(URL, { headers: header }).then((res) => {
-            if (res.status >= 200 && res.status < 300) {
-                success(`Delete question successfully!`);
-                setRefresh((prev) => prev - 1);
-            } else {
-                error(`${res.message}`);
-            }
-        });
+        axios
+            .delete(URL, { headers: header })
+            .then((res) => {
+                if (res.status >= 200 && res.status < 300) {
+                    success(`Delete question successfully!`);
+                    setRefresh((prev) => prev - 1);
+                    setIsOpen(false);
+                } else {
+                    error(`${res.message}`);
+                    setIsOpen(false);
+                }
+            })
+            .finally(() => setIsOpen(false));
     };
 
     const handleVote = () => {
@@ -97,6 +108,7 @@ const PostSection = ({ post, setOpen, setPosts, setStudentInfo, setRefresh }) =>
 
     return (
         <>
+            <ConfirmModal isOpen={isOpen} setIsOpen={setIsOpen} action={deleteQuestion} />
             <Row>
                 <Container>
                     <Row>
@@ -140,7 +152,7 @@ const PostSection = ({ post, setOpen, setPosts, setStudentInfo, setRefresh }) =>
                                         <MoreVertIcon />
                                     </button>
                                     <DropdownMenu className="dropdown-menu">
-                                        <DeleteIcon onClick={deleteQuestion} />
+                                        <DeleteIcon onClick={() => setIsOpen(true)} />
                                         {user.role != 'Lecturer' && (
                                             <EditIcon
                                                 onClick={() =>

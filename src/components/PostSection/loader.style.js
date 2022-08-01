@@ -21,6 +21,7 @@ export const Card = styled.div`
     border: 1px solid ${COLOR.gray[2]};
     background-color: ${COLOR.primary02};
     border-radius: 4px;
+    margin: 1rem 0;
 `;
 export const CardHeader = styled.div`
     display: flex;
