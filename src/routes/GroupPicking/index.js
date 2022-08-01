@@ -43,6 +43,7 @@ const GroupPicking = () => {
                 headers: header,
             })
             .then((res) => {
+                console.log(res.data);
                 setGroups(res.data.data);
                 setLoading(false);
             })

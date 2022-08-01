@@ -87,12 +87,6 @@ const ClassList = () => {
                 error('An error occured while processing class list');
             });
 
-        axios
-            .get(`${process.env.REACT_APP_AUTH_URL}/management`, { headers: header })
-            .then((res) => {
-                console.log(res);
-            });
-
         // Promise.all([subs, list]).then(([subs, list]) => {
         //     setSubjects(
         //         subs?.data.data.reduce((pre, cur) => {

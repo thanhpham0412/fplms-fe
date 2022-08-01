@@ -218,8 +218,12 @@ export const SemesterCard = styled.div`
 export const CardTitle = styled.h3`
     font-weight: 600;
     font-size: 1rem;
+    text-transform: uppercase;
     color: ${COLOR.primary03};
     margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 `;
 
 export const AddingCard = styled.div`
@@ -282,4 +286,53 @@ export const Button = styled.button`
     :disabled {
         cursor: default;
     }
+`;
+
+export const Dropdown = styled.div`
+    position: relative;
+    .sub-option {
+        padding: 0;
+        border: none;
+        background-color: unset;
+        height: 30px;
+        cursor: pointer;
+    }
+    &:hover > .sub-option + .dropdown-menu {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
+`;
+
+export const DropdownMenu = styled.div`
+    position: absolute;
+    right: 0;
+    width: fit-content;
+    padding: 0.3rem 0.4rem;
+    top: calc(100% + 0.05rem);
+    background-color: ${COLOR.primary02};
+    border-radius: 4px;
+    box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    z-index: 99;
+    transform: translateY(-10px);
+    transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+    opacity: 0;
+    pointer-events: none;
+    svg {
+        align-self: flex-end;
+        border-radius: 50%;
+        margin: 2px 0;
+        cursor: pointer;
+        &:hover {
+            transform: scale(1.3);
+            transition: all 150ms ease-in-out;
+        }
+    }
+`;
+
+export const DropdownItem = styled.div`
+    width: 100%;
+    height: auto;
 `;

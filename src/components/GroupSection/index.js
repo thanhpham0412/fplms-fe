@@ -33,6 +33,7 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
     const [isCreate, setCreate] = useState(false);
     const [disable, setDisable] = useState(false);
     const [btnStyle, setBtnStyle] = useState(false);
+    const [action, setAction] = useState();
     const [slot, setSlot] = useState(data.currentNumber);
     const [isOpen, setIsOpen] = useState(false);
     const [group] = useState(data);
@@ -46,12 +47,14 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
     const URL_DELETE = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups/${group.id}`;
     const URL_DISABLE =
         process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups/${group.id}/disable`;
+    const URL_ENABLE =
+        process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups/${group.id}/enable`;
     const header = {
         Authorization: `${TOKEN}`,
     };
 
     useEffect(() => {
-        if (slot == group.memberQuantity) {
+        if (slot == group.memberQuantity || data.disable) {
             setDisable(true);
         } else if (isJoined || currentDate > new Date(group.enrollTime)) {
             setDisable(true);
@@ -73,33 +76,56 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
     };
 
     const handleRemoveBtn = () => {
-        if (group.currentNumber === 0) {
-            axios
-                .delete(URL_DELETE, { headers: header })
-                .then((res) => {
-                    if (res.data.code == 200) {
-                        success(`Remove group${group.number} successfully!`);
-                        setIsOpen(false);
-                    } else error(`${res.data.message}`);
-                })
-                .finally(() => {
-                    setRefresh((prev) => prev - 1);
-                });
-        }
-        if (group.currentNumber > 0) {
-            axios
-                .put(URL_DISABLE, { userEmail: email }, { headers: header })
-                .then((res) => {
-                    if (res.data.code == 200) {
-                        success(`Disable group${group.number} successfully!`);
-                        setIsOpen(false);
-                    } else error(`${res.data.message}`);
-                })
-                .finally(() => {
-                    setRefresh((prev) => prev - 1);
-                });
-            error(`Group ${group.number} is having ${group.currentNumber} member(s)!`);
-        }
+        axios
+            .delete(URL_DELETE, { headers: header })
+            .then((res) => {
+                if (res.data.code == 200) {
+                    success(`Remove group${group.number} successfully!`);
+                    setIsOpen(false);
+                } else {
+                    error(`${res.data.message}`);
+                    setIsOpen(false);
+                }
+            })
+            .finally(() => {
+                setRefresh((prev) => prev - 1);
+            });
+    };
+
+    const handleDisableGroup = () => {
+        axios
+            .put(URL_DISABLE, { userEmail: email }, { headers: header })
+            .then((res) => {
+                if (res.data.code == 200) {
+                    success(`Disable group${group.number} successfully!`);
+                    setIsOpen(false);
+                    setDisable(true);
+                } else error(`${res.data.message}`);
+            })
+            .catch((err) => {
+                error(err);
+            })
+            .finally(() => {
+                setRefresh((prev) => prev - 1);
+            });
+    };
+
+    const handleEnableGroup = () => {
+        axios
+            .put(URL_ENABLE, { userEmail: email }, { headers: header })
+            .then((res) => {
+                if (res.data.code == 200) {
+                    success(`Enable group${group.number} successfully!`);
+                    setIsOpen(false);
+                    setDisable(false);
+                } else error(`${res.data.message}`);
+            })
+            .catch((err) => {
+                error(err);
+            })
+            .finally(() => {
+                setRefresh((prev) => prev - 1);
+            });
     };
 
     return (
@@ -112,7 +138,7 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
                 email={email}
                 setRefresh={setRefresh}
             />
-            <ConfirmModal isOpen={isOpen} setIsOpen={setIsOpen} action={handleRemoveBtn} />
+            <ConfirmModal isOpen={isOpen} setIsOpen={setIsOpen} action={action} />
             <Container>
                 <Header style={{ justifyContent: 'space-between' }}>
                     <div>GROUP {group.number}</div>
@@ -122,7 +148,16 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
                                 <MoreVertIcon />
                             </button>
                             <DropdownMenu className="dropdown-menu">
-                                <DeleteIcon onClick={() => setIsOpen(true)} />
+                                <DeleteIcon
+                                    onClick={() => {
+                                        if (slot > 0) {
+                                            error(`Group is not empty!`);
+                                        } else {
+                                            setIsOpen(true);
+                                            setAction(() => handleRemoveBtn);
+                                        }
+                                    }}
+                                />
                                 <EditIcon onClick={() => setCreate(true)} />
                             </DropdownMenu>
                         </Dropdown>
@@ -150,6 +185,19 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
                             }}
                         >
                             View
+                        </GroupBtn>
+                        <GroupBtn
+                            onClick={() => {
+                                setIsOpen(true);
+                                if (disable) {
+                                    setAction(() => handleEnableGroup);
+                                } else {
+                                    setAction(() => handleDisableGroup);
+                                }
+                            }}
+                            style={{ backgroundColor: disable ? '#75D996' : '#F776A5' }}
+                        >
+                            {disable ? 'Enable' : 'Disable'}
                         </GroupBtn>
                     </Row>
                 ) : (

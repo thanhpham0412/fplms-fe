@@ -30,28 +30,29 @@ export const Overlay = styled.div`
 
 export const Wrapper = styled.div`
     position: absolute;
-    /* top: ${({ from }) => from.y || 0}px;
-    left: ${({ from }) => from.x || 0}px; */
     display: flex;
     align-items: center;
     justify-content: center;
+
     width: ${({ w }) => `${w}px` || '200px'};
-    height: ${({ h }) => `${h}px` || '100px'};
-    background-color: #fff;
+    min-height: ${({ h }) => `${h}px` || '100px'};
     z-index: 999;
-    border-radius: 4px;
+
     animation: ${({ to, from }) => scaleIn(to, from)} 1.5s ease-in-out forwards;
     color: ${COLOR.primary03};
-
-    padding: 5px 0 20px;
+    min-width: 280px;
 `;
 
 export const Container = styled.div`
-    width: 90%;
-    height: 100%;
+    width: fit-content;
+    border-radius: 4px;
+    background-color: #fff;
     display: flex;
     flex-direction: column;
+    padding: 10px 15px;
     gap: 5px;
+    min-width: 250px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 `;
 
 export const SemsterCode = styled.h1`
@@ -68,7 +69,7 @@ export const InputDate = styled.div`
     margin-bottom: 10px;
     input[type='date'] {
         cursor: pointer;
-        border: 2px solid ${COLOR.primary03};
+        border: 1px solid ${COLOR.primary03};
         border-radius: 4px;
         font-family: 'Lato';
         color: ${COLOR.primary03};

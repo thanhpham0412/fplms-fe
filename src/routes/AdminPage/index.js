@@ -13,6 +13,8 @@ import {
     Button,
     CardTitle,
     Container,
+    Dropdown,
+    DropdownMenu,
     LeftSetting,
     Loader,
     RightSetting,
@@ -27,6 +29,7 @@ import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SaveIcon from '@mui/icons-material/Save';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
 
@@ -57,34 +60,8 @@ const AdminPage = () => {
     const semesterRef = useRef();
     const subjectRef = useRef();
 
-    const showSemesterSetting = () => {
-        if (semesterRef.current.classList.contains('active')) {
-            return;
-        } else {
-            setLoading(true);
-            semesterRef.current.classList.add('active');
-            subjectRef.current.classList.remove('active');
-            setTimeout(() => {
-                setLoading(false);
-                setShow(true);
-            }, 1000);
-        }
-    };
-    const showSubjectSetting = () => {
-        if (subjectRef.current.classList.contains('active')) {
-            return;
-        } else {
-            setLoading(true);
-            semesterRef.current.classList.remove('active');
-            subjectRef.current.classList.add('active');
-            setTimeout(() => {
-                setLoading(false);
-                setShow(false);
-            }, 1000);
-        }
-    };
-
-    const getPos = async (el, item) => {
+    const getPos = async (item, index) => {
+        var el = document.querySelector(`.semester-card-${item.code}-${index}`);
         setWidth(el.clientWidth);
         setHeight(el.clientHeight);
         setSemester(item);
@@ -101,6 +78,73 @@ const AdminPage = () => {
         setFrom({ x: fx, y: fy });
 
         setOpen(true);
+    };
+
+    //Manage Semester Setting
+    const showSemesterSetting = () => {
+        if (semesterRef.current.classList.contains('active')) {
+            return;
+        } else {
+            setLoading(true);
+            semesterRef.current.classList.add('active');
+            subjectRef.current.classList.remove('active');
+            setTimeout(() => {
+                setLoading(false);
+                setShow(true);
+            }, 1000);
+        }
+    };
+    const createSemester = () => {
+        setLoadingAdd(true);
+        axios
+            .post(
+                `${process.env.REACT_APP_API_URL}/semesters`,
+                {
+                    code: semesterCode,
+                    endDate: endDate,
+                    startDate: startDate,
+                },
+                {
+                    headers: {
+                        Authorization: `${localStorage.getItem('token')}`,
+                    },
+                }
+            )
+            .then((res) => {
+                if (res.data.code === 200) {
+                    success(`Add semester successfully!`);
+
+                    setSemesters((prev) =>
+                        prev.concat([
+                            { code: semesterCode, endDate: endDate, startDate: startDate },
+                        ])
+                    );
+                } else {
+                    error(`${res.data.message}`);
+                }
+            })
+            .finally(() => {
+                setSemesterCode('');
+                setEndDate('');
+                setStartDate('');
+                setShowSemesterForm(false);
+                setLoadingAdd(false);
+            });
+    };
+
+    // Manage Subject
+    const showSubjectSetting = () => {
+        if (subjectRef.current.classList.contains('active')) {
+            return;
+        } else {
+            setLoading(true);
+            semesterRef.current.classList.remove('active');
+            subjectRef.current.classList.add('active');
+            setTimeout(() => {
+                setLoading(false);
+                setShow(false);
+            }, 1000);
+        }
     };
 
     const updateSubject = () => {
@@ -179,40 +223,6 @@ const AdminPage = () => {
         }
     };
 
-    const createSemester = () => {
-        setLoadingAdd(true);
-        axios
-            .post(
-                `${process.env.REACT_APP_API_URL}/semesters`,
-                {
-                    code: semesterCode,
-                    endDate: endDate,
-                    startDate: startDate,
-                },
-                {
-                    headers: {
-                        Authorization: `${localStorage.getItem('token')}`,
-                    },
-                }
-            )
-            .then((res) => {
-                if (res.data.code === 200) {
-                    success(`Add semester successfully!`);
-
-                    setSemesters((prev) =>
-                        prev.concat([
-                            { code: semesterCode, endDate: endDate, startDate: startDate },
-                        ])
-                    );
-                    setSemesterCode('');
-                    setEndDate('');
-                    setStartDate('');
-                    setShowSemesterForm(false);
-                    setLoadingAdd(false);
-                }
-            });
-    };
-
     useEffect(() => {
         const fetchSemesters = async () => {
             semesterRef.current.classList.add('active');
@@ -263,21 +273,37 @@ const AdminPage = () => {
             <>
                 <SettingTitle>Semester</SettingTitle>
                 <SettingBody id="setting-body">
-                    {semesters?.map((item) => (
-                        <SemesterCard
-                            key={item.code}
-                            onClick={(e) => getPos(e.currentTarget, item)}
-                        >
-                            <CardTitle>{item.code}</CardTitle>
-                            <EditIcon className="edit-icon" />
-                            <div>
-                                Start Date: <span>{item.startDate}</span>
-                            </div>
-                            <div>
-                                End Date: <span>{item.endDate}</span>
-                            </div>
-                        </SemesterCard>
-                    ))}
+                    {semesters?.map((item, index) => {
+                        console.log(item.startDate.split('-').reverse());
+                        return (
+                            <SemesterCard
+                                key={item.code}
+                                className={`semester-card-${item.code}-${index}`}
+                            >
+                                <CardTitle>
+                                    {item.code}
+                                    <Dropdown>
+                                        <button
+                                            className="sub-option"
+                                            onClick={(e) => e.stopPropagation}
+                                        >
+                                            <MoreVertIcon />
+                                        </button>
+                                        <DropdownMenu className="dropdown-menu">
+                                            <EditIcon onClick={() => getPos(item, index)} />
+                                        </DropdownMenu>
+                                    </Dropdown>
+                                </CardTitle>
+
+                                <InputDate>
+                                    Start Date: <span>{item.startDate}</span>
+                                </InputDate>
+                                <InputDate>
+                                    End Date: <span>{item.endDate}</span>
+                                </InputDate>
+                            </SemesterCard>
+                        );
+                    })}
                     <AddingCard isShow={showSemsterForm}>
                         {showSemsterForm && (
                             <>
@@ -308,7 +334,7 @@ const AdminPage = () => {
                                             <span>End Date:</span>
                                             <input
                                                 type={'date'}
-                                                value={endDate || ''}
+                                                value={endDate}
                                                 onChange={(e) => setEndDate(e.target.value)}
                                             />
                                         </InputDate>

@@ -42,13 +42,25 @@ const Login = () => {
             })
             .then((res) => {
                 const data = res.data;
-                console.log(response);
                 if (data.isAuthSuccessful) {
-                    auth.setAuth(true);
-                    loadContext.setActive(false);
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(response.profileObj));
-                    navigate('/class');
+                    axios
+                        .get(`${process.env.REACT_APP_API_URL}/auth`, {
+                            Authorization: data.token,
+                        })
+                        .then((res) => {
+                            if (res.data.code === 200) {
+                                console.log(res);
+                            } else {
+                                error(`An error occured`);
+                            }
+                        })
+                        .then(() => {
+                            auth.setAuth(true);
+                            loadContext.setActive(false);
+                            localStorage.setItem('token', data.token);
+                            localStorage.setItem('user', JSON.stringify(response.profileObj));
+                            navigate('/class');
+                        });
                 }
             })
             .catch(() => {

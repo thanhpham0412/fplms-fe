@@ -131,7 +131,7 @@ const Header = () => {
                         <UserContainer isOpen={isUserOpen}>
                             <NotiInfo
                                 onClick={() => {
-                                    localStorage.removeItem('token');
+                                    localStorage.clear();
                                     auth.setAuth(false);
                                     navigate('/login');
                                 }}
