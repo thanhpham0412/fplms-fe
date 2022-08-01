@@ -30,11 +30,10 @@ import PersonIcon from '@mui/icons-material/Person';
 import { io } from 'socket.io-client';
 
 const Header = () => {
-    const [isOpen, setOpen] = useState(false);
-    const navigate = useNavigate();
     const [isNotiOpen, setNotiOpen] = useState(false);
     const [isUserOpen, setUserOpen] = useState(false);
-
+    const navigate = useNavigate();
+    const [isOpen, setOpen] = useState(false);
     const [socket, setSocket] = useState(null);
     const [list, setList] = useState([]);
 
@@ -60,7 +59,7 @@ const Header = () => {
     const user = getTokenInfo();
 
     useEffect(() => {
-        const socket = io('ws://2.tcp.ngrok.io:18509', {
+        const socket = io('ws://8.tcp.ngrok.io:16457', {
             extraHeaders: {
                 Authorization: localStorage.getItem('token'),
             },
@@ -128,13 +127,6 @@ const Header = () => {
                             onClick={(e) => {
                                 setUserOpen((userOpen) => !userOpen);
                             }}
-                            style={{
-                                fontSize: 24,
-                                color: '#5680F9',
-                                backgroundColor: '#DDE6FE',
-                                borderRadius: '50%',
-                                padding: '1rem',
-                            }}
                         />
                         <UserContainer isOpen={isUserOpen}>
                             <NotiInfo
@@ -148,26 +140,21 @@ const Header = () => {
                             </NotiInfo>
                         </UserContainer>
                     </BtnContainer>
-                    {/* <ForumIcon
-                        onClick={switchRole}
-                        style={{
-                            fontSize: 24,
-                            color: '#5680F9',
-                            backgroundColor: '#DDE6FE',
-                            borderRadius: '50%',
-                            padding: '8px',
-                            margin: '0 10px',
-                        }}
-                    /> */}
-                    <BtnContainer ref={notiRef}>
-                        <NotificationsIcon
+                    {/* <BtnContainer>
+                        <ForumIcon
+                            onClick={switchRole}
                             style={{
                                 fontSize: 24,
                                 color: '#5680F9',
                                 backgroundColor: '#DDE6FE',
                                 borderRadius: '50%',
-                                padding: '1rem',
+                                padding: '8px',
+                                margin: '0 10px',
                             }}
+                        />
+                    </BtnContainer> */}
+                    <BtnContainer ref={notiRef}>
+                        <NotificationsIcon
                             onClick={(e) => {
                                 setNewNoti(0);
                                 setNotiOpen((e) => !e);

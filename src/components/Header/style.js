@@ -36,6 +36,15 @@ export const BtnContainer = styled.div`
     text-decoration: none;
     border-radius: 50%;
     position: relative;
+
+    svg {
+        font-size: 24px;
+        color: #5680f9;
+        background-color: #dde6fe;
+        border-radius: 50%;
+        padding: 12px;
+    }
+
     :hover {
         cursor: pointer;
     }

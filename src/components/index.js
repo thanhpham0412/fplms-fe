@@ -63,8 +63,8 @@ export {
     Expand,
     Spinner,
     Avatars,
-    ConfirmModal,
     Row,
     TableHeader,
     Table,
+    ConfirmModal,
 };
