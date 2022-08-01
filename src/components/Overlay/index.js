@@ -67,7 +67,12 @@ const Overlay = ({
                     }}
                 >
                     <ModalBox
-                        initial={{ opacity: 0, transform: 'translateY(-40px)' }}
+                        initial={{
+                            opacity: 0,
+                            transform: 'translateY(-40px)',
+                            width: fullFill ? '100%' : 'fit-content',
+                            height: fullFill ? '100%' : 'fit-content',
+                        }}
                         animate={{
                             opacity: 1,
                             transform: 'translateY(0px)',

@@ -25,23 +25,17 @@ import {
     Error,
 } from './style';
 
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import CloseIcon from '@mui/icons-material/Close';
 
-const CreateMeetingForm = ({ showing, closeFn, groupId }) => {
+const CreateMeetingForm = ({ showing, closeFn, groupId, form, setForm, setEvents }) => {
     const [isLoad, setLoad] = useState(false);
 
     const [disable, setDisable] = useState(false);
 
-    const [form, setForm] = useState({
-        date: moment().format('YYYY-MM-DD'),
-        time: moment().format('HH:mm'),
-        groupId: groupId,
-        link: '',
-        scheduleTime: `${moment().format('YYYY-MM-DD')} ${moment().format('HH:mm')}:00.000`,
-        title: '',
-    });
-
     const submit = () => {
+        console.log(form);
+
         if (disable) return;
 
         setDisable(true);
@@ -51,33 +45,68 @@ const CreateMeetingForm = ({ showing, closeFn, groupId }) => {
         };
 
         const API = process.env.REACT_APP_API_URL + '/meetings';
-        axios
-            .post(
-                API,
-                {
-                    groupId: parseInt(groupId),
-                    link: form.link,
-                    scheduleTime: `${form.date} ${form.time}:00.000`,
-                    title: form.title,
-                },
-                { headers: header }
-            )
-            .then((res) => {
-                if (res.data.code == 200) {
-                    success(`Create meeting successfully!`);
+        if (form.isAdd) {
+            axios
+                .post(
+                    API,
+                    {
+                        groupId: parseInt(groupId),
+                        link: form.link,
+                        scheduleTime: `${form.date} ${form.time}:00.000`,
+                        title: form.title,
+                    },
+                    { headers: header }
+                )
+                .then((res) => {
+                    if (res.data.code == 200) {
+                        success(`Create meeting successfully!`);
+                        setDisable(false);
+                        closeFn();
+                        setEvents((events) => {
+                            return events.concat({
+                                ...res.data.data,
+                                icon: <AssignmentIcon />,
+                                status: moment(res.data.data.scheduleTime).fromNow(),
+                            });
+                        });
+                    } else {
+                        error(res.data.message);
+                        setDisable(false);
+                        closeFn();
+                    }
+                })
+                .catch(() => {
+                    error(`An error occured!`);
                     setDisable(false);
                     closeFn();
-                } else {
-                    error(res.data.message);
+                });
+        } else {
+            axios
+                .put(
+                    API,
+                    {
+                        ...form,
+                        groupId: parseInt(groupId),
+                    },
+                    { headers: header }
+                )
+                .then((res) => {
+                    if (res.data.code == 200) {
+                        success(`Update meeting successfully!`);
+                        setDisable(false);
+                        closeFn();
+                    } else {
+                        error(res.data.message);
+                        setDisable(false);
+                        closeFn();
+                    }
+                })
+                .catch(() => {
+                    error(`An error occured!`);
                     setDisable(false);
                     closeFn();
-                }
-            })
-            .catch(() => {
-                error(`An error occured!`);
-                setDisable(false);
-                closeFn();
-            });
+                });
+        }
     };
 
     const handleChange = (e, field, parser = String) => {
@@ -106,8 +135,8 @@ const CreateMeetingForm = ({ showing, closeFn, groupId }) => {
             <Container>
                 <StyledHeader>
                     <StyledJumbotron>
-                        <Title>CREATE NEW MEETING</Title>
-                        <SubTitle>New Meeting</SubTitle>
+                        <Title>{form.isAdd ? 'CREATE NEW MEETING' : 'UPDATE MEETING'}</Title>
+                        <SubTitle>{form.isAdd ? 'New Meeting' : 'Update Meeting'}</SubTitle>
                     </StyledJumbotron>
                     <CloseIcon onClick={closeFn} />
                 </StyledHeader>
@@ -118,6 +147,7 @@ const CreateMeetingForm = ({ showing, closeFn, groupId }) => {
                             <StyledInput
                                 type="text"
                                 placeholder="Meeting Title"
+                                defaultValue={form.isAdd ? form.title : ''}
                                 onChange={(e) => {
                                     handleChange(e, 'title');
                                 }}
@@ -130,6 +160,7 @@ const CreateMeetingForm = ({ showing, closeFn, groupId }) => {
                             <StyledInput
                                 type="url"
                                 placeholder="Meeting Link"
+                                defaultValue={form.isAdd ? form.link : ''}
                                 onChange={(e) => {
                                     handleChange(e, 'link');
                                 }}
@@ -141,7 +172,7 @@ const CreateMeetingForm = ({ showing, closeFn, groupId }) => {
                             <small>Date</small>
                             <StyledInput
                                 type="date"
-                                defaultValue={form.date}
+                                value={form.date}
                                 onChange={(e) => {
                                     handleDateChange(e);
                                 }}
@@ -153,7 +184,7 @@ const CreateMeetingForm = ({ showing, closeFn, groupId }) => {
                             <small>Time</small>
                             <StyledInput
                                 type="time"
-                                defaultValue={form.time}
+                                value={form.time}
                                 onChange={(e) => {
                                     handleTimeChange(e);
                                 }}
@@ -165,8 +196,10 @@ const CreateMeetingForm = ({ showing, closeFn, groupId }) => {
                             <StyledButton onClick={submit}>
                                 {disable || isLoad ? (
                                     <Spinner radius={24} color={COLOR.primary02} />
-                                ) : (
+                                ) : form.isAdd ? (
                                     'CREATE MEETING'
+                                ) : (
+                                    'UPDATE MEETING'
                                 )}
                             </StyledButton>
                         </Col>

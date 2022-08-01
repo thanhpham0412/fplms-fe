@@ -42,7 +42,16 @@ const header = {
 
 const TEMPLATE = '<b>(Project has no requirement)</b>';
 
-const Column = ({ list, droppableId, name, type, setColumns, subjects, setProjects }) => {
+const Column = ({
+    list,
+    droppableId,
+    name,
+    type,
+    setColumns,
+    subjects,
+    setProjects,
+    semesters,
+}) => {
     const [isScroll, setScroll] = useState(false);
     const [isBot, setBot] = useState(true);
     const ref = useRef();
@@ -52,12 +61,13 @@ const Column = ({ list, droppableId, name, type, setColumns, subjects, setProjec
     const [disable, setDisable] = useState(false);
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
-    const saveItem = (id) => {
+    const saveItem = (id, newId) => {
         setColumns((col) => {
             const clone = col[droppableId].items;
             const index = clone.findIndex((item) => item.id === id);
             console.log('saved: ' + index);
             clone[index].needAdd = false;
+            if (newId) clone[index].id = newId;
             return {
                 ...col,
                 [droppableId]: {
@@ -94,7 +104,7 @@ const Column = ({ list, droppableId, name, type, setColumns, subjects, setProjec
                 problem: '',
                 requirements: clone[index].requirements,
                 subjectId: item.subjectId,
-                semesterCode: 'SP21',
+                semesterCode: item.semesterCode,
                 theme: 'string',
                 id: item.id,
             };
@@ -109,8 +119,8 @@ const Column = ({ list, droppableId, name, type, setColumns, subjects, setProjec
                     if (data.code == 200) {
                         // setProjects((projects) => projects.concat(clone[index]));
                         success(`Topic \`${item.name}\` ${item.needAdd ? 'added' : 'updated'}`);
-                        item.needAdd = false;
-                        saveItem(item.id);
+                        console.log(data);
+                        saveItem(item.id, item.needAdd ? data.data : null);
                         setOpen(false);
                     } else {
                         error(data.message);
@@ -180,10 +190,10 @@ const Column = ({ list, droppableId, name, type, setColumns, subjects, setProjec
         });
     };
 
-    const change = (e) => {
+    const change = (e, field) => {
         setItem((item) => ({
             ...item,
-            subjectId: e.value,
+            [field]: e.value,
         }));
     };
 
@@ -207,7 +217,7 @@ const Column = ({ list, droppableId, name, type, setColumns, subjects, setProjec
                     <GoalContainer>
                         <GoalDes>Subject</GoalDes>
                         <Selection
-                            onChange={change}
+                            onChange={(e) => change(e, 'subjectId')}
                             options={subjects.slice(1)}
                             placeholder={
                                 subjects.reduce((pre, cur) => {
@@ -215,7 +225,18 @@ const Column = ({ list, droppableId, name, type, setColumns, subjects, setProjec
                                     return pre;
                                 }, [])[item.subjectId] || null
                             }
-                        ></Selection>
+                        />
+                        <GoalDes>Semester</GoalDes>
+                        <Selection
+                            onChange={(e) => change(e, 'semesterCode')}
+                            options={semesters.slice(1)}
+                            placeholder={
+                                semesters.reduce((pre, cur) => {
+                                    pre[cur.value] = cur.content;
+                                    return pre;
+                                }, [])[item.semesterCode] || 'Pick a semester'
+                            }
+                        />
                     </GoalContainer>
                     <SendBtn onClick={save}>Save Topic</SendBtn>
                 </AdvanceEditor>

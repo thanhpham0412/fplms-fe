@@ -81,7 +81,7 @@ const DraftEditor = ({
             });
         }
         // checkSave();
-        setEditorState(editorState);
+        if (setEditorState) setEditorState(editorState);
     };
 
     const handleKeyCommand = (command, editorState) => {

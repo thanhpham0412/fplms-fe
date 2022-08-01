@@ -19,6 +19,8 @@ const ClassList = () => {
     const [classList, setList] = useState(new Array(10).fill('').map((item, index) => (
         {
             name: '',
+            email: null,
+            enrollKey: null,
             lecture: null,
             subjectId: null,
             semesterCode: null,
@@ -44,7 +46,7 @@ const ClassList = () => {
         const API_STUDENT = process.env.REACT_APP_API_URL + `/classes/student`;
         const CLASS_API = user.role == 'Lecturer' ? API_LECTURER : API_STUDENT;
 
-        get('/subjects').then((subs) => {
+        axios.get(process.env.REACT_APP_API_URL + '/subjects', { headers: header }).then((subs) => {
             if (subs.data.code == 200) {
                 setSubjects(
                     subs.data.data.reduce((pre, cur) => {
@@ -58,9 +60,6 @@ const ClassList = () => {
         });
         axios.get(CLASS_API, {
             headers: header,
-            params: {
-                search: '',
-            },
         }).then((list) => {
             if (list.data.code == 200) {
                 setList(list.data.data);
@@ -89,7 +88,7 @@ const ClassList = () => {
     const search = (e) => {
         setFilter((filter) => ({
             ...filter,
-            name: e.target.value || '',
+            name: e.target.value.toLowerCase() || '',
         }));
     };
 
@@ -137,17 +136,15 @@ const ClassList = () => {
                 <StyledList>
                     {
                         classList
-                            .filter((item) => item.name.includes(filter.name))
+                            .filter((item) => item.name.toLowerCase().includes(filter.name))
                             .filter((item) => filter.subjectId != -1 ? item.subjectId == filter.subjectId : true)
                             .map((item) => (
                                 <Section
                                     key={item.id}
                                     name={item.name}
-                                    lecture={
-                                        item.lecturerDto
-                                            ? `${item.lecturerDto.name} - ${item.lecturerDto.email}`
-                                            : item.enrollKey
-                                    }
+                                    lecture={item.lecturerDto && item.lecturerDto.name}
+                                    enrollKey={item && item.enrollKey}
+                                    email={item.lecturerDto && item.lecturerDto.email}
                                     subjectId={subjects[item.subjectId]}
                                     semesterCode={item.semesterCode}
                                     id={item.id}
