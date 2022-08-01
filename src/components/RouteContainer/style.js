@@ -8,7 +8,7 @@ export const StyledContainer = styled.div`
     height: 100%;
     display: grid;
     grid-template-columns: 275px 1fr;
-    grid-template-rows: 80px 1fr 200px;
+    grid-template-rows: 80px 1fr;
     z-index: 1;
 `;
 
