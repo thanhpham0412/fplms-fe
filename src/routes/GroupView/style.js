@@ -57,6 +57,14 @@ export const SideBar = styled.div`
     flex-direction: column;
     height: 100%;
     min-height: 100%;
+
+    [data-target='list'] {
+        z-index: 10;
+    }
+
+    [data-target='container'] {
+        margin-bottom: 1rem;
+    }
 `;
 
 export const CommingContainer = styled.div`
@@ -200,7 +208,8 @@ export const PickBtn = styled.button`
 `;
 
 export const Title = styled.div``;
-export const Type = styled.div`
+export const Type = styled.small`
+    text-transform: uppercase;
     padding: 0.5rem;
     background: ${({ type }) => (type == 'cycle' ? COLOR.blue[0] : COLOR.green[0])};
     width: fit-content;

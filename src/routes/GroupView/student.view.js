@@ -383,16 +383,6 @@ const StudentView = ({ groupId, classId }) => {
                     <SendBtn onClick={() => submitCycle(type)}>Send Report</SendBtn>
                 </AdvanceEditor>
             </Overlay>
-            <Select>
-                <Selection
-                    disable={!isPicked}
-                    options={reportType}
-                    placeholder="Write Report"
-                    fixed
-                    reset={true}
-                    onChange={onChange}
-                ></Selection>
-            </Select>
             <Container>
                 {list.length ? (
                     <FeedBack list={list} />
@@ -414,6 +404,14 @@ const StudentView = ({ groupId, classId }) => {
                     setTopicState={setTopicState}
                 />
                 <SideBar>
+                    <Selection
+                        disable={!isPicked}
+                        options={reportType}
+                        placeholder="Write Report"
+                        fixed
+                        reset={true}
+                        onChange={onChange}
+                    />
                     <Calendar onChange={calendarChange} />
                     <StyledH4>
                         UP COMMING TASKS <Round>{events.length}</Round>

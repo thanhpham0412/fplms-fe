@@ -4,12 +4,20 @@ const Table = ({ columns, children }) => {
     return <StyledTable columns={columns}>{children}</StyledTable>;
 };
 
-const Row = ({ children }) => {
-    return <StyledRow data-target="row">{children}</StyledRow>;
+const Row = (props) => {
+    return (
+        <StyledRow data-target="row" {...props}>
+            {props.children}
+        </StyledRow>
+    );
 };
 
-const TableHeader = ({ children }) => {
-    return <StyledHeader data-target="row">{children}</StyledHeader>;
+const TableHeader = (props) => {
+    return (
+        <StyledHeader data-target="row" {...props}>
+            {props.children}
+        </StyledHeader>
+    );
 };
 
 export default Table;

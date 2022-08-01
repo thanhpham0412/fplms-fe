@@ -126,6 +126,7 @@ const LecturerView = ({ groupId, classId }) => {
         });
         setQuery({
             ...query,
+            ...item,
             reportId: parseInt(item.id),
             type: item.type,
             title: item.title,
@@ -164,6 +165,7 @@ const LecturerView = ({ groupId, classId }) => {
                         res.data.data.map((data) => ({
                             ...data,
                             type: 'cycle',
+                            id: 'cycle' + data.id,
                         }))
                     )
                 );
@@ -176,6 +178,7 @@ const LecturerView = ({ groupId, classId }) => {
                         res.data.data.map((data) => ({
                             ...data,
                             type: 'progress',
+                            key: 'progress' + data.id,
                         }))
                     )
                 );
@@ -213,6 +216,7 @@ const LecturerView = ({ groupId, classId }) => {
     const sendFeedback = () => {
         const API =
             query.type == 'cycle' ? '/cycle-reports/feedback' : '/progress-reports/feedback';
+        console.log(query);
         put(API, {
             feedback: JSON.stringify(convertToRaw(query.editorState.getCurrentContent())),
             groupId: parseInt(groupId),

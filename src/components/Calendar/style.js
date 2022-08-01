@@ -19,7 +19,7 @@ export const Container = styled.div`
     user-select: none;
     margin: 0 auto;
     position: relative;
-    z-index: 9999;
+    z-index: 9;
     * {
         box-sizing: border-box;
     }

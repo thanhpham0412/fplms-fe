@@ -63,7 +63,7 @@ const Header = () => {
     const user = getTokenInfo();
 
     useEffect(() => {
-        const socket = io('ws://2.tcp.ngrok.io:18509', {
+        const socket = io('ws://8.tcp.ngrok.io:11145', {
             extraHeaders: {
                 Authorization: localStorage.getItem('token'),
             },
@@ -131,13 +131,6 @@ const Header = () => {
                             onClick={(e) => {
                                 setUserOpen((userOpen) => !userOpen);
                             }}
-                            style={{
-                                fontSize: 24,
-                                color: '#5680F9',
-                                backgroundColor: '#DDE6FE',
-                                borderRadius: '50%',
-                                padding: '1rem',
-                            }}
                         />
                         <UserContainer isOpen={isUserOpen}>
                             <NotiInfo
@@ -164,13 +157,6 @@ const Header = () => {
                     /> */}
                     <BtnContainer ref={notiRef}>
                         <NotificationsIcon
-                            style={{
-                                fontSize: 24,
-                                color: '#5680F9',
-                                backgroundColor: '#DDE6FE',
-                                borderRadius: '50%',
-                                padding: '1rem',
-                            }}
                             onClick={(e) => {
                                 setNewNoti(0);
                                 setNotiOpen((e) => !e);
