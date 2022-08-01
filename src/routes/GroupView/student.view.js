@@ -305,6 +305,12 @@ const StudentView = ({ groupId, classId }) => {
                     if (student && student.id == data.leaderId) {
                         setTopicOpen(true);
                         setPicked(false);
+                        setReportType((reportType) => {
+                            return reportType.concat({
+                                value: 1,
+                                content: 'Cycle report',
+                            })
+                        })
                         get('/projects', { classId }).then((res) => {
                             const data = res.data;
                             if (data.code == 200) setTopicList(data.data);

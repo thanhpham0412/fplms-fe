@@ -144,17 +144,19 @@ const Header = () => {
                             </NotiInfo>
                         </UserContainer>
                     </BtnContainer>
-                    {/* <ForumIcon
-                        onClick={switchRole}
-                        style={{
-                            fontSize: 24,
-                            color: '#5680F9',
-                            backgroundColor: '#DDE6FE',
-                            borderRadius: '50%',
-                            padding: '8px',
-                            margin: '0 10px',
-                        }}
-                    /> */}
+                    <BtnContainer>
+                        <ForumIcon
+                            onClick={switchRole}
+                            style={{
+                                fontSize: 24,
+                                color: '#5680F9',
+                                backgroundColor: '#DDE6FE',
+                                borderRadius: '50%',
+                                padding: '8px',
+                                margin: '0 10px',
+                            }}
+                        />
+                    </BtnContainer>
                     <BtnContainer ref={notiRef}>
                         <NotificationsIcon
                             onClick={(e) => {

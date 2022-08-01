@@ -319,36 +319,42 @@ const LecturerView = ({ groupId, classId }) => {
                         readOnly
                     >
                         <GoalContainer>
-                            <GoalDes>Reports Stats:</GoalDes>
-                            <StatusBar progress={progress} />
-                            <GoalCounter>
-                                <span>{progress[0]}</span> / {progress[1]}
-                            </GoalCounter>
-                        </GoalContainer>
-                        <GoalContainer>
                             <GoalDes>Report Title</GoalDes>
                             <span>{query.title}</span>
                         </GoalContainer>
-                        <FeedBackContainer>
-                            <GoalDes>Reports Feedback:</GoalDes>
-                            <FeedBackView onClick={() => edtior2.current.focus()}>
-                                <DraftEditor
-                                    id={`feedback_${groupId}_${classId}`}
-                                    editorRef={edtior2}
-                                    placeholder="Write your feedback..."
-                                    editorState={query.editorState}
-                                    setEditorState={setEditorState}
-                                />
-                            </FeedBackView>
-                            <GoalCounter>Reports need to be feedback</GoalCounter>
-                            <GoalDes>Reports Score:</GoalDes>
-                            <ScoreBar
-                                placeholder="Score"
-                                value={query.mark}
-                                onChange={(e) => changeHandle('mark', parseFloat(e.target.value))}
-                            />
-                            <GoalCounter>Reports need to be scored</GoalCounter>
-                        </FeedBackContainer>
+
+                        {query.type == 'cycle' && (
+                            <>
+                                <FeedBackContainer>
+                                    <GoalDes>Reports Stats:</GoalDes>
+                                    <StatusBar progress={progress} />
+                                    <GoalCounter>
+                                        <span>{progress[0]}</span> / {progress[1]}
+                                    </GoalCounter>
+                                    <GoalDes>Reports Feedback:</GoalDes>
+                                    <FeedBackView onClick={() => edtior2.current.focus()}>
+                                        <DraftEditor
+                                            id={`feedback_${groupId}_${classId}`}
+                                            editorRef={edtior2}
+                                            placeholder="Write your feedback..."
+                                            editorState={query.editorState}
+                                            setEditorState={setEditorState}
+                                        />
+                                    </FeedBackView>
+                                    <GoalCounter>Cycle Reports need to be feedback</GoalCounter>
+                                    <GoalDes>Reports Score:</GoalDes>
+                                    <ScoreBar
+                                        placeholder="Score"
+                                        value={query.mark}
+                                        onChange={(e) =>
+                                            changeHandle('mark', parseFloat(e.target.value))
+                                        }
+                                    />
+                                    <GoalCounter>Cycle Reports need to be scored</GoalCounter>
+                                </FeedBackContainer>
+                            </>
+                        )}
+
                         <SendBtn onClick={sendFeedback}>Send Feedback</SendBtn>
                     </AdvanceEditor>
                 </Overlay>
