@@ -8,6 +8,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 
 import { Jumbotron, TopActivities } from '../../components';
 import AnswerSection from '../../components/AnswerSection';
+import ConfirmModal from '../../components/ConfirmModal';
 import PostLoader from '../../components/PostSection/loader';
 import { error, success } from '../../utils/toaster';
 import {
@@ -34,32 +35,28 @@ const DiscussionView = () => {
     const topMember = [
         {
             name: 'Tran Nhat Hoang',
-            point: '15 point',
-            value: 15,
+            comments: '1k comments',
         },
         {
             name: 'Quach Heng To Ni',
-            point: '2 point',
-            value: 2,
+            comments: '305 comments',
         },
         {
             name: 'Mai Thanh Phuong',
-            point: '1 point',
-            value: 1,
+            comments: '300 comments',
         },
         {
             name: 'Pham Trong Thanh',
-            point: '25 point',
-            value: 25,
+            comments: '290 comments',
         },
         {
             name: 'Nguyen Thanh Kien',
-            point: '5 point',
-            value: 5,
+            comments: '102 comments',
         },
     ];
     const [question, setQuestion] = useState();
     const [isLoading, setLoading] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
     const [refresh, setRefresh] = useState(0);
     let editorState;
     let raw;
@@ -105,14 +102,17 @@ const DiscussionView = () => {
             if (res.status >= 200 && res.status < 300) {
                 success(`Delete question successfully!`);
                 navigate(-1);
+                setIsOpen(false);
             } else {
                 error(`${res.message}`);
+                setIsOpen(false);
             }
         });
     };
 
     return (
         <>
+            <ConfirmModal isOpen={isOpen} setIsOpen={setIsOpen} action={deleteQuestion} />
             <StyledContainer>
                 <Jumbotron title={'discussion'} subtitle={question?.title} />
 
@@ -145,7 +145,9 @@ const DiscussionView = () => {
                                                             <MoreVertIcon />
                                                         </button>
                                                         <DropdownMenu className="dropdown-menu">
-                                                            <DeleteIcon onClick={deleteQuestion} />
+                                                            <DeleteIcon
+                                                                onClick={() => setIsOpen(true)}
+                                                            />
                                                             <EditIcon
                                                                 onClick={() =>
                                                                     navigate(

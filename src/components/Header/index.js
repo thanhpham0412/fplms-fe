@@ -27,6 +27,7 @@ import {
 
 import ForumIcon from '@mui/icons-material/Forum';
 import InboxIcon from '@mui/icons-material/Inbox';
+import LogoutIcon from '@mui/icons-material/Logout';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PersonIcon from '@mui/icons-material/Person';
 import { io } from 'socket.io-client';
@@ -35,8 +36,8 @@ const Header = () => {
     const [isNotiOpen, setNotiOpen] = useState(false);
     const [isUserOpen, setUserOpen] = useState(false);
 
+    const [isOpen, setOpen] = useState(false);
     const [socket, setSocket] = useState(null);
-
     const [list, setList] = useState([]);
 
     const [newNoti, setNewNoti] = useState(0);
@@ -119,6 +120,12 @@ const Header = () => {
         }
     };
 
+    const handleLogout = async () => {
+        await auth.setAuth(false);
+        await localStorage.clear();
+        navigate('/login');
+    };
+
     return (
         <div>
             <HContainer>
@@ -144,7 +151,7 @@ const Header = () => {
                             </NotiInfo>
                         </UserContainer>
                     </BtnContainer>
-                    <BtnContainer>
+                    {/* <BtnContainer>
                         <ForumIcon
                             onClick={switchRole}
                             style={{
@@ -156,7 +163,7 @@ const Header = () => {
                                 margin: '0 10px',
                             }}
                         />
-                    </BtnContainer>
+                    </BtnContainer> */}
                     <BtnContainer ref={notiRef}>
                         <NotificationsIcon
                             onClick={(e) => {

@@ -5,6 +5,7 @@ import Button from './Button';
 import Calendar from './Calendar';
 import ClassSection from './ClassSection';
 import Column from './Column';
+import ConfirmModal from './ConfirmModal';
 import CreateClass from './CreateClass';
 import CreateClassForm from './CreateClassForm';
 import CreateMeetingForm from './CreateMeetingForm';
@@ -65,4 +66,5 @@ export {
     Row,
     TableHeader,
     Table,
+    ConfirmModal,
 };
