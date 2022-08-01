@@ -67,6 +67,7 @@ const DraftEditor = ({
         const start = selectionState.getStartOffset();
         const end = selectionState.getEndOffset();
         const offset = getVisibleSelectionRect(window);
+
         if (anchorKey && start != end) {
             setToolBar({
                 ...toolBar,
