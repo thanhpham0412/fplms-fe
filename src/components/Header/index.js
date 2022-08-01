@@ -64,7 +64,7 @@ const Header = () => {
     const user = getTokenInfo();
 
     useEffect(() => {
-        const socket = io('ws://8.tcp.ngrok.io:11145', {
+        const socket = io('ws://8.tcp.ngrok.io:16457', {
             extraHeaders: {
                 Authorization: localStorage.getItem('token'),
             },
