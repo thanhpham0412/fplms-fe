@@ -125,10 +125,11 @@ export const Status = styled.div`
     }};
 `;
 
-export const StyledH4 = styled.h4`
+export const StyledH4 = styled.div`
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin: 1rem 0;
 `;
 
 export const Round = styled.span`
@@ -520,4 +521,16 @@ export const StudentViewContainer = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1rem;
+`;
+
+export const ExitButton = styled.button`
+    max-height: 49px;
+    margin-top: 1rem;
+    background: ${COLOR.red[0]};
+    padding: 1rem;
+    border: none;
+    border-radius: 2px;
+    font-family: Lato;
+    color: #fff;
+    cursor: pointer;
 `;

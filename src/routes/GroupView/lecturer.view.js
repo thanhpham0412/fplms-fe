@@ -77,16 +77,24 @@ const TextEditor = ({ report, close }) => {
 
     useEffect(() => {
         if (report) {
-            setEditorState(
-                report.content
-                    ? EditorState.createWithContent(convertFromRaw(JSON.parse(report.feedback)))
-                    : EditorState.createEmpty()
-            );
-            setViewState(
-                report.content
-                    ? EditorState.createWithContent(convertFromRaw(JSON.parse(report.content)))
-                    : EditorState.createEmpty()
-            );
+            try {
+                setEditorState(
+                    report.content
+                        ? EditorState.createWithContent(convertFromRaw(JSON.parse(report.feedback)))
+                        : EditorState.createEmpty()
+                );
+            } catch (err) {
+                setEditorState(EditorState.createEmpty());
+            }
+            try {
+                setViewState(
+                    report.content
+                        ? EditorState.createWithContent(convertFromRaw(JSON.parse(report.content)))
+                        : EditorState.createEmpty()
+                );
+            } catch (err) {
+                setViewState(EditorState.createEmpty());
+            }
             setTitle(report.title || '');
         }
     }, [report]);
@@ -191,34 +199,36 @@ const TopicPickedView = ({ list, setList }) => {
 
     return (
         <Table columns="200px 1fr 200px 200px">
-            <Row>
-                <td>Type</td>
-                <td>Report Title</td>
-                <td>Report Time</td>
-                <td>Write by</td>
-            </Row>
-            {list &&
-                list.map((item) => (
-                    <React.Fragment key={item.displayId}>
-                        <TextEditor report={item} close={() => close(item)} />
-                        <Row feedback={item.type} onClick={() => open(item)}>
-                            <td>
-                                <Type type={item.type}>
-                                    {item.type == 'cycle' ? 'Cycle Report' : 'Progress Report'}
-                                </Type>
-                            </td>
-                            <td>
-                                <Title>{item.title}</Title>
-                            </td>
-                            <td>
-                                <Title>{item.reportTime}</Title>
-                            </td>
-                            <td>
-                                <Avatars list={['TP', 'NK', 'TN', 'TT', 'NH']} />
-                            </td>
-                        </Row>
-                    </React.Fragment>
-                ))}
+            <tbody>
+                <TableHeader>
+                    <td>Type</td>
+                    <td>Report Title</td>
+                    <td>Report Time</td>
+                    <td>Write by</td>
+                </TableHeader>
+                {list &&
+                    list.map((item) => (
+                        <React.Fragment key={item.displayId}>
+                            <TextEditor report={item} close={() => close(item)} />
+                            <Row feedback={item.type} onClick={() => open(item)}>
+                                <td>
+                                    <Type type={item.type}>
+                                        {item.type == 'cycle' ? 'Cycle Report' : 'Progress Report'}
+                                    </Type>
+                                </td>
+                                <td>
+                                    <Title>{item.title}</Title>
+                                </td>
+                                <td>
+                                    <Title>{item.reportTime}</Title>
+                                </td>
+                                <td>
+                                    <Avatars list={['TP', 'NK', 'TN', 'TT', 'NH']} />
+                                </td>
+                            </Row>
+                        </React.Fragment>
+                    ))}
+            </tbody>
         </Table>
     );
 };

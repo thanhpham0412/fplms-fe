@@ -105,8 +105,14 @@ export const NotiInfo = styled.div`
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    padding: 1rem;
+
     small {
         color: gray;
+    }
+
+    :hover {
+        background: #f2f2f2;
     }
 `;
 
@@ -116,8 +122,10 @@ export const NotiTarget = styled.div`
 `;
 
 export const UserContainer = styled.div`
-    display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+    display: ${({ isOpen }) => (isOpen ? 'flex' : 'none')};
     position: absolute;
+    flex-direction: column;
+    gap: 1rem;
     width: 300px;
     height: auto;
     padding: 1rem;

@@ -131,6 +131,7 @@ const Header = () => {
                         }}
                     />
                     <UserContainer isOpen={isUserOpen}>
+                        <NotiInfo>{user.email}</NotiInfo>
                         <NotiInfo
                             onClick={() => {
                                 localStorage.clear();
