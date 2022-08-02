@@ -107,11 +107,6 @@ export const DropdownMenu = styled.div`
     }
 `;
 
-export const DropdownItem = styled.div`
-    width: 100%;
-    height: auto;
-`;
-
 export const Answers = styled.div`
     width: 100%;
     display: grid;

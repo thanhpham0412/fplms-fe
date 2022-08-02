@@ -1,18 +1,14 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable no-unused-vars */
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 
 import axios from 'axios';
-import { Editor, EditorState, convertToRaw, ContentState, convertFromRaw } from 'draft-js';
+import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import { v4 as uuidv4 } from 'uuid';
 
 import { fromHTML } from '../../utils/draft';
-import { getRndInteger } from '../../utils/random';
-import { post, get } from '../../utils/request';
 import { success, error } from '../../utils/toaster';
 import AdvanceEditor from '../AdvanceEditor';
-import CreateTopicForm from '../CreateTopicForm';
 import Overlay from '../Overlay';
 import Selection from '../Selection';
 import Skeleton from '../Skeleton';
@@ -22,10 +18,7 @@ import {
     Item,
     DropContainer,
     ItemContainer,
-    Details,
     Title,
-    Status,
-    Plus,
     Footer,
     DetailText,
     DropableContainer,
@@ -43,30 +36,18 @@ const header = {
 
 const TEMPLATE = '<b>(Project has no requirement)</b>';
 
-const Column = ({
-    list,
-    droppableId,
-    name,
-    type,
-    setColumns,
-    subjects,
-    setProjects,
-    semesters,
-}) => {
-    const [isScroll, setScroll] = useState(false);
-    const [isBot, setBot] = useState(true);
+const Column = ({ list, droppableId, name, type, setColumns, subjects, semesters }) => {
+    const [isScroll] = useState(false);
     const ref = useRef();
     const [isOpen, setOpen] = useState(false);
     const [title, setTitle] = useState();
     const [item, setItem] = useState({});
-    const [disable, setDisable] = useState(false);
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
 
     const saveItem = (id, newId) => {
         setColumns((col) => {
             const clone = col[droppableId].items;
             const index = clone.findIndex((item) => item.id === id);
-            console.log('saved: ' + index);
             clone[index].needAdd = false;
             if (newId) clone[index].id = newId;
             return {
@@ -92,11 +73,7 @@ const Column = ({
                 JSON.stringify(convertToRaw(fromHTML(TEMPLATE)));
             clone[index].subjectId = item.subjectId;
 
-            setDisable(true);
-
             const API = process.env.REACT_APP_API_URL + '/projects';
-
-            console.log(item);
 
             const req = {
                 actors: 'string',
@@ -120,21 +97,16 @@ const Column = ({
                     if (data.code == 200) {
                         // setProjects((projects) => projects.concat(clone[index]));
                         success(`Topic \`${item.name}\` ${item.needAdd ? 'added' : 'updated'}`);
-                        console.log(data);
                         saveItem(item.id, item.needAdd ? data.data : null);
                         setOpen(false);
                     } else {
                         error(data.message);
                         setOpen(false);
                     }
-                    setDisable(false);
                 })
                 .catch(() => {
                     error(`Topic \`${item.name}\` save error`);
-                    setDisable(false);
                 });
-
-            console.log(item);
 
             return {
                 ...col,
@@ -146,32 +118,8 @@ const Column = ({
         });
     };
 
-    useEffect(() => {
-        const { scrollTop, scrollHeight, clientHeight } = ref.current;
-        if (scrollTop + clientHeight === scrollHeight) {
-            setBot(true);
-        } else {
-            setBot(false);
-        }
-    }, [list, name, type]);
-
-    const scroll = (e) => {
-        const { scrollTop, scrollHeight, clientHeight } = e.target;
-        if (e.target.scrollTop > 0) {
-            setScroll(true);
-        } else {
-            setScroll(false);
-        }
-        if (scrollTop + clientHeight === scrollHeight) {
-            setBot(true);
-        } else {
-            setBot(false);
-        }
-    };
-
     const add = () => {
         setColumns((col) => {
-            console.log(col);
             return {
                 ...col,
                 [droppableId]: {
@@ -269,7 +217,10 @@ const Column = ({
                                                 ref={provided.innerRef}
                                                 {...provided.draggableProps}
                                                 {...provided.dragHandleProps}
-                                                style={{ pointerEvents: item.onLoad == -1 ? 'none' : 'auto' }}
+                                                style={{
+                                                    pointerEvents:
+                                                        item.onLoad == -1 ? 'none' : 'auto',
+                                                }}
                                             >
                                                 <Item
                                                     isDragging={snapshot.isDragging}
@@ -280,15 +231,23 @@ const Column = ({
                                                                 ...item,
                                                             }));
                                                             setTitle(item.name || '');
-                                                            setEditorState(
-                                                                item.requirements ? EditorState.createWithContent(
-                                                                    convertFromRaw(
-                                                                        JSON.parse(
-                                                                            item.requirements
+                                                            try {
+                                                                setEditorState(
+                                                                    item.requirements
+                                                                        ? EditorState.createWithContent(
+                                                                            convertFromRaw(
+                                                                                JSON.parse(
+                                                                                    item.requirements
+                                                                                )
+                                                                            )
                                                                         )
-                                                                    )
-                                                                ) : EditorState.createEmpty()
-                                                            );
+                                                                        : EditorState.createEmpty()
+                                                                );
+                                                            } catch (err) {
+                                                                setEditorState(
+                                                                    EditorState.createEmpty()
+                                                                );
+                                                            }
                                                             return true;
                                                         });
                                                     }}
@@ -317,17 +276,12 @@ const Column = ({
                                                             />
                                                         )}
                                                     </Title>
-                                                    {/* <Details>{item.content}</Details> */}
-                                                    {/* {item.needUpdate ? <Status>Unsaved</Status> : null} */}
                                                 </Item>
                                             </ItemContainer>
                                         )}
                                     </Draggable>
                                 ))}
                                 {provided.placeholder}
-                                {/* <Plus type={type} isBot={isBot} bottom={0} onClick={add}>
-                                <AddIcon />
-                            </Plus> */}
                             </DropContainer>
                         )}
                     </Droppable>

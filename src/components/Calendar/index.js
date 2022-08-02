@@ -1,7 +1,5 @@
-/* eslint-disable no-unused-vars */
 import { useState } from 'react';
 
-import Overlay from '../../components/Overlay';
 import { chunkArray } from '../../utils/array';
 import { COLOR } from '../../utils/color';
 import { getFullBoardDays, getMonthString } from '../../utils/dateTime';

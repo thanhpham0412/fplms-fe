@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import badge from '../../assets/ribbon.png';
 import Overlay from '../Overlay';
 import { Avatar, Content, Wrapper, Left, Right, Label, Infomation, Badge } from './style';

@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-escape */
 import { useState } from 'react';
 
 const InputNumber = ({ init, max, onChange, className }) => {

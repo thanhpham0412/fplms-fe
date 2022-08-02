@@ -1,6 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-
-/* eslint-disable no-unused-vars */
 import { useRef, useEffect } from 'react';
 
 import { AnimatePresence } from 'framer-motion';
@@ -9,22 +6,11 @@ import { Container, ModalBox } from './style';
 
 const bezier = [0.4, 0, 0.2, 1];
 
-const Overlay = ({
-    children,
-    isOpen,
-    closeFn,
-    dark,
-    duration,
-    blur,
-    inDelay,
-    outDelay,
-    fullFill,
-}) => {
+const Overlay = ({ children, isOpen, closeFn, dark, duration, inDelay, outDelay, fullFill }) => {
     const node = useRef();
 
     dark = dark || 0.5;
     duration = duration || 0.3;
-    blur = blur || 3;
     inDelay = inDelay || 0;
     outDelay = outDelay || 0;
 
@@ -48,6 +34,7 @@ const Overlay = ({
         return () => {
             document.removeEventListener('click', handleClickOutSide);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
     return (

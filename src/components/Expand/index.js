@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 
 import { Title, Container, Expando } from './style';
 

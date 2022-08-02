@@ -14,18 +14,15 @@ import {
     HLogo,
     HIcons,
     NotiNews,
-    HLink,
     NotificationContainer,
     NotificationHeader,
     NotificationBody,
     NotiContainer,
     NotiInfo,
     BtnContainer,
-    NotiTarget,
     UserContainer,
 } from './style';
 
-import InboxIcon from '@mui/icons-material/Inbox';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PersonIcon from '@mui/icons-material/Person';
 import { io } from 'socket.io-client';
@@ -37,7 +34,6 @@ const Header = () => {
     const [socket, setSocket] = useState(null);
 
     const navigate = useNavigate();
-    const [isOpen, setOpen] = useState(false);
     const [list, setList] = useState([]);
 
     const [newNoti, setNewNoti] = useState(0);
@@ -103,21 +99,6 @@ const Header = () => {
         return () => socket.close();
     }, [setSocket]);
 
-    const switchRole = () => {
-        console.log(user);
-        if (user.role == 'Lecturer') {
-            localStorage.setItem(
-                'token',
-                'eyJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6ImtpZW5mcGxtcy5mZUBnbWFpbC5jb20iLCJyb2xlIjoiU3R1ZGVudCIsIm5iZiI6MTY1NjMzNDAyNywiZXhwIjoxNjU2OTM4ODI3LCJpYXQiOjE2NTYzMzQwMjd9.xVU6e2-54faeT40UZ9Hx1rkIaTJASdVDYfXKqJ5UdoU'
-            );
-        } else {
-            localStorage.setItem(
-                'token',
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtpZW5mcGxtcy5mZUBnbWFpbC5jb20iLCJyb2xlIjoiTGVjdHVyZXIiLCJuYmYiOjE2NTYzMzQwMjcsImV4cCI6MTY1NjkzODgyNywiaWF0IjoxNjU2MzM0MDI3fQ.dDgmEZOda447QPelcI_vDIyotnKB8lkbQ0Fe_wGVnLA'
-            );
-        }
-    };
-
     return (
         <HContainer>
             <HLogo>
@@ -126,7 +107,7 @@ const Header = () => {
             <HIcons>
                 <BtnContainer ref={userRef}>
                     <PersonIcon
-                        onClick={(e) => {
+                        onClick={() => {
                             setUserOpen((userOpen) => !userOpen);
                         }}
                     />
@@ -143,22 +124,9 @@ const Header = () => {
                         </NotiInfo>
                     </UserContainer>
                 </BtnContainer>
-                {/* <BtnContainer>
-                        <ForumIcon
-                            onClick={switchRole}
-                            style={{
-                                fontSize: 24,
-                                color: '#5680F9',
-                                backgroundColor: '#DDE6FE',
-                                borderRadius: '50%',
-                                padding: '8px',
-                                margin: '0 10px',
-                            }}
-                        />
-                    </BtnContainer> */}
                 <BtnContainer ref={notiRef}>
                     <NotificationsIcon
-                        onClick={(e) => {
+                        onClick={() => {
                             setNewNoti(0);
                             setNotiOpen((e) => !e);
                         }}

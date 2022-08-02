@@ -1,17 +1,12 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from 'react';
 
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useRef } from 'react';
-
-import { Editor, EditorState, convertToRaw, ContentState, convertFromRaw } from 'draft-js';
+import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
 import moment from 'moment';
 
 import {
     Calendar,
     DraftEditor,
     Overlay,
-    Selection,
-    Expand,
     Avatars,
     Button,
     CreateMeetingForm,
@@ -20,22 +15,15 @@ import {
     Row,
     TableHeader,
 } from '../../components';
-import { DraftRenderer } from '../../components/DraftEditor';
-import { get, post, put } from '../../utils/request';
-import { COLOR, stringToColour } from '../../utils/style';
+import { get, put } from '../../utils/request';
+import { COLOR } from '../../utils/style';
 import { error, success } from '../../utils/toaster';
 import {
     Container,
-    EditorContainer,
-    EditorSideBar,
-    BottomSide,
-    Header,
-    StyledList,
-    StyledItem,
     Title,
-    Content,
     SideBar,
     CommingContainer,
+    TableContainer,
     Icon,
     CommingSection,
     RightSide,
@@ -44,36 +32,23 @@ import {
     GoalContainer,
     Status,
     Round,
-    StyledItemLec,
-    ScoreBoard,
     FeedBackView,
     FeedBackContainer,
     ScoreBar,
-    CommentInput,
     GoalCounter,
     GoalDes,
-    StatusBar,
-    BackBtn,
     SendBtn,
-    GroupAvatar,
-    Avatar,
-    StudentFeedBack,
-    Input,
     Type,
+    StatusBar,
 } from './style';
 
 import AddIcon from '@mui/icons-material/Add';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import ArticleIcon from '@mui/icons-material/Article';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
-import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 
-const TextEditor = ({ report, close }) => {
+const TextEditor = ({ report, close, progress }) => {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const [viewState, setViewState] = useState(EditorState.createEmpty());
     const [mark, setMark] = useState(0);
-    const [title, setTitle] = useState('');
 
     useEffect(() => {
         if (report) {
@@ -95,7 +70,6 @@ const TextEditor = ({ report, close }) => {
             } catch (err) {
                 setViewState(EditorState.createEmpty());
             }
-            setTitle(report.title || '');
         }
     }, [report]);
 
@@ -142,11 +116,11 @@ const TextEditor = ({ report, close }) => {
                 {report.type == 'cycle' && (
                     <>
                         <FeedBackContainer>
-                            {/* <GoalDes>Reports Stats:</GoalDes>
-                            <StatusBar progress={progress} />
+                            <GoalDes>Reports Stats:</GoalDes>
+                            <StatusBar progress={[report.cycleNumber, progress]} />
                             <GoalCounter>
-                                <span>{progress[0]}</span> / {progress[1]}
-                            </GoalCounter> */}
+                                <span>{report.cycleNumber}</span> / {progress}
+                            </GoalCounter>
                             <GoalDes>Reports Feedback:</GoalDes>
                             <FeedBackView>
                                 <DraftEditor
@@ -163,14 +137,15 @@ const TextEditor = ({ report, close }) => {
                         </FeedBackContainer>
                     </>
                 )}
-
-                <SendBtn onClick={sendFeedback}>Send Feedback</SendBtn>
+                {report.type == 'cycle' ? (
+                    <SendBtn onClick={sendFeedback}>Send Feedback</SendBtn>
+                ) : null}
             </AdvanceEditor>
         </Overlay>
     );
 };
 
-const TopicPickedView = ({ list, setList }) => {
+const TopicPickedView = ({ list, setList, progress }) => {
     const open = (report) => {
         setList((list) => {
             let _list = [...list];
@@ -209,7 +184,11 @@ const TopicPickedView = ({ list, setList }) => {
                 {list &&
                     list.map((item) => (
                         <React.Fragment key={item.displayId}>
-                            <TextEditor report={item} close={() => close(item)} />
+                            <TextEditor
+                                report={item}
+                                close={() => close(item)}
+                                progress={progress}
+                            />
                             <Row feedback={item.type} onClick={() => open(item)}>
                                 <td>
                                     <Type type={item.type}>
@@ -234,14 +213,7 @@ const TopicPickedView = ({ list, setList }) => {
 };
 
 const LecturerView = ({ groupId, classId }) => {
-    const [events, setEvents] = useState([
-        {
-            icon: null,
-            title: null,
-            status: null,
-            time: null,
-        },
-    ]);
+    const [events, setEvents] = useState([]);
     const [isOpen, setOpen] = useState(false);
     const [form, setForm] = useState({
         date: moment().format('YYYY-MM-DD'),
@@ -251,7 +223,7 @@ const LecturerView = ({ groupId, classId }) => {
         scheduleTime: `${moment().format('YYYY-MM-DD')} ${moment().format('HH:mm')}:00.000`,
         title: '',
     });
-    const [progress, setProgress] = useState([1, 10]);
+    const [progress, setProgress] = useState(0);
     const [list, setList] = useState([]);
 
     const getReports = () => {
@@ -286,6 +258,11 @@ const LecturerView = ({ groupId, classId }) => {
     };
 
     useEffect(() => {
+        get(`/classes/${classId}`, { classId: classId }).then((res) => {
+            if (res.data.code == 200) {
+                setProgress(res.data.data.cycleDuration);
+            }
+        });
         get('/meetings', {
             classId: parseInt(classId),
             endDate: moment(new Date())
@@ -310,6 +287,7 @@ const LecturerView = ({ groupId, classId }) => {
             }
         });
         getReports();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const closeFn = () => {
@@ -375,8 +353,6 @@ const LecturerView = ({ groupId, classId }) => {
         });
     };
 
-    const avts = ['TP', 'NK', 'TN', 'TT', 'NH'];
-
     return (
         <>
             <CreateMeetingForm
@@ -388,7 +364,9 @@ const LecturerView = ({ groupId, classId }) => {
                 setEvents={setEvents}
             />
             <Container>
-                <TopicPickedView list={list} setList={setList} />
+                <TableContainer>
+                    <TopicPickedView list={list} setList={setList} progress={progress} />
+                </TableContainer>
                 <SideBar>
                     <Calendar onChange={onDateChange} />
                     <StyledH4>

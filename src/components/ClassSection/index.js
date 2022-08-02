@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-
-/* eslint-disable prettier/prettier */
 import { useState, useRef } from 'react';
 
 import axios from 'axios';
@@ -9,11 +6,10 @@ import { useNavigate } from 'react-router-dom';
 
 import { useClickOutside } from '../../hooks';
 import { getTokenInfo } from '../../utils/account';
-import { Spinner } from '../Spinner';
 import { error } from '../../utils/toaster';
 import { isBoolean } from '../../utils/valid';
-import EditClassForm from '../EditClassForm';
 import Skeleton from '../Skeleton';
+import { Spinner } from '../Spinner';
 import {
     Container,
     Title,
@@ -21,7 +17,6 @@ import {
     DetailText,
     StyledButton,
     StyledInput,
-    InputContainer,
     MiniDetails,
     Email,
     JoinButton,
@@ -29,7 +24,6 @@ import {
     Back,
 } from './style';
 
-import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 
 const bezier = [0.4, 0, 0.2, 1];
@@ -49,13 +43,10 @@ const Motion = ({ children, delay }) => (
 
 const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode, email, enrollKey }) => {
     const [open, setOpen] = useState(false);
-    const [isCreate, setCreate] = useState(false);
     const [onLoad, setOnLoad] = useState(false);
     const buttonRef = useRef();
     const inputRef = useRef();
     const navigate = useNavigate();
-
-    console.log(subjectId);
 
     useClickOutside(buttonRef, () => {
         if (open == true) {
@@ -111,14 +102,6 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode, email,
         //     error('Wrong enroll key!');
         //     inputRef.current.value = '';
         // }
-    };
-
-    const handleViewBtn = () => {
-        navigate(`/class/${id}`);
-    };
-
-    const handleEditBtn = () => {
-        setCreate(true);
     };
 
     const joinClass = () => {
@@ -221,23 +204,33 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode, email,
                     </Row>
                 </MiniDetails>
                 <Row onClick={openEnroll} ref={buttonRef}>
-                    {
-                        (isBoolean(join) || user.role == 'Lecturer') && name ? (
-                            <StyledButton open={open} onClick={joinClass}>
-                                <Front onClick={focus} isEnroll={join}>
-                                    {user.role == 'Student' ? (join ? 'OPEN' : 'ENROLL') : 'GO TO CLASS'}
-                                </Front>
-                                <Back>
-                                    <StyledInput ref={inputRef} type="password" placeholder="Enroll Key" />
-                                    <JoinButton onClick={enroll}>
-                                        {
-                                            !onLoad ? <DoubleArrowIcon /> : <Spinner radius="20" color="white" />
-                                        }
-                                    </JoinButton>
-                                </Back>
-                            </StyledButton>
-                        ) : <Skeleton style={{ height: 42, width: '100%' }} />
-                    }
+                    {(isBoolean(join) || user.role == 'Lecturer') && name ? (
+                        <StyledButton open={open} onClick={joinClass}>
+                            <Front onClick={focus} isEnroll={join}>
+                                {user.role == 'Student'
+                                    ? join
+                                        ? 'OPEN'
+                                        : 'ENROLL'
+                                    : 'GO TO CLASS'}
+                            </Front>
+                            <Back>
+                                <StyledInput
+                                    ref={inputRef}
+                                    type="password"
+                                    placeholder="Enroll Key"
+                                />
+                                <JoinButton onClick={enroll}>
+                                    {!onLoad ? (
+                                        <DoubleArrowIcon />
+                                    ) : (
+                                        <Spinner radius="20" color="white" />
+                                    )}
+                                </JoinButton>
+                            </Back>
+                        </StyledButton>
+                    ) : (
+                        <Skeleton style={{ height: 42, width: '100%' }} />
+                    )}
                 </Row>
             </Container>
         </AnimatePresence>

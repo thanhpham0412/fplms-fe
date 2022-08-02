@@ -1,10 +1,6 @@
-/* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
 
-import axios from 'axios';
-
 import { COLOR } from '../../utils/style';
-import { error, success } from '../../utils/toaster';
 import Overlay from '../Overlay';
 import Selection from '../Selection';
 import { Spinner } from '../Spinner';
@@ -26,7 +22,7 @@ import {
 
 import CloseIcon from '@mui/icons-material/Close';
 
-const CreateTopicForm = ({ showing, item, setOpen, save, disable, subject, subjects }) => {
+const CreateTopicForm = ({ showing, item, setOpen, save, disable, subjects }) => {
     const [form, setForm] = useState({
         actor: '',
         context: '',

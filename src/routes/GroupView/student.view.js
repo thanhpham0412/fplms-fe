@@ -1,16 +1,12 @@
-/* eslint-disable prettier/prettier */
-/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useState, useEffect } from 'react';
 
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect, useContext, useRef } from 'react';
-
-import { useParams, useNavigate } from 'react-router-dom';
-
-import { Editor, EditorState, convertToRaw, ContentState, convertFromRaw } from 'draft-js';
+import axios from 'axios';
+import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
+import moment from 'moment';
+import { useNavigate } from 'react-router-dom';
 
 import {
     Calendar,
-    DraftEditor,
     Overlay,
     Selection,
     Skeleton,
@@ -22,30 +18,16 @@ import {
     Avatars,
     ConfirmModal,
 } from '../../components';
-
-import axios from 'axios';
-
-import moment from 'moment';
-
-import { DraftRenderer } from '../../components/DraftEditor';
-import LoadOverLayContext from '../../contexts/loadOverlay';
 import { getTokenInfo } from '../../utils/account';
+import { COLOR } from '../../utils/color';
+import { fromHTML } from '../../utils/draft';
 import { getRndInteger } from '../../utils/random';
 import { get, put, post } from '../../utils/request';
-import { stringToColour } from '../../utils/style';
 import { success, error } from '../../utils/toaster';
-import { fromHTML } from '../../utils/draft';
 import {
     Container,
     TableContainer,
-    EditorContainer,
-    EditorSideBar,
-    BottomSide,
-    Header,
-    StyledList,
-    StyledItem,
     Title,
-    Content,
     SideBar,
     CommingContainer,
     Icon,
@@ -57,31 +39,17 @@ import {
     Status,
     Round,
     ExitButton,
-    StyledItemLec,
-    ScoreBoard,
-    FeedBackView,
-    FeedBackContainer,
-    ScoreBar,
     NeResultContainer,
     GoalCounter,
     GoalDes,
     StatusBar,
-    BackBtn,
     SendBtn,
-    GroupAvatar,
-    Avatar,
-    StudentFeedBack,
-    Select,
     Input,
     Type,
     StudentViewContainer,
 } from './style';
 
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import ArticleIcon from '@mui/icons-material/Article';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
-import { COLOR } from '../../utils/color';
 
 const TopicList = ({
     isOpen,
@@ -104,9 +72,15 @@ const TopicList = ({
             >
                 {topicList.length > 0 ? (
                     topicList.map((item) => (
-                        <GoalContainer data-type="topic" key={item.id} onClick={() => viewTopic(item)}>
+                        <GoalContainer
+                            data-type="topic"
+                            key={item.id}
+                            onClick={() => viewTopic(item)}
+                        >
                             <GoalDes>
-                                {item.name || <Skeleton style={{ width: `${getRndInteger(20, 40)}ch` }} />}
+                                {item.name || (
+                                    <Skeleton style={{ width: `${getRndInteger(20, 40)}ch` }} />
+                                )}
                             </GoalDes>
                             {item.name ? (
                                 <button onClick={() => pickTopic(item)}>Select</button>
@@ -127,10 +101,11 @@ const TopicList = ({
     );
 };
 
-const TEMPLATE = '<h1>Pick a topic for your team:</h1>' +
+const TEMPLATE =
+    '<h1>Pick a topic for your team:</h1>' +
     '<h2>Choose your own topic on the pannel on the right</h2>' +
     '<p>Once you picked, the topic will apply to all of your team member</p>' +
-    '<p>Be carefully because this action can\'t be undone</p>'
+    "<p>Be carefully because this action can't be undone</p>";
 
 const TEMPLATE2 = `
 <h1>Reports agenda</h1>
@@ -147,10 +122,12 @@ Whether you’re meeting in-person or meeting asynchronously, these four agenda 
     <h2>4. How close are we to hitting our sprint goals? What’s your comfort level?</h2>
     <p>This agenda item will help the scrum master get an idea of how the team is feeling about how their day-to-day activities are impacting overall goals for the team, and how contributors are feeling about the pace of the sprint.</p>
 </ol>
-`
+`;
 
 const SubmitEdtior = ({ isOpen, setOpen, type, groupId }) => {
-    const [editorState, setEditorState] = useState(EditorState.createWithContent(fromHTML(TEMPLATE2)));
+    const [editorState, setEditorState] = useState(
+        EditorState.createWithContent(fromHTML(TEMPLATE2))
+    );
     const [title, setTitle] = useState('');
 
     useEffect(() => {
@@ -204,8 +181,8 @@ const SubmitEdtior = ({ isOpen, setOpen, type, groupId }) => {
                 <SendBtn onClick={() => submitCycle(type)}>Send Report</SendBtn>
             </AdvanceEditor>
         </Overlay>
-    )
-}
+    );
+};
 
 const TextEditor = ({ report, close, progress }) => {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -217,18 +194,12 @@ const TextEditor = ({ report, close, progress }) => {
         if (report) {
             try {
                 setEditorState(
-                    report.content ? EditorState.createWithContent(
-                        convertFromRaw(
-                            JSON.parse(
-                                report.content
-                            )
-                        )
-                    ) : EditorState.createEmpty()
+                    report.content
+                        ? EditorState.createWithContent(convertFromRaw(JSON.parse(report.content)))
+                        : EditorState.createEmpty()
                 );
             } catch (err) {
-                setEditorState(
-                    EditorState.createEmpty()
-                );
+                setEditorState(EditorState.createEmpty());
             }
             setTitle(report.title || '');
         }
@@ -281,8 +252,8 @@ const TextEditor = ({ report, close, progress }) => {
                 <SendBtn onClick={submitCycle}>Send Report</SendBtn>
             </AdvanceEditor>
         </Overlay>
-    )
-}
+    );
+};
 
 const FeedBack = ({ list, setList, progress }) => {
     const open = (report) => {
@@ -293,10 +264,10 @@ const FeedBack = ({ list, setList, progress }) => {
                     _list[index].isOpen = true;
                     return _list;
                 }
-            })
+            });
             return _list;
-        })
-    }
+        });
+    };
 
     const close = (report) => {
         setList((list) => {
@@ -306,33 +277,54 @@ const FeedBack = ({ list, setList, progress }) => {
                     _list[index].isOpen = false;
                     return _list;
                 }
-            })
+            });
             return _list;
-        })
-    }
+        });
+    };
 
     return (
         <Table columns="200px 1fr 200px 200px">
             <tbody>
                 <TableHeader>
-                    <td><b>Type</b></td>
-                    <td><b>Report Title</b></td>
-                    <td><b>Report Time</b></td>
-                    <td><b>Write by</b></td>
+                    <td>
+                        <b>Type</b>
+                    </td>
+                    <td>
+                        <b>Report Title</b>
+                    </td>
+                    <td>
+                        <b>Report Time</b>
+                    </td>
+                    <td>
+                        <b>Write by</b>
+                    </td>
                 </TableHeader>
                 {list.map((report) => {
                     return (
                         <React.Fragment key={report.displayId}>
-                            <TextEditor progress={progress} report={report} close={() => close(report)} />
+                            <TextEditor
+                                progress={[report.cycleNumber, progress]}
+                                report={report}
+                                close={() => close(report)}
+                            />
                             <Row feedback={report.type} onClick={() => open(report)}>
                                 <td>
                                     <Type type={report.type}>
-                                        {report.type == 'cycle' ? 'Cycle Report' : 'Progress Report'}
+                                        {report.type == 'cycle'
+                                            ? 'Cycle Report'
+                                            : 'Progress Report'}
                                     </Type>
                                 </td>
-                                <td><Title>{report.title}</Title></td>
-                                <td><Title>{report.reportTime}</Title></td>
-                                <td> <Avatars list={['TP', 'NK', 'TN', 'TT', 'NH']} /></td>
+                                <td>
+                                    <Title>{report.title}</Title>
+                                </td>
+                                <td>
+                                    <Title>{report.reportTime}</Title>
+                                </td>
+                                <td>
+                                    {' '}
+                                    <Avatars list={['TP', 'NK', 'TN', 'TT', 'NH']} />
+                                </td>
                             </Row>
                         </React.Fragment>
                     );
@@ -351,7 +343,6 @@ const StudentView = ({ groupId, classId }) => {
 
     const [isTopicOpen, setTopicOpen] = useState(false);
     const [topicState, setTopicState] = useState(EditorState.createWithContent(fromHTML(TEMPLATE)));
-    const [title, setTitle] = useState('');
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [reportType, setReportType] = useState([
         {
@@ -359,13 +350,9 @@ const StudentView = ({ groupId, classId }) => {
             content: 'Progress report',
         },
     ]);
-    const [progress, setProgress] = useState([1, 10]);
+    const [progress, setProgress] = useState(1);
     const [list, setList] = useState([]);
-    const [type, setType] = useState({ value: 1, content: 'progress-reports' });
     const [events, setEvents] = useState([]);
-
-    const [editorState, setEditorState] = useState(EditorState.createWithContent(fromHTML(TEMPLATE2)));
-    const editor = useRef();
 
     const [topicList, setTopicList] = useState(
         new Array(20).fill('').map((k, i) => ({
@@ -384,25 +371,20 @@ const StudentView = ({ groupId, classId }) => {
             groupId: parseInt(groupId),
         }).then((res) => {
             if (res.data.code == 200) {
-                const data = res.data.data.map((event) => (
-                    {
-                        link: event.link,
-                        id: event.id,
-                        icon: <AssignmentIcon />,
-                        title: event.title,
-                        status: moment(new Date()).isAfter(event.scheduleTime) ? 'Done' : 'Incoming',
-                        time: moment(event.scheduleTime).fromNow(),
-                    }
-                ))
+                const data = res.data.data.map((event) => ({
+                    link: event.link,
+                    id: event.id,
+                    icon: <AssignmentIcon />,
+                    title: event.title,
+                    status: moment(new Date()).isAfter(event.scheduleTime) ? 'Done' : 'Incoming',
+                    time: moment(event.scheduleTime).fromNow(),
+                }));
                 setEvents(data);
             }
-        })
+        });
     };
 
     const onChange = (e) => {
-        setProgress((progress) => {
-            return [list.filter((report) => report.type == 'cycle').length, progress[1]];
-        })
         if (e.value == 1) {
             setCycleOpen(true);
             setProgressOpen(false);
@@ -410,33 +392,39 @@ const StudentView = ({ groupId, classId }) => {
             setCycleOpen(false);
             setProgressOpen(true);
         }
-        setType(e);
     };
 
     const getReports = () => {
         get('/cycle-reports', { classId, groupId }).then((res) => {
             if (res.data.code == 200) {
-                setProgress((progress) => [progress[0], res.data.data.length]);
-                setList((list) => list.concat(res.data.data.map((data) => {
-                    return {
-                        ...data,
-                        type: 'cycle',
-                        displayId: 'cycle' + data.id,
-                        isOpen: false,
-                    };
-                })));
+                setList((list) =>
+                    list.concat(
+                        res.data.data.map((data) => {
+                            return {
+                                ...data,
+                                type: 'cycle',
+                                displayId: 'cycle' + data.id,
+                                isOpen: false,
+                            };
+                        })
+                    )
+                );
             }
         });
         get('/progress-reports', { classId, groupId }).then((res) => {
             if (res.data.code == 200) {
-                setList((list) => list.concat(res.data.data.map((data) => {
-                    return {
-                        ...data,
-                        type: 'progress',
-                        displayId: 'progress' + data.id,
-                        isOpen: false,
-                    };
-                })));
+                setList((list) =>
+                    list.concat(
+                        res.data.data.map((data) => {
+                            return {
+                                ...data,
+                                type: 'progress',
+                                displayId: 'progress' + data.id,
+                                isOpen: false,
+                            };
+                        })
+                    )
+                );
             }
         });
         // Promise.all([cycleReport, progressReport]).then(([cycleReport, progressReport]) => {
@@ -447,29 +435,32 @@ const StudentView = ({ groupId, classId }) => {
     useEffect(() => {
         // loadOverlay.setText('Looking for your group...');
         // loadOverlay.setActive(true);
+        get(`/classes/${classId}`, { classId: classId }).then((res) => {
+            if (res.data.code == 200) {
+                setProgress(res.data.data.cycleDuration);
+            }
+        });
         get('/meetings', {
             classId: parseInt(classId),
-            endDate: moment(new Date()).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).add(1, 'd').format('yyyy-MM-DD HH:mm:ss.SSS'),
-            startDate: moment(new Date()).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).format('yyyy-MM-DD HH:mm:ss.SSS'),
+            endDate: moment(new Date())
+                .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+                .add(1, 'd')
+                .format('yyyy-MM-DD HH:mm:ss.SSS'),
+            startDate: moment(new Date())
+                .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
+                .format('yyyy-MM-DD HH:mm:ss.SSS'),
             groupId: parseInt(groupId),
         }).then((res) => {
             if (res.data.code == 200) {
-                const data = res.data.data.map((event) => (
-                    {
-                        link: event.link,
-                        id: event.id,
-                        icon: <AssignmentIcon />,
-                        title: event.title,
-                        status: moment(new Date()).isAfter(event.scheduleTime) ? 'Done' : 'Incoming',
-                        time: moment(event.scheduleTime).fromNow(),
-                    }
-                ))
+                const data = res.data.data.map((event) => ({
+                    link: event.link,
+                    id: event.id,
+                    icon: <AssignmentIcon />,
+                    title: event.title,
+                    status: moment(new Date()).isAfter(event.scheduleTime) ? 'Done' : 'Incoming',
+                    time: moment(event.scheduleTime).fromNow(),
+                }));
                 setEvents(data);
-            }
-        })
-        get(`/classes/${classId}`).then((res) => {
-            if (res.data.code == 200) {
-                setProgress((progress) => [progress[0], res.data.data.cycleDuration]);
             }
         });
         get(`/classes/${classId}/groups/details`, { classId: classId }).then((res) => {
@@ -486,8 +477,8 @@ const StudentView = ({ groupId, classId }) => {
                             return reportType.concat({
                                 value: 1,
                                 content: 'Cycle report',
-                            })
-                        })
+                            });
+                        });
                         get('/projects', { classId }).then((res) => {
                             const data = res.data;
                             if (data.code == 200) setTopicList(data.data);
@@ -503,8 +494,8 @@ const StudentView = ({ groupId, classId }) => {
                             return reportType.concat({
                                 value: 1,
                                 content: 'Cycle report',
-                            })
-                        })
+                            });
+                        });
                     }
                     setPicked(true);
                     // loadOverlay.setActive(false);
@@ -514,12 +505,12 @@ const StudentView = ({ groupId, classId }) => {
                 error('An error occurred');
             }
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const pickTopic = (topic) => {
         put(`/projects/${topic.id}`, {}, { params: { classId } })
             .then((res) => {
-                const data = res.data.data;
                 if (res.data.code == 200) {
                     setPicked(true);
                     success(`Choose project successfully!`);
@@ -543,29 +534,41 @@ const StudentView = ({ groupId, classId }) => {
 
     const unPickError = () => {
         if (!isPicked) {
-            error('Your leader hasn\'t picked a project yet');
+            error("Your leader hasn't picked a project yet");
         }
-    }
-
-    const avts = ['TP', 'NK', 'TN', 'TT', 'NH'];
+    };
 
     const toggleModal = () => {
         setConfirmOpen((e) => !e);
-    }
+    };
 
     const unEnroll = () => {
-        axios.delete(`${process.env.REACT_APP_API_URL}/classes/${classId}/groups/leave`, { headers: { Authorization: `${localStorage.getItem('token')}` } }).then((res) => {
-            if (res.data.code == 200) {
-                success('Unenroll success');
-                navigate(`/class/${classId}`);
-            }
-        });
-    }
+        axios
+            .delete(`${process.env.REACT_APP_API_URL}/classes/${classId}/groups/leave`, {
+                headers: { Authorization: `${localStorage.getItem('token')}` },
+            })
+            .then((res) => {
+                if (res.data.code == 200) {
+                    success('Unenroll success');
+                    navigate(`/class/${classId}`);
+                }
+            });
+    };
 
     return (
         <StudentViewContainer>
-            <SubmitEdtior setOpen={setCycleOpen} isOpen={cycleOpen} type="cycle" groupId={groupId} />
-            <SubmitEdtior setOpen={setProgressOpen} isOpen={progressOpen} type="progress" groupId={groupId} />
+            <SubmitEdtior
+                setOpen={setCycleOpen}
+                isOpen={cycleOpen}
+                type="cycle"
+                groupId={groupId}
+            />
+            <SubmitEdtior
+                setOpen={setProgressOpen}
+                isOpen={progressOpen}
+                type="progress"
+                groupId={groupId}
+            />
             <Container>
                 {list.length ? (
                     <TableContainer>
@@ -603,7 +606,7 @@ const StudentView = ({ groupId, classId }) => {
                         UP COMMING TASKS <Round>{events.length}</Round>
                     </StyledH4>
                     <CommingContainer>
-                        {events.map(({ icon, title, status, time, id, link }) => (
+                        {events.map(({ icon, title, status, time, id }) => (
                             <CommingSection key={id}>
                                 <Icon>{icon}</Icon>
                                 <RightSide>
@@ -613,10 +616,12 @@ const StudentView = ({ groupId, classId }) => {
                             </CommingSection>
                         ))}
                     </CommingContainer>
-                    <ConfirmModal isOpen={confirmOpen} setIsOpen={setConfirmOpen} action={unEnroll} />
-                    <ExitButton onClick={toggleModal}>
-                        UNENROLL FROM CLASS
-                    </ExitButton>
+                    <ConfirmModal
+                        isOpen={confirmOpen}
+                        setIsOpen={setConfirmOpen}
+                        action={unEnroll}
+                    />
+                    <ExitButton onClick={toggleModal}>UNENROLL FROM CLASS</ExitButton>
                 </SideBar>
             </Container>
         </StudentViewContainer>

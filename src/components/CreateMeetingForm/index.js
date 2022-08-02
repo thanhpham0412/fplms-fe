@@ -1,14 +1,11 @@
-/* eslint-disable no-unused-vars */
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import axios from 'axios';
 import moment from 'moment';
 
-import { get } from '../../utils/request';
 import { COLOR } from '../../utils/style';
 import { error, success } from '../../utils/toaster';
 import Overlay from '../Overlay';
-import Selection from '../Selection';
 import { Spinner } from '../Spinner';
 import {
     Container,
@@ -21,15 +18,13 @@ import {
     StyledInput,
     StyledBody,
     StyledButton,
-    DataHeader,
-    Error,
 } from './style';
 
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import CloseIcon from '@mui/icons-material/Close';
 
 const CreateMeetingForm = ({ showing, closeFn, groupId, form, setForm, setEvents }) => {
-    const [isLoad, setLoad] = useState(false);
+    const [isLoad] = useState(false);
 
     const [disable, setDisable] = useState(false);
 

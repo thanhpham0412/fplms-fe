@@ -1,6 +1,3 @@
-/* eslint-disable no-unused-vars */
-
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 
 import { useParams } from 'react-router-dom';
@@ -15,10 +12,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 
-function createData(studentName, groupId, mark, id) {
-    return { studentName, groupId, mark, id };
-}
-
 function MarkTable() {
     const { classId } = useParams();
 
@@ -27,32 +20,6 @@ function MarkTable() {
     const [cell, setCell] = useState(0);
 
     useEffect(() => {
-        // get(`/classes/${classId}/students`).then((response) => {
-        //     if (response.status == 200 && response.data.code == 200) {
-        //         const data = response.data.data;
-        //         data.forEach((student) => {
-        //             get(`/cycle-reports`, { classId: classId }).then((res) => {
-        //                 if (res.status == 200 && res.data.code == 200) {
-        //                     const reports = res.data.data;
-        //                     setRows((rows) => {
-        //                         if (reports.length > cell) {
-        //                             setCell(reports.length);
-        //                         }
-        //                         return {
-        //                             ...rows,
-        //                             [student.id]: {
-        //                                 marks: reports.map((report) => report.mark),
-        //                                 group: student.groupNumber,
-        //                                 name: student.name,
-        //                             },
-        //                         };
-        //                     });
-        //                 }
-        //             });
-        //         });
-        //     }
-        // });
-
         const students = get(`/classes/${classId}/students`);
         const reports = get(`/cycle-reports`, { classId: classId });
 
@@ -81,6 +48,7 @@ function MarkTable() {
 
             setRows(_list);
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

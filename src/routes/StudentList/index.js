@@ -1,20 +1,13 @@
 /* eslint-disable prettier/prettier */
-/* eslint-disable no-unused-vars */
-
-/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 
-import { Table, Row, TableHeader, Avatars, Selection } from '../../components';
+import { Table, Row, TableHeader, Selection } from '../../components';
 import { get } from '../../utils/request';
 import { success } from '../../utils/toaster';
 import { TableContainer, SelectionContainer } from './style';
-
-function createData(studentName, groupId, mark, id) {
-    return { studentName, groupId, mark, id };
-}
 
 function StudentList() {
     const { classId } = useParams();
@@ -57,6 +50,7 @@ function StudentList() {
                 });
             }
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const _delete = (studentId) => {
@@ -82,9 +76,10 @@ function StudentList() {
         axios
             .put(
                 process.env.REACT_APP_API_URL +
-                `/classes/${classId}/students/${student.id}/groups/${selection.groupNumber}`, {
-                headers: { Authorization: `${localStorage.getItem('token')}` },
-            }
+                `/classes/${classId}/students/${student.id}/groups/${selection.groupNumber}`,
+                {
+                    headers: { Authorization: `${localStorage.getItem('token')}` },
+                }
             )
             .then((res) => {
                 if (res.data.code == 200) {
@@ -132,9 +127,7 @@ function StudentList() {
                                     <td component="th" scope="row">
                                         <SelectionContainer>
                                             <Selection
-                                                onChange={(e) =>
-                                                    _move(e, rows[studentId])
-                                                }
+                                                onChange={(e) => _move(e, rows[studentId])}
                                                 options={groups
                                                     .filter(
                                                         (group) =>

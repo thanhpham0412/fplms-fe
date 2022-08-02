@@ -8,7 +8,7 @@ export const ToolBar = styled.div`
     transform: translateY(-3.5rem) translateX(-50%);
     padding: 0.5rem;
     gap: 0.5rem;
-    background: red;
+    background: #f2f2f2;
     border-radius: 2px;
     overflow: hidden;
     z-index: 999;

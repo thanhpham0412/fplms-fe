@@ -75,7 +75,7 @@ export const CommingContainer = styled.div`
     [data-target='styled-button'] {
         position: sticky;
         bottom: 0;
-        max-height: 56px;
+        max-height: 49px;
         align-items: center;
         justify-content: center;
     }
@@ -446,7 +446,7 @@ export const StatusBar = styled.div`
     ::before {
         content: '';
         position: absolute;
-        width: calc(100% * (${({ progress }) => progress[0] / progress[1]}));
+        width: calc(100% * (${({ progress }) => parseInt(progress[0]) / parseInt(progress[1])}));
         height: 100%;
         background: ${COLOR.blue[0]};
         border-radius: 2rem;

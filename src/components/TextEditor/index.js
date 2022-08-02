@@ -1,10 +1,9 @@
-/* eslint-disable no-unused-vars */
 import { useEffect, useRef, useState } from 'react';
 
 import axios from 'axios';
 import { convertFromRaw, convertToRaw, EditorState } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { error, success } from '../../utils/toaster';
 import ButtonLoader from '../ButtonLoader';
