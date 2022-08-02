@@ -136,10 +136,12 @@ const MyQuestions = () => {
                             </Row>
                         </Column>
                         <Column>
-                            <NewTopicBtn onClick={() => navigate('/add-question')}>
-                                <AddIcon />
-                                Start new topic
-                            </NewTopicBtn>
+                            {user.role !== 'Lecturer' && (
+                                <NewTopicBtn onClick={() => navigate('/add-question')}>
+                                    <AddIcon />
+                                    Start new topic
+                                </NewTopicBtn>
+                            )}
                         </Column>
                     </Row>
                 </StyledHeader>
@@ -181,7 +183,7 @@ const MyQuestions = () => {
                         </PostList>
                     </Column>
                     <Column>
-                        <span>Top Activities</span>
+                        {/* <span>Top Activities</span> */}
                         <TopActivities arr={topMember} />
                     </Column>
                 </StyledBody>

@@ -5,6 +5,10 @@ import axios from 'axios';
 import { error, success } from '../../../utils/toaster';
 import { Wrapper, Container, Overlay, ButtonList, Button, SemsterCode, InputDate } from './style';
 
+import { TextField } from '@mui/material';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+
 const SemesterForm = ({ open, setOpen, w, h, from, to, semester, setSemesters }) => {
     const formRef = useRef();
     const [startDate, setStartDate] = useState(semester.startDate);
@@ -97,19 +101,31 @@ const SemesterForm = ({ open, setOpen, w, h, from, to, semester, setSemesters })
                     <SemsterCode>{semester.code}</SemsterCode>
                     <InputDate>
                         <span>Start Date:</span>
-                        <input
-                            type={'date'}
-                            defaultValue={semester.startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DesktopDatePicker
+                                label="Start date"
+                                inputFormat="MM/dd/yyyy"
+                                value={semester.startDate}
+                                onChange={(newValue) => {
+                                    setStartDate(newValue);
+                                }}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                        </LocalizationProvider>
                     </InputDate>
                     <InputDate>
                         <span>End Date:</span>
-                        <input
-                            type={'date'}
-                            defaultValue={semester.endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                        />
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DesktopDatePicker
+                                label="Start date"
+                                inputFormat="MM/dd/yyyy"
+                                value={semester.endDate}
+                                onChange={(newValue) => {
+                                    setEndDate(newValue);
+                                }}
+                                renderInput={(params) => <TextField {...params} />}
+                            />
+                        </LocalizationProvider>
                     </InputDate>
                     <ButtonList>
                         <Button onClick={handleEditSemester}>Save</Button>
