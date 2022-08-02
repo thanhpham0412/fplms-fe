@@ -56,6 +56,7 @@ export const Header = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    color: ${({ headColor }) => (headColor ? '#fff' : 'black')};
 `;
 
 export const BackBtn = styled.div`
@@ -66,7 +67,6 @@ export const BackBtn = styled.div`
     align-items: center;
     gap: 1rem;
     font-weight: bold;
-    color: #fff;
     cursor: pointer;
 
     :hover {
