@@ -43,6 +43,7 @@ const GroupPicking = () => {
                 headers: header,
             })
             .then((res) => {
+                console.log(res.data);
                 setGroups(res.data.data);
                 setLoading(false);
             })
@@ -78,13 +79,22 @@ const GroupPicking = () => {
                 <GroupLabel>
                     <Title>groups</Title>
                     {user.role == 'Lecturer' ? (
-                        <CreateGroupBtn
-                            onClick={() => {
-                                setCreate(true);
-                            }}
-                        >
-                            Create Groups
-                        </CreateGroupBtn>
+                        <div style={{ display: 'flex' }}>
+                            <CreateGroupBtn
+                                onClick={() => {
+                                    navigate(`/mark-table/${class_ID}`);
+                                }}
+                            >
+                                Mark Table
+                            </CreateGroupBtn>
+                            <CreateGroupBtn
+                                onClick={() => {
+                                    setCreate(true);
+                                }}
+                            >
+                                Create Groups
+                            </CreateGroupBtn>
+                        </div>
                     ) : (
                         <CreateGroupBtn onClick={() => setIsOpen(true)}>Unenroll</CreateGroupBtn>
                     )}

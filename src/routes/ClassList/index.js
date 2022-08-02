@@ -5,19 +5,32 @@ import { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
-import { ClassSection as Section, CreateClassForm, Button, Selection, Overlay } from '../../components';
+import {
+    ClassSection as Section,
+    CreateClassForm,
+    Button,
+    Selection,
+    Overlay,
+} from '../../components';
 import { getTokenInfo } from '../../utils/account';
 import { get } from '../../utils/request';
 import { error } from '../../utils/toaster';
-import { Container, StyledList, StyledInput, ToolBar, SelectionContainer, SearchBar } from './style';
+import {
+    Container,
+    StyledList,
+    StyledInput,
+    ToolBar,
+    SelectionContainer,
+    SearchBar,
+} from './style';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
 import SearchIcon from '@mui/icons-material/Search';
 
 const ClassList = () => {
-    const [classList, setList] = useState(new Array(10).fill('').map((item, index) => (
-        {
+    const [classList, setList] = useState(
+        new Array(10).fill('').map((item, index) => ({
             name: '',
             email: null,
             enrollKey: null,
@@ -26,8 +39,8 @@ const ClassList = () => {
             semesterCode: null,
             id: index,
             join: null,
-        }
-    )));
+        }))
+    );
     const [filter, setFilter] = useState({
         name: '',
         subjectId: -1,
@@ -46,27 +59,33 @@ const ClassList = () => {
         const API_STUDENT = process.env.REACT_APP_API_URL + `/classes/student`;
         const CLASS_API = user.role == 'Lecturer' ? API_LECTURER : API_STUDENT;
 
-        axios.get(process.env.REACT_APP_API_URL + '/subjects', { headers: header }).then((subs) => {
-            if (subs.data.code == 200) {
-                setSubjects(
-                    subs.data.data.reduce((pre, cur) => {
-                        pre[cur.id] = cur.name;
-                        return pre;
-                    }, [])
-                );
-            }
-        }).catch(() => {
-            error('An error occured while processing subjects list')
-        });
-        axios.get(CLASS_API, {
-            headers: header,
-        }).then((list) => {
-            if (list.data.code == 200) {
-                setList(list.data.data);
-            }
-        }).catch(() => {
-            error('An error occured while processing class list')
-        });
+        axios
+            .get(process.env.REACT_APP_API_URL + '/subjects', { headers: header })
+            .then((subs) => {
+                if (subs.data.code == 200) {
+                    setSubjects(
+                        subs.data.data.reduce((pre, cur) => {
+                            pre[cur.id] = cur.name;
+                            return pre;
+                        }, [])
+                    );
+                }
+            })
+            .catch(() => {
+                error('An error occured while processing subjects list');
+            });
+        axios
+            .get(CLASS_API, {
+                headers: header,
+            })
+            .then((list) => {
+                if (list.data.code == 200) {
+                    setList(list.data.data);
+                }
+            })
+            .catch(() => {
+                error('An error occured while processing class list');
+            });
 
         // Promise.all([subs, list]).then(([subs, list]) => {
         //     setSubjects(
@@ -98,7 +117,7 @@ const ClassList = () => {
             ...filter,
             subjectId: e.value || -1,
         }));
-    }
+    };
 
     const handleSearch = () => {
         //asd
@@ -107,7 +126,11 @@ const ClassList = () => {
     return (
         <>
             <Overlay isOpen={isModalOpen} closeFn={setModalOpen}>
-                <CreateClassForm showing={isModalOpen} setCreate={setModalOpen} setClass={setList} />
+                <CreateClassForm
+                    showing={isModalOpen}
+                    setCreate={setModalOpen}
+                    setClass={setList}
+                />
             </Overlay>
             <Container>
                 <ToolBar>
@@ -123,7 +146,12 @@ const ClassList = () => {
                     </SearchBar>
                     <SelectionContainer>
                         <Selection
-                            options={[{ value: -1, content: 'All' }].concat(subjects.map((subject, index) => ({ value: index, content: subject })))}
+                            options={[{ value: -1, content: 'All' }].concat(
+                                subjects.map((subject, index) => ({
+                                    value: index,
+                                    content: subject,
+                                }))
+                            )}
                             placeholder="Filter by subject"
                             maxHeight="600px"
                             arrow={false}
@@ -131,27 +159,29 @@ const ClassList = () => {
                             onChange={subjectFilter}
                         />
                     </SelectionContainer>
-                    {user.role == 'Lecturer' && <Button onClick={open} icon={<AddCircleIcon />}></Button>}
+                    {user.role == 'Lecturer' && (
+                        <Button onClick={open} icon={<AddCircleIcon />}></Button>
+                    )}
                 </ToolBar>
                 <StyledList>
-                    {
-                        classList
-                            .filter((item) => item.name.toLowerCase().includes(filter.name))
-                            .filter((item) => filter.subjectId != -1 ? item.subjectId == filter.subjectId : true)
-                            .map((item) => (
-                                <Section
-                                    key={item.id}
-                                    name={item.name}
-                                    lecture={item.lecturerDto && item.lecturerDto.name}
-                                    enrollKey={item && item.enrollKey}
-                                    email={item.lecturerDto && item.lecturerDto.email}
-                                    subjectId={subjects[item.subjectId]}
-                                    semesterCode={item.semesterCode}
-                                    id={item.id}
-                                    join={item.join}
-                                />
-                            ))
-                    }
+                    {classList
+                        .filter((item) => item.name.toLowerCase().includes(filter.name))
+                        .filter((item) =>
+                            filter.subjectId != -1 ? item.subjectId == filter.subjectId : true
+                        )
+                        .map((item) => (
+                            <Section
+                                key={item.id}
+                                name={item.name}
+                                lecture={item.lecturerDto && item.lecturerDto.name}
+                                enrollKey={item && item.enrollKey}
+                                email={item.lecturerDto && item.lecturerDto.email}
+                                subjectId={subjects[item.subjectId]}
+                                semesterCode={item.semesterCode}
+                                id={item.id}
+                                join={item.join}
+                            />
+                        ))}
                 </StyledList>
             </Container>
         </>

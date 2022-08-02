@@ -109,6 +109,7 @@ const DiscussionList = () => {
                     })
                     .then((res) => {
                         if (res.status == 200) {
+                            console.log(res);
                             setPosts(res.data);
                             setTotalPages(JSON.parse(res.headers['x-pagination']).TotalPages);
                             setLoading(false);
@@ -138,6 +139,7 @@ const DiscussionList = () => {
                         value: item.name,
                         content: item.name,
                     }));
+
                     setSubjects([{ value: '', content: 'All' }].concat(datas));
                 })
                 .catch((err) => {
@@ -254,7 +256,7 @@ const DiscussionList = () => {
                         )}
                     </Column>
                     <Column>
-                        <span>Top Contributors</span>
+                        <span style={{ visibility: 'hidden' }}>Top Contributors</span>
                         <TopActivities arr={topMember} />
                     </Column>
                 </StyledBody>

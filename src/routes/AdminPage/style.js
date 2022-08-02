@@ -189,21 +189,18 @@ export const Loader = styled.div`
 
 export const SemesterCard = styled.div`
     max-width: 100%;
+    height: fit-content;
     display: flex;
     flex-direction: column;
     gap: 10px;
     border-radius: 4px;
-    overflow: hidden;
     min-height: 120px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     padding: 15px;
     position: relative;
-    cursor: pointer;
     transition: transform 200ms ease-in-out;
     color: ${COLOR.primary03};
-    :hover {
-        transform: scale(1.05);
-    }
+
     .edit-icon {
         position: absolute;
         top: 15px;
@@ -218,8 +215,12 @@ export const SemesterCard = styled.div`
 export const CardTitle = styled.h3`
     font-weight: 600;
     font-size: 1rem;
+    text-transform: uppercase;
     color: ${COLOR.primary03};
     margin: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 `;
 
 export const AddingCard = styled.div`
@@ -232,7 +233,7 @@ export const AddingCard = styled.div`
     display: flex;
     flex-direction: column;
     position: relative;
-
+    justify-content: center;
     .add-icon {
         display: ${({ isShow }) => (!isShow ? 'block' : 'none')};
         position: absolute;
@@ -254,8 +255,21 @@ export const AddingCard = styled.div`
 
     #semester-input {
         width: 70%;
+        border-radius: 4px;
+        border-color: rgba(0, 0, 0, 0.23);
         margin-bottom: 15px;
+        padding: 5px 15px;
     }
+`;
+
+export const AddingLoader = styled.div`
+    height: 50px;
+    width: 50px;
+    border: 7px solid transparent;
+    border-top-color: ${COLOR.blue[0]};
+    border-radius: 50%;
+    align-self: center;
+    animation: ${loader} 1s ease-in-out infinite;
 `;
 
 export const Button = styled.button`
@@ -264,8 +278,7 @@ export const Button = styled.button`
     border: 1px solid ${COLOR.green[0]};
     padding: 5px 15px;
     border-radius: 4px;
-
-    :hover {
+    :hover:enabled {
         cursor: pointer;
         background-color: ${COLOR.green[0]};
         color: ${COLOR.primary02};
@@ -273,4 +286,53 @@ export const Button = styled.button`
     :disabled {
         cursor: default;
     }
+`;
+
+export const Dropdown = styled.div`
+    position: relative;
+    .sub-option {
+        padding: 0;
+        border: none;
+        background-color: unset;
+        height: 30px;
+        cursor: pointer;
+    }
+    &:hover > .sub-option + .dropdown-menu {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+    }
+`;
+
+export const DropdownMenu = styled.div`
+    position: absolute;
+    right: 0;
+    width: fit-content;
+    padding: 0.3rem 0.4rem;
+    top: calc(100% + 0.05rem);
+    background-color: ${COLOR.primary02};
+    border-radius: 4px;
+    box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    z-index: 99;
+    transform: translateY(-10px);
+    transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+    opacity: 0;
+    pointer-events: none;
+    svg {
+        align-self: flex-end;
+        border-radius: 50%;
+        margin: 2px 0;
+        cursor: pointer;
+        &:hover {
+            transform: scale(1.3);
+            transition: all 150ms ease-in-out;
+        }
+    }
+`;
+
+export const DropdownItem = styled.div`
+    width: 100%;
+    height: auto;
 `;

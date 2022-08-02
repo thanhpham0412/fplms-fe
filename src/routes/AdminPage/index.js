@@ -9,9 +9,12 @@ import SemesterForm from './SemesterForm';
 import { ButtonList, InputDate, SemsterCode } from './SemesterForm/style';
 import {
     AddingCard,
+    AddingLoader,
     Button,
     CardTitle,
     Container,
+    Dropdown,
+    DropdownMenu,
     LeftSetting,
     Loader,
     RightSetting,
@@ -20,17 +23,26 @@ import {
     SettingLabel,
     SettingTitle,
     Wrapper,
+    DropdownItem,
 } from './style';
 
+import { faArrowDownLong, faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 import SaveIcon from '@mui/icons-material/Save';
 import TrendingFlatIcon from '@mui/icons-material/TrendingFlat';
+import TextField from '@mui/material/TextField';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 const AdminPage = () => {
     const [loading, setLoading] = useState(true);
+    const [loadingAdd, setLoadingAdd] = useState(false);
     const [semesters, setSemesters] = useState();
     const [subjects, setSubjects] = useState();
     const [subject, setSubject] = useState();
@@ -38,6 +50,8 @@ const AdminPage = () => {
     const [show, setShow] = useState(true);
     const [isAddingSubject, setIsAdding] = useState(false);
     const [showSemsterForm, setShowSemesterForm] = useState(false);
+    const [showTransfer, setShowTransfer] = useState(false);
+    const [newSemesterCode, setNewSemesterCode] = useState();
 
     const [semester, setSemester] = useState();
 
@@ -55,34 +69,8 @@ const AdminPage = () => {
     const semesterRef = useRef();
     const subjectRef = useRef();
 
-    const showSemesterSetting = () => {
-        if (semesterRef.current.classList.contains('active')) {
-            return;
-        } else {
-            setLoading(true);
-            semesterRef.current.classList.add('active');
-            subjectRef.current.classList.remove('active');
-            setTimeout(() => {
-                setLoading(false);
-                setShow(true);
-            }, 1000);
-        }
-    };
-    const showSubjectSetting = () => {
-        if (subjectRef.current.classList.contains('active')) {
-            return;
-        } else {
-            setLoading(true);
-            semesterRef.current.classList.remove('active');
-            subjectRef.current.classList.add('active');
-            setTimeout(() => {
-                setLoading(false);
-                setShow(false);
-            }, 1000);
-        }
-    };
-
-    const getPos = async (el, item) => {
+    const getPos = async (item, index) => {
+        var el = document.querySelector(`.semester-card-${item.code}-${index}`);
         setWidth(el.clientWidth);
         setHeight(el.clientHeight);
         setSemester(item);
@@ -99,6 +87,106 @@ const AdminPage = () => {
         setFrom({ x: fx, y: fy });
 
         setOpen(true);
+    };
+
+    //Manage Semester Setting
+    const showSemesterSetting = () => {
+        if (semesterRef.current.classList.contains('active')) {
+            return;
+        } else {
+            setLoading(true);
+            semesterRef.current.classList.add('active');
+            subjectRef.current.classList.remove('active');
+            setTimeout(() => {
+                setLoading(false);
+                setShow(true);
+            }, 1000);
+        }
+    };
+
+    const createSemester = () => {
+        setLoadingAdd(true);
+        if (startDate > endDate) {
+            error(`Bengin date cannot greater than end date!`);
+            setLoadingAdd(false);
+            return;
+        }
+        axios
+            .post(
+                `${process.env.REACT_APP_API_URL}/semesters`,
+                {
+                    code: semesterCode,
+                    endDate: endDate,
+                    startDate: startDate,
+                },
+                {
+                    headers: {
+                        Authorization: `${localStorage.getItem('token')}`,
+                    },
+                }
+            )
+            .then((res) => {
+                if (res.data.code === 200) {
+                    success(`Add semester successfully!`);
+
+                    setSemesters((prev) =>
+                        prev.concat([
+                            {
+                                value: semesterCode,
+                                content: semesterCode,
+                                code: semesterCode,
+                                endDate: `${endDate.getFullYear()}-${(
+                                    '0' +
+                                    (endDate.getMonth() + 1)
+                                ).slice(-2)}-${('0' + endDate.getDate()).slice(-2)}`,
+                                startDate: `${startDate.getFullYear()}-${(
+                                    '0' +
+                                    (startDate.getMonth() + 1)
+                                ).slice(-2)}-${('0' + startDate.getDate()).slice(-2)}`,
+                            },
+                        ])
+                    );
+                    setSemesterCode('');
+                    setEndDate('');
+                    setStartDate('');
+                    setShowSemesterForm(false);
+                    setLoadingAdd(false);
+                } else {
+                    error(`${res.data.message}`);
+                    setLoadingAdd(false);
+                }
+            });
+    };
+
+    const transferSemester = (oldSemesterCode) => {
+        axios
+            .put(
+                `${process.env.REACT_APP_API_URL}/semesters/changeSemester/${oldSemesterCode}/${newSemesterCode.value}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `${localStorage.getItem('token')}`,
+                    },
+                }
+            )
+            .then((res) => {
+                console.log(res);
+            });
+    };
+
+    // Manage Subject
+    const showSubjectSetting = () => {
+        if (subjectRef.current.classList.contains('active')) {
+            return;
+        } else {
+            setLoading(true);
+            semesterRef.current.classList.remove('active');
+            subjectRef.current.classList.add('active');
+            setTimeout(() => {
+                setLoading(false);
+                setShow(false);
+            }, 1000);
+        }
     };
 
     const updateSubject = () => {
@@ -177,144 +265,140 @@ const AdminPage = () => {
         }
     };
 
-    const createSemester = () => {
-        axios
-            .post(
-                `${process.env.REACT_APP_API_URL}/semesters`,
-                {
-                    code: semesterCode,
-                    endDate: endDate,
-                    startDate: startDate,
-                },
-                {
-                    headers: {
-                        Authorization: `${localStorage.getItem('token')}`,
-                    },
-                }
-            )
-            .then((res) => {
-                if (res.data.code === 200) {
-                    success(`Add semester successfully!`);
-
-                    setSemesters((prev) =>
-                        prev.concat([
-                            { code: semesterCode, endDate: endDate, startDate: startDate },
-                        ])
-                    );
-                    setSemester('');
-                    setEndDate('');
-                    setStartDate('');
-                    setShowSemesterForm(false);
-                }
-            });
-    };
-
-    useEffect(() => {
-        const fetchSemesters = async () => {
-            semesterRef.current.classList.add('active');
-            try {
-                const res = await axios.get(`${process.env.REACT_APP_API_URL}/semesters`, {
-                    headers: {
-                        Authorization: `${localStorage.getItem('token')}`,
-                    },
-                });
-
-                if (res.data.code === 200) {
-                    setSemesters(res.data.data);
-                    setLoading(false);
-                }
-            } catch (err) {
-                error(err);
-            }
-        };
-
-        const fetchSubjects = async () => {
-            try {
-                const res = await axios.get(`${process.env.REACT_APP_API_URL}/subjects`, {
-                    headers: {
-                        Authorization: `${localStorage.getItem('token')}`,
-                    },
-                });
-
-                if (res.data.code === 200) {
-                    const datas = await res.data.data.map((item) => ({
-                        value: item.id,
-                        content: item.name,
-                    }));
-                    setSubjects(datas);
-                    setLoading(false);
-                }
-            } catch (err) {
-                error(err);
-            }
-        };
-
-        fetchSemesters();
-        fetchSubjects();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     const renderSemesterSetting = () => {
         return (
             <>
                 <SettingTitle>Semester</SettingTitle>
                 <SettingBody id="setting-body">
-                    {semesters?.map((item) => (
-                        <SemesterCard
-                            key={item.code}
-                            onClick={(e) => getPos(e.currentTarget, item)}
-                        >
-                            <CardTitle>{item.code}</CardTitle>
-                            <EditIcon className="edit-icon" />
-                            <div>
-                                Start Date: <span>{item.startDate}</span>
-                            </div>
-                            <div>
-                                End Date: <span>{item.endDate}</span>
-                            </div>
-                        </SemesterCard>
-                    ))}
+                    {semesters?.map((item, index) => {
+                        return (
+                            <SemesterCard
+                                key={item.code}
+                                className={`semester-card-${item.code}-${index}`}
+                            >
+                                <CardTitle>
+                                    {item.code}
+                                    <Dropdown>
+                                        <button
+                                            className="sub-option"
+                                            onClick={(e) => e.stopPropagation}
+                                        >
+                                            <MoreVertIcon />
+                                        </button>
+                                        <DropdownMenu className="dropdown-menu">
+                                            <DropdownItem onClick={() => getPos(item, index)}>
+                                                <EditIcon />
+                                            </DropdownItem>
+                                            <DropdownItem onClick={() => setShowTransfer(true)}>
+                                                <FontAwesomeIcon
+                                                    style={{ fontSize: '20px' }}
+                                                    icon={faArrowRightArrowLeft}
+                                                />
+                                            </DropdownItem>
+                                        </DropdownMenu>
+                                    </Dropdown>
+                                </CardTitle>
+                                {showTransfer ? (
+                                    <>
+                                        <FontAwesomeIcon
+                                            style={{
+                                                alignSelf: 'flex-start',
+                                                cursor: 'pointer',
+                                            }}
+                                            icon={faArrowDownLong}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                transferSemester(item.code);
+                                            }}
+                                        />
+
+                                        <Selection
+                                            options={semesters}
+                                            placeholder={'Semester'}
+                                            onChange={setNewSemesterCode}
+                                        />
+                                    </>
+                                ) : (
+                                    <>
+                                        <InputDate>
+                                            Start Date: <span>{item.startDate}</span>
+                                        </InputDate>
+                                        <InputDate>
+                                            End Date: <span>{item.endDate}</span>
+                                        </InputDate>{' '}
+                                    </>
+                                )}
+                            </SemesterCard>
+                        );
+                    })}
                     <AddingCard isShow={showSemsterForm}>
                         {showSemsterForm && (
                             <>
-                                <CloseIcon
-                                    className="close-icon"
-                                    onClick={() => setShowSemesterForm(false)}
-                                />
-                                <input
-                                    id="semester-input"
-                                    placeholder="Semester Code"
-                                    value={semesterCode || ''}
-                                    onChange={(e) => setSemesterCode(e.target.value)}
-                                />
-                                <InputDate>
-                                    <span>Start Date:</span>
-                                    <input
-                                        type={'date'}
-                                        value={startDate || ''}
-                                        onChange={(e) => setStartDate(e.target.value)}
-                                    />
-                                </InputDate>
-                                <InputDate>
-                                    <span>End Date:</span>
-                                    <input
-                                        type={'date'}
-                                        value={endDate || ''}
-                                        onChange={(e) => setEndDate(e.target.value)}
-                                    />
-                                </InputDate>
-                                <ButtonList>
-                                    <Button
-                                        disabled={
-                                            semesterCode === '' ||
-                                            startDate === '' ||
-                                            endDate === ''
-                                        }
-                                        onClick={createSemester}
-                                    >
-                                        Save
-                                    </Button>
-                                </ButtonList>
+                                {loadingAdd ? (
+                                    <AddingLoader />
+                                ) : (
+                                    <>
+                                        {' '}
+                                        <CloseIcon
+                                            className="close-icon"
+                                            onClick={() => setShowSemesterForm(false)}
+                                        />
+                                        <input
+                                            id="semester-input"
+                                            placeholder="Semester Code"
+                                            value={semesterCode || ''}
+                                            onChange={(e) => setSemesterCode(e.target.value)}
+                                        />
+                                        <InputDate>
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DesktopDatePicker
+                                                    label="Start date"
+                                                    inputFormat="MM/dd/yyyy"
+                                                    value={startDate || ''}
+                                                    onChange={(newValue) => {
+                                                        setStartDate(newValue);
+                                                    }}
+                                                    renderInput={(params) => (
+                                                        <TextField {...params} />
+                                                    )}
+                                                />
+                                            </LocalizationProvider>
+                                            {/* <input
+                                                type={'date'}
+                                                value={startDate || ''}
+                                                onChange={(e) => setStartDate(e.target.value)}
+                                            /> */}
+                                        </InputDate>
+                                        <InputDate>
+                                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                                <DesktopDatePicker
+                                                    label="End date"
+                                                    inputFormat="MM/dd/yyyy"
+                                                    value={endDate}
+                                                    onChange={(newValue) => {
+                                                        setEndDate(newValue);
+                                                        console.log(newValue);
+                                                    }}
+                                                    renderInput={(params) => (
+                                                        <TextField {...params} />
+                                                    )}
+                                                />
+                                            </LocalizationProvider>
+                                        </InputDate>
+                                        <ButtonList>
+                                            <Button
+                                                disabled={
+                                                    semesterCode === '' ||
+                                                    startDate === '' ||
+                                                    endDate === ''
+                                                }
+                                                onClick={createSemester}
+                                            >
+                                                Save
+                                            </Button>
+                                        </ButtonList>
+                                    </>
+                                )}
                             </>
                         )}
                         <AddIcon className="add-icon" onClick={() => setShowSemesterForm(true)} />
@@ -374,6 +458,52 @@ const AdminPage = () => {
             />
         );
     };
+
+    useEffect(() => {
+        const fetchSemesters = async () => {
+            semesterRef.current.classList.add('active');
+            try {
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/semesters`, {
+                    headers: {
+                        Authorization: `${localStorage.getItem('token')}`,
+                    },
+                });
+
+                if (res.data.code === 200) {
+                    const datas = res.data.data.map((item) => ({
+                        ...item,
+                        value: item.code,
+                        content: item.code,
+                    }));
+                    setSemesters(datas);
+                    setLoading(false);
+                }
+            } catch (err) {
+                error(err);
+            }
+        };
+
+        const fetchSubjects = async () => {
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/subjects`, {
+                headers: {
+                    Authorization: `${localStorage.getItem('token')}`,
+                },
+            });
+
+            if (res.data.code === 200) {
+                const datas = await res.data.data.map((item) => ({
+                    value: item.id,
+                    content: item.name,
+                }));
+                setSubjects(datas);
+                setLoading(false);
+            }
+        };
+
+        fetchSemesters();
+        fetchSubjects();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <>

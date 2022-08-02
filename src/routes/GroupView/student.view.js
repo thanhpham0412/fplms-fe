@@ -158,66 +158,6 @@ Whether you’re meeting in-person or meeting asynchronously, these four agenda 
 </ol>
 `
 
-const TextEditor = ({ report, displayList, setDisplayList, isOpen, setOpen }) => {
-    const [editorState, setEditorState] = useState(EditorState.createEmpty());
-    const [title, setTitle] = useState('');
-
-    const avts = ['TP', 'NK', 'TN', 'TT', 'NH'];
-
-    const submitCycle = (type) => {
-        const data = {
-            title: title,
-            content: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
-            resourceLink: '',
-            groupId: parseInt(report.groupId),
-        };
-        post('/' + (type.value == 1 ? 'cycle-reports' : 'progress-reports'), data)
-            .then((res) => {
-                // if (res.data.code == 200) {
-                //     success(res.data.message);
-                //     setList((list) => {
-                //         return list.concat(data);
-                //     });
-                //     setEditorOpen(false);
-                // } else {
-                //     error(res.data.message);
-                //     setEditorOpen(false);
-                // }
-            })
-            .catch(() => {
-                error('An error occured');
-            });
-    };
-
-    return (
-        <Overlay isOpen={true} fullFill={true}>
-            <AdvanceEditor
-                closeFn={() => setOpen(false)}
-                avatars={avts}
-                editorState={editorState}
-                setEditorState={setEditorState}
-            >
-                {/* <GoalContainer>
-                    <GoalDes>Reports Stats:</GoalDes>
-                    <StatusBar progress={progress} />
-                    <GoalCounter>
-                        <span>{progress[0]}</span> / {progress[1]}
-                    </GoalCounter>
-                </GoalContainer> */}
-                <GoalContainer>
-                    <GoalDes>Report Title</GoalDes>
-                    <Input
-                        placeholder={"Report's Title"}
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value || '')}
-                    />
-                </GoalContainer>
-                <SendBtn>Send Report</SendBtn>
-            </AdvanceEditor>
-        </Overlay>
-    )
-}
-
 const StudentView = ({ groupId, classId }) => {
     const loadOverlay = useContext(LoadOverLayContext);
     const [isPicked, setPicked] = useState(false);
@@ -231,7 +171,6 @@ const StudentView = ({ groupId, classId }) => {
             content: 'Progress report',
         },
     ]);
-    const [displayList, setDisplayList] = useState([]);
     const [progress, setProgress] = useState([1, 10]);
     const [list, setList] = useState([]);
     const [type, setType] = useState({ value: 1, content: 'progress-reports' });
@@ -272,6 +211,32 @@ const StudentView = ({ groupId, classId }) => {
         })
     };
 
+    const submitCycle = (type) => {
+        const data = {
+            title: title,
+            content: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+            resourceLink: '',
+            groupId: parseInt(groupId),
+        };
+        post('/' + (type.value == 1 ? 'cycle-reports' : 'progress-reports'), data)
+            .then((res) => {
+                if (res.data.code == 200) {
+                    success(res.data.message);
+                    setList((list) => {
+                        return list.concat(data);
+                    });
+                    setEditorOpen(false);
+                } else {
+                    error(res.data.message);
+                    setEditorOpen(false);
+                }
+            })
+            .catch(() => {
+                error('An error occured');
+                setEditorOpen(false);
+            });
+    };
+
     const onChange = (e) => {
         setProgress((progress) => {
             return [list.filter((report) => report.type == 'cycle').length, progress[1]];
@@ -283,36 +248,18 @@ const StudentView = ({ groupId, classId }) => {
     const getReports = () => {
         get('/cycle-reports', { classId, groupId }).then((res) => {
             if (res.data.code == 200) {
-                setList((list) => list.concat(res.data.data.map((data) => {
-                    setDisplayList((list) => {
-                        return list.concat({
-                            displayId: 'progress' + data.id,
-                            isDisplay: false,
-                        });
-                    })
-                    return {
-                        ...data,
-                        type: 'cycle',
-                        displayId: 'cycle' + data.id,
-                    };
-                })));
+                setList((list) => list.concat(res.data.data.map((data) => ({
+                    ...data,
+                    type: 'cycle',
+                }))));
             }
         });
         get('/progress-reports', { classId, groupId }).then((res) => {
             if (res.data.code == 200) {
-                setList((list) => list.concat(res.data.data.map((data) => {
-                    setDisplayList((list) => {
-                        return list.concat({
-                            displayId: 'progress' + data.id,
-                            isDisplay: false,
-                        });
-                    })
-                    return {
-                        ...data,
-                        type: 'progress',
-                        displayId: 'progress' + data.id,
-                    };
-                })));
+                setList((list) => list.concat(res.data.data.map((data) => ({
+                    ...data,
+                    type: 'progress',
+                }))));
             }
         });
         // Promise.all([cycleReport, progressReport]).then(([cycleReport, progressReport]) => {
@@ -417,7 +364,31 @@ const StudentView = ({ groupId, classId }) => {
 
     return (
         <StudentViewContainer>
-            <TextEditor />
+            <Overlay isOpen={isEditorOpen} fullFill={true}>
+                <AdvanceEditor
+                    closeFn={() => setEditorOpen(false)}
+                    avatars={avts}
+                    editorState={editorState}
+                    setEditorState={setEditorState}
+                >
+                    <GoalContainer>
+                        <GoalDes>Reports Stats:</GoalDes>
+                        <StatusBar progress={progress} />
+                        <GoalCounter>
+                            <span>{progress[0]}</span> / {progress[1]}
+                        </GoalCounter>
+                    </GoalContainer>
+                    <GoalContainer>
+                        <GoalDes>Report Title</GoalDes>
+                        <Input
+                            placeholder={"Report's Title"}
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value || '')}
+                        />
+                    </GoalContainer>
+                    <SendBtn onClick={() => submitCycle(type)}>Send Report</SendBtn>
+                </AdvanceEditor>
+            </Overlay>
             <Container>
                 {list.length ? (
                     <FeedBack list={list} />

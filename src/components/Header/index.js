@@ -25,9 +25,7 @@ import {
     UserContainer,
 } from './style';
 
-import ForumIcon from '@mui/icons-material/Forum';
 import InboxIcon from '@mui/icons-material/Inbox';
-import LogoutIcon from '@mui/icons-material/Logout';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PersonIcon from '@mui/icons-material/Person';
 import { io } from 'socket.io-client';
@@ -38,14 +36,14 @@ const Header = () => {
 
     const [socket, setSocket] = useState(null);
 
+    const navigate = useNavigate();
+    const [isOpen, setOpen] = useState(false);
     const [list, setList] = useState([]);
 
     const [newNoti, setNewNoti] = useState(0);
 
     const notiRef = useRef();
     const userRef = useRef();
-
-    const navigate = useNavigate();
 
     const auth = useContext(AuthContext);
 
@@ -64,7 +62,7 @@ const Header = () => {
     const user = getTokenInfo();
 
     useEffect(() => {
-        const socket = io('ws://8.tcp.ngrok.io:164757', {
+        const socket = io('ws://8.tcp.ngrok.io:14651', {
             extraHeaders: {
                 Authorization: localStorage.getItem('token'),
             },
@@ -120,12 +118,6 @@ const Header = () => {
         }
     };
 
-    const handleLogout = async () => {
-        await auth.setAuth(false);
-        await localStorage.clear();
-        navigate('/login');
-    };
-
     return (
         <div>
             <HContainer>
@@ -142,7 +134,7 @@ const Header = () => {
                         <UserContainer isOpen={isUserOpen}>
                             <NotiInfo
                                 onClick={() => {
-                                    localStorage.removeItem('token');
+                                    localStorage.clear();
                                     auth.setAuth(false);
                                     navigate('/login');
                                 }}
@@ -151,7 +143,7 @@ const Header = () => {
                             </NotiInfo>
                         </UserContainer>
                     </BtnContainer>
-                    <BtnContainer>
+                    {/* <BtnContainer>
                         <ForumIcon
                             onClick={switchRole}
                             style={{
@@ -163,7 +155,7 @@ const Header = () => {
                                 margin: '0 10px',
                             }}
                         />
-                    </BtnContainer>
+                    </BtnContainer> */}
                     <BtnContainer ref={notiRef}>
                         <NotificationsIcon
                             onClick={(e) => {

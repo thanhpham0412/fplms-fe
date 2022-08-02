@@ -23,6 +23,17 @@ export const Container = styled(motion.div)`
         color: ${COLOR.primary03};
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     }
+    .view-mark {
+        position: absolute;
+        right: 1.5rem;
+        top: 2rem;
+        display: flex;
+        align-items: center;
+        font-size: 10px;
+        color: ${COLOR.blue[1]};
+        cursor: pointer;
+        z-index: 2;
+    }
 `;
 
 export const Title = styled.div`

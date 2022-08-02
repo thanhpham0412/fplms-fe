@@ -148,12 +148,16 @@ export const Action = styled.div`
     align-items: center;
     input[type='radio'] {
         display: none;
-        &:checked + label {
+        /* &:checked + label {
             svg {
-                stroke: ${COLOR.green[1]};
-                color: ${COLOR.green[1]};
+                stroke: ${({ checked }) => (checked ? COLOR.green[1] : COLOR.blue[2])};
+                color: ${({ checked }) => (checked ? COLOR.green[1] : COLOR.primary02)};
             }
-        }
+        } */
+    }
+    .check-icon {
+        stroke: ${({ checked }) => (checked ? COLOR.green[1] : COLOR.blue[2])};
+        color: ${({ checked }) => (checked ? COLOR.green[1] : COLOR.primary02)};
     }
     label {
         cursor: pointer;
@@ -161,7 +165,7 @@ export const Action = styled.div`
         svg {
             stroke: ${COLOR.blue[2]};
             color: ${COLOR.primary02};
-            font-size: 1.5rem;
+            font-size: 2.5rem;
         }
     }
     time {

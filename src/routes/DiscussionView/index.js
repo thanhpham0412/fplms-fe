@@ -10,6 +10,7 @@ import { Jumbotron, TopActivities } from '../../components';
 import AnswerSection from '../../components/AnswerSection';
 import ConfirmModal from '../../components/ConfirmModal';
 import PostLoader from '../../components/PostSection/loader';
+import StudentInfoModal from '../../components/StudentInfoModal';
 import { error, success } from '../../utils/toaster';
 import {
     StyledContainer,
@@ -57,6 +58,8 @@ const DiscussionView = () => {
     const [question, setQuestion] = useState();
     const [isLoading, setLoading] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
+    const [openStudentInfo, setOpenStudentInfo] = useState(false);
+    const [student, setStudent] = useState();
     const [refresh, setRefresh] = useState(0);
     let editorState;
     let raw;
@@ -85,6 +88,8 @@ const DiscussionView = () => {
                 })
                 .then((res) => {
                     if (res.status == 200) {
+                        console.log(res);
+
                         setQuestion(res.data);
                         setLoading(false);
                     } else {
@@ -112,6 +117,11 @@ const DiscussionView = () => {
 
     return (
         <>
+            <StudentInfoModal
+                isOpen={openStudentInfo}
+                setOpen={setOpenStudentInfo}
+                studentInfo={student}
+            />
             <ConfirmModal isOpen={isOpen} setIsOpen={setIsOpen} action={deleteQuestion} />
             <StyledContainer>
                 <Jumbotron title={'discussion'} subtitle={question?.title} />
@@ -173,9 +183,13 @@ const DiscussionView = () => {
                                     <AnswerSection
                                         questionId={questionId}
                                         setQuestion={setQuestion}
-                                        answers={question.answers}
+                                        answers={question.answers
+                                            .sort((a, b) => b.upvotes - a.upvotes)
+                                            .sort((a) => (a.accepted ? -1 : 1))}
                                         student={question.student}
                                         setRefresh={setRefresh}
+                                        setStudent={setStudent}
+                                        setOpenStudentInfo={setOpenStudentInfo}
                                     />
                                 </PostView>
                             </Column>

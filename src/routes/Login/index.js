@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useContext } from 'react';
 
 import axios from 'axios';
@@ -41,13 +42,28 @@ const Login = () => {
             })
             .then((res) => {
                 const data = res.data;
-
                 if (data.isAuthSuccessful) {
-                    auth.setAuth(true);
-                    loadContext.setActive(false);
-                    navigate('/class');
-                    localStorage.setItem('token', data.token);
-                    localStorage.setItem('user', JSON.stringify(response.profileObj));
+                    axios
+                        .get(`${process.env.REACT_APP_API_URL}/valid`, {
+                            headers: {
+                                Authorization: data.token,
+                            },
+                        })
+                        .then((res) => {
+                            auth.setAuth(true);
+                            loadContext.setActive(false);
+                            localStorage.setItem('token', data.token);
+
+                            localStorage.setItem('user', JSON.stringify(response.profileObj));
+                            if (res.data.code === 200) {
+                                localStorage.setItem('isAdmin', true);
+                                auth.setIsAdmin(true);
+                            } else {
+                                auth.setIsAdmin(false);
+                            }
+                            navigate('/class');
+                        })
+                        .catch((err) => error(err));
                 }
             })
             .catch(() => {

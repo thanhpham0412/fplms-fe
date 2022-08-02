@@ -4,7 +4,7 @@ import { Button, ButtonList, Container, Title } from './style';
 import CloseIcon from '@mui/icons-material/Close';
 
 const ConfirmModal = ({ isOpen, setIsOpen, action }) => {
-    const handleYes = async () => {
+    const handleYes = () => {
         action();
     };
 
@@ -12,7 +12,7 @@ const ConfirmModal = ({ isOpen, setIsOpen, action }) => {
         <Overlay isOpen={isOpen}>
             <Container>
                 <CloseIcon onClick={() => setIsOpen(false)} />
-                <Title>Do you want to continue? This will permantly deleted!</Title>
+                <Title>Do you want to continue? This action cannot undo!</Title>
                 <ButtonList>
                     <Button onClick={handleYes}>Yes</Button>
                     <Button onClick={() => setIsOpen(false)}>No</Button>

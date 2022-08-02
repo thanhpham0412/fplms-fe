@@ -1,9 +1,7 @@
-/* eslint-disable no-unused-vars */
 import { useEffect, useRef, useState } from 'react';
 
 import axios from 'axios';
 
-import { useClickOutside } from '../../../hooks';
 import { error, success } from '../../../utils/toaster';
 import { Wrapper, Container, Overlay, ButtonList, Button, SemsterCode, InputDate } from './style';
 
@@ -25,7 +23,7 @@ const SemesterForm = ({ open, setOpen, w, h, from, to, semester, setSemesters })
                 success(`Delete semester successfully!`);
                 setOpen(false);
             } else {
-                error(`Something wrong!`);
+                error(`${res.data.message}`);
                 setOpen(false);
             }
         } catch (err) {
@@ -35,6 +33,10 @@ const SemesterForm = ({ open, setOpen, w, h, from, to, semester, setSemesters })
     };
     const handleEditSemester = async () => {
         try {
+            if (startDate > endDate) {
+                error(`Begin date must not greater than end date!`);
+                return;
+            }
             const res = await axios.put(
                 `${process.env.REACT_APP_API_URL}/semesters`,
                 {
@@ -48,25 +50,25 @@ const SemesterForm = ({ open, setOpen, w, h, from, to, semester, setSemesters })
                     },
                 }
             );
-            await setSemesters((prev) => {
-                prev.find((item) => item.code === semester.code).code = semester.code;
-                prev.find((item) => item.code === semester.code).endDate = endDate;
-                prev.find((item) => item.code === semester.code).startDate = startDate;
-                return prev;
-            });
+            console.log(res);
+            if (res.data.code === 200) {
+                await setSemesters((prev) => {
+                    prev.find((item) => item.code === semester.code).code = semester.code;
+                    prev.find((item) => item.code === semester.code).endDate = endDate;
+                    prev.find((item) => item.code === semester.code).startDate = startDate;
+                    return prev;
+                });
 
-            success(`Edit semester successfully`);
-            setOpen(false);
+                success(`Edit semester successfully`);
+                setOpen(false);
+            } else {
+                error(res.data.message);
+            }
         } catch (err) {
             await error(err);
             await setOpen(false);
         }
     };
-
-    // useClickOutside(formRef, () => {
-    //     setOpen(false);
-    //     document.querySelector('.form-wrapper').classList.remove('show-form');
-    // });
 
     useEffect(() => {
         if (open) {
