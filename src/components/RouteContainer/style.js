@@ -22,7 +22,6 @@ export const StyledHeader = styled.div`
     position: sticky;
     top: 0;
     z-index: 10;
-    border-bottom: 1px solid ${COLOR.gray[3]};
     box-sizing: border-box;
     grid-column: 1 / -1;
 `;

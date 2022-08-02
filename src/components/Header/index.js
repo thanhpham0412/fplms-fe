@@ -119,31 +119,30 @@ const Header = () => {
     };
 
     return (
-        <div>
-            <HContainer>
-                <HLogo>
-                    <img src={logo} alt="FPT Logo" />
-                </HLogo>
-                <HIcons>
-                    <BtnContainer ref={userRef}>
-                        <PersonIcon
-                            onClick={(e) => {
-                                setUserOpen((userOpen) => !userOpen);
+        <HContainer>
+            <HLogo>
+                <img src={logo} alt="FPT Logo" />
+            </HLogo>
+            <HIcons>
+                <BtnContainer ref={userRef}>
+                    <PersonIcon
+                        onClick={(e) => {
+                            setUserOpen((userOpen) => !userOpen);
+                        }}
+                    />
+                    <UserContainer isOpen={isUserOpen}>
+                        <NotiInfo
+                            onClick={() => {
+                                localStorage.clear();
+                                auth.setAuth(false);
+                                navigate('/login');
                             }}
-                        />
-                        <UserContainer isOpen={isUserOpen}>
-                            <NotiInfo
-                                onClick={() => {
-                                    localStorage.clear();
-                                    auth.setAuth(false);
-                                    navigate('/login');
-                                }}
-                            >
-                                Logout
-                            </NotiInfo>
-                        </UserContainer>
-                    </BtnContainer>
-                    {/* <BtnContainer>
+                        >
+                            Logout
+                        </NotiInfo>
+                    </UserContainer>
+                </BtnContainer>
+                {/* <BtnContainer>
                         <ForumIcon
                             onClick={switchRole}
                             style={{
@@ -156,35 +155,34 @@ const Header = () => {
                             }}
                         />
                     </BtnContainer> */}
-                    <BtnContainer ref={notiRef}>
-                        <NotificationsIcon
-                            onClick={(e) => {
-                                setNewNoti(0);
-                                setNotiOpen((e) => !e);
-                            }}
-                        />
-                        <NotiNews isDisplay={newNoti > 0}>{newNoti}</NotiNews>
-                        <NotificationContainer isOpen={isNotiOpen}>
-                            <NotificationHeader>Notification</NotificationHeader>
-                            <NotificationBody>
-                                {list.map((noti) => (
-                                    <>
-                                        <NotiContainer key={noti.id}>
-                                            {/* <InboxIcon /> */}
-                                            <NotiInfo>
-                                                <small>{noti.userEmail}</small>
-                                                <div>{noti.title}</div>
-                                                <small>{moment(noti.createAt).fromNow()}</small>
-                                            </NotiInfo>
-                                        </NotiContainer>
-                                    </>
-                                ))}
-                            </NotificationBody>
-                        </NotificationContainer>
-                    </BtnContainer>
-                </HIcons>
-            </HContainer>
-        </div>
+                <BtnContainer ref={notiRef}>
+                    <NotificationsIcon
+                        onClick={(e) => {
+                            setNewNoti(0);
+                            setNotiOpen((e) => !e);
+                        }}
+                    />
+                    <NotiNews isDisplay={newNoti > 0}>{newNoti}</NotiNews>
+                    <NotificationContainer isOpen={isNotiOpen}>
+                        <NotificationHeader>Notification</NotificationHeader>
+                        <NotificationBody>
+                            {list.map((noti) => (
+                                <>
+                                    <NotiContainer key={noti.id}>
+                                        {/* <InboxIcon /> */}
+                                        <NotiInfo>
+                                            <small>{noti.userEmail}</small>
+                                            <div>{noti.title}</div>
+                                            <small>{moment(noti.createAt).fromNow()}</small>
+                                        </NotiInfo>
+                                    </NotiContainer>
+                                </>
+                            ))}
+                        </NotificationBody>
+                    </NotificationContainer>
+                </BtnContainer>
+            </HIcons>
+        </HContainer>
     );
 };
 
