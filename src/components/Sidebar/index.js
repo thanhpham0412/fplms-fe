@@ -73,19 +73,19 @@ const SideBar = () => {
             path: '/class',
             isExpand: true,
             icon: <SchoolIcon />,
-            submenu: [
-                {
-                    title: 'My classes',
-                    path: '/class',
-                    isExpand: true,
-                    submenu: [],
-                },
-                {
-                    title: 'All classes',
-                    path: '/class',
-                    submenu: [],
-                },
-            ],
+            // submenu: [
+            //     {
+            //         title: 'My classes',
+            //         path: '/class',
+            //         isExpand: true,
+            //         submenu: [],
+            //     },
+            //     {
+            //         title: 'All classes',
+            //         path: '/class',
+            //         submenu: [],
+            //     },
+            // ],
         },
         {
             title: 'Discussion',
