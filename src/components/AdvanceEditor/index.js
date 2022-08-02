@@ -14,6 +14,7 @@ const AdvanceEditor = ({
     setEditorState,
     readOnly,
     backTab,
+    headColor,
 }) => {
     const editorRef = useRef();
 
@@ -22,11 +23,11 @@ const AdvanceEditor = ({
 
     return (
         <Container>
-            <Header>
+            <Header headColor={headColor}>
                 <BackBtn onClick={closeFn}>
                     <ArrowBackIosNewIcon fontSize="small" /> {backTab || 'Back'}
                 </BackBtn>
-                <Avatars list={avatars} />
+                <Avatars outline={headColor} list={avatars} />
             </Header>
             <BottomSide>
                 <EditorContainer onClick={() => editorRef.current.focus()}>

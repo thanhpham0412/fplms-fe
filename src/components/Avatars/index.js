@@ -1,7 +1,7 @@
 import { stringToColour } from '../../utils/style';
 import { GroupAvatar, Avatar } from './style';
 
-const Avatars = ({ list, max }) => {
+const Avatars = ({ list, max, outline }) => {
     list = list || [];
     max = max || 5;
 
@@ -20,7 +20,12 @@ const Avatars = ({ list, max }) => {
     return (
         <GroupAvatar>
             {list.slice(0, max).map((avatar, index) => (
-                <Avatar key={index} size={32} color={stringToColour(avatar + list.join(''))}>
+                <Avatar
+                    outline={outline}
+                    key={index}
+                    size={32}
+                    color={stringToColour(avatar + list.join(''))}
+                >
                     <span>{avatar}</span>
                 </Avatar>
             ))}

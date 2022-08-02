@@ -2,7 +2,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 /* eslint-disable no-unused-vars */
-import { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
+
+import { useParams } from 'react-router-dom';
 
 import { Editor, EditorState, convertToRaw, ContentState, convertFromRaw } from 'draft-js';
 
@@ -14,6 +16,10 @@ import {
     Skeleton,
     NoResult,
     AdvanceEditor,
+    Table,
+    Row,
+    TableHeader,
+    Avatars
 } from '../../components';
 
 import moment from 'moment';
@@ -62,6 +68,7 @@ import {
     StudentFeedBack,
     Select,
     Input,
+    Type,
     StudentViewContainer,
 } from './style';
 
@@ -69,28 +76,7 @@ import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArticleIcon from '@mui/icons-material/Article';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
-
-const FeedBack = ({ list }) => {
-    console.log(list[0].type);
-    return (
-        <StyledList>
-            {list.map(({ content, type, feedback, title }, index) => {
-                return (
-                    <StyledItem feedback={type} key={index}>
-                        <Title feedback={type}>{title}</Title>
-                        {content && (
-                            <DraftRenderer
-                                editorState={EditorState.createWithContent(convertFromRaw(JSON.parse(content)))}
-                            ></DraftRenderer>
-                        )}
-                        <div>Feedback</div>
-                        <Content>{feedback || <p>(This report has no feedback)</p>}</Content>
-                    </StyledItem>
-                );
-            })}
-        </StyledList>
-    );
-};
+import { COLOR } from '../../utils/color';
 
 const TopicList = ({
     isOpen,
@@ -158,8 +144,132 @@ Whether you’re meeting in-person or meeting asynchronously, these four agenda 
 </ol>
 `
 
+const TextEditor = ({ report, close }) => {
+    const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const [title, setTitle] = useState('');
+
+    const avts = ['TP', 'NK', 'TN', 'TT', 'NH'];
+
+    useEffect(() => {
+        if (report) {
+            setEditorState(
+                report.content ? EditorState.createWithContent(
+                    convertFromRaw(
+                        JSON.parse(
+                            report.content
+                        )
+                    )
+                ) : EditorState.createEmpty()
+            );
+            setTitle(report.title || '');
+        }
+    }, [report]);
+
+    const submitCycle = () => {
+        const data = {
+            title: title,
+            content: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+            resourceLink: '',
+            groupId: parseInt(report.groupId),
+        };
+        post('/' + report.type + '-reports', data)
+            .then((res) => {
+                if (res.data.code == 200) {
+                    success(res.data.message);
+                } else {
+                    error(res.data.message);
+                }
+            })
+            .catch(() => {
+                error('An error occured');
+            });
+    };
+
+    return (
+        <Overlay isOpen={report?.isOpen} fullFill={true}>
+            <AdvanceEditor
+                closeFn={close}
+                avatars={avts}
+                editorState={editorState}
+                setEditorState={setEditorState}
+                headColor={report && report.type == 'cycle' ? COLOR.blue[0] : COLOR.green[0]}
+            >
+                {/* <GoalContainer>
+                    <GoalDes>Reports Stats:</GoalDes>
+                    <StatusBar progress={progress} />
+                    <GoalCounter>
+                        <span>{progress[0]}</span> / {progress[1]}
+                    </GoalCounter>
+                </GoalContainer> */}
+                <GoalContainer>
+                    <GoalDes>Report Title</GoalDes>
+                    <Input
+                        placeholder={"Report's Title"}
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value || '')}
+                    />
+                </GoalContainer>
+                <SendBtn onClick={submitCycle}>Send Report</SendBtn>
+            </AdvanceEditor>
+        </Overlay>
+    )
+}
+
+const FeedBack = ({ list, setList }) => {
+    const open = (report) => {
+        setList((list) => {
+            let _list = [...list];
+            _list.forEach((item, index) => {
+                if (item.displayId == report.displayId) {
+                    _list[index].isOpen = true;
+                    return _list;
+                }
+            })
+            return _list;
+        })
+    }
+
+    const close = (report) => {
+        setList((list) => {
+            let _list = [...list];
+            _list.forEach((item, index) => {
+                if (item.displayId == report.displayId) {
+                    _list[index].isOpen = false;
+                    return _list;
+                }
+            })
+            return _list;
+        })
+    }
+
+    return (
+        <Table columns="200px 1fr 200px 200px">
+            <TableHeader>
+                <div>Type</div>
+                <div>Report Title</div>
+                <div>Report Time</div>
+                <div>Write by</div>
+            </TableHeader>
+            {list.map((report) => {
+                return (
+                    <React.Fragment key={report.displayId}>
+                        <TextEditor report={report} close={() => close(report)} />
+                        <Row feedback={report.type} onClick={() => open(report)}>
+                            <Type type={report.type}>
+                                {report.type == 'cycle' ? 'Cycle Report' : 'Progress Report'}
+                            </Type>
+                            <Title>{report.title}</Title>
+                            <Title>{report.reportTime}</Title>
+                            <Avatars list={['TP', 'NK', 'TN', 'TT', 'NH']} />
+                        </Row>
+                    </React.Fragment>
+                );
+            })}
+        </Table>
+    );
+};
+
 const StudentView = ({ groupId, classId }) => {
-    const loadOverlay = useContext(LoadOverLayContext);
     const [isPicked, setPicked] = useState(false);
     const [isEditorOpen, setEditorOpen] = useState(false);
     const [isTopicOpen, setTopicOpen] = useState(false);
@@ -248,18 +358,26 @@ const StudentView = ({ groupId, classId }) => {
     const getReports = () => {
         get('/cycle-reports', { classId, groupId }).then((res) => {
             if (res.data.code == 200) {
-                setList((list) => list.concat(res.data.data.map((data) => ({
-                    ...data,
-                    type: 'cycle',
-                }))));
+                setList((list) => list.concat(res.data.data.map((data) => {
+                    return {
+                        ...data,
+                        type: 'cycle',
+                        displayId: 'cycle' + data.id,
+                        isOpen: false,
+                    };
+                })));
             }
         });
         get('/progress-reports', { classId, groupId }).then((res) => {
             if (res.data.code == 200) {
-                setList((list) => list.concat(res.data.data.map((data) => ({
-                    ...data,
-                    type: 'progress',
-                }))));
+                setList((list) => list.concat(res.data.data.map((data) => {
+                    return {
+                        ...data,
+                        type: 'progress',
+                        displayId: 'progress' + data.id,
+                        isOpen: false,
+                    };
+                })));
             }
         });
         // Promise.all([cycleReport, progressReport]).then(([cycleReport, progressReport]) => {
@@ -268,8 +386,8 @@ const StudentView = ({ groupId, classId }) => {
     };
 
     useEffect(() => {
-        loadOverlay.setText('Looking for your group...');
-        loadOverlay.setActive(true);
+        // loadOverlay.setText('Looking for your group...');
+        // loadOverlay.setActive(true);
         get('/meetings', {
             classId: parseInt(classId),
             endDate: moment(new Date()).set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).add(1, 'd').format('yyyy-MM-DD HH:mm:ss.SSS'),
@@ -316,7 +434,7 @@ const StudentView = ({ groupId, classId }) => {
                             if (data.code == 200) setTopicList(data.data);
                         });
                     }
-                    loadOverlay.setActive(false);
+                    // loadOverlay.setActive(false);
                 } else {
                     const student = data.studentDtoSet.filter(
                         (student) => student.email == user.email
@@ -330,7 +448,7 @@ const StudentView = ({ groupId, classId }) => {
                         })
                     }
                     setPicked(true);
-                    loadOverlay.setActive(false);
+                    // loadOverlay.setActive(false);
                     getReports();
                 }
             } else {
@@ -391,7 +509,7 @@ const StudentView = ({ groupId, classId }) => {
             </Overlay>
             <Container>
                 {list.length ? (
-                    <FeedBack list={list} />
+                    <FeedBack list={list} setList={setList} />
                 ) : (
                     <NeResultContainer>
                         <NoResult>

@@ -3,7 +3,7 @@ import { Container } from './style';
 
 const NoResult = ({ children }) => {
     return (
-        <Container>
+        <Container data-target="no-result">
             <img src={EmptyState} alt="Empty State" />
             {children}
         </Container>

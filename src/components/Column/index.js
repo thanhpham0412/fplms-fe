@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-unused-vars */
 import { useState, useRef, useEffect } from 'react';
 
@@ -268,10 +269,7 @@ const Column = ({
                                                 ref={provided.innerRef}
                                                 {...provided.draggableProps}
                                                 {...provided.dragHandleProps}
-                                                style={{
-                                                    pointerEvents:
-                                                        item.onLoad == -1 ? 'none' : 'auto',
-                                                }}
+                                                style={{ pointerEvents: item.onLoad == -1 ? 'none' : 'auto' }}
                                             >
                                                 <Item
                                                     isDragging={snapshot.isDragging}
@@ -283,13 +281,13 @@ const Column = ({
                                                             }));
                                                             setTitle(item.name || '');
                                                             setEditorState(
-                                                                EditorState.createWithContent(
+                                                                item.requirements ? EditorState.createWithContent(
                                                                     convertFromRaw(
                                                                         JSON.parse(
                                                                             item.requirements
                                                                         )
                                                                     )
-                                                                )
+                                                                ) : EditorState.createEmpty()
                                                             );
                                                             return true;
                                                         });
