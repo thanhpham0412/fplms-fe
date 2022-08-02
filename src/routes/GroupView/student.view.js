@@ -214,15 +214,21 @@ const TextEditor = ({ report, close, progress }) => {
 
     useEffect(() => {
         if (report) {
-            setEditorState(
-                report.content ? EditorState.createWithContent(
-                    convertFromRaw(
-                        JSON.parse(
-                            report.content
+            try {
+                setEditorState(
+                    report.content ? EditorState.createWithContent(
+                        convertFromRaw(
+                            JSON.parse(
+                                report.content
+                            )
                         )
-                    )
-                ) : EditorState.createEmpty()
-            );
+                    ) : EditorState.createEmpty()
+                );
+            } catch (err) {
+                setEditorState(
+                    EditorState.createEmpty()
+                );
+            }
             setTitle(report.title || '');
         }
     }, [report]);
@@ -526,8 +532,12 @@ const StudentView = ({ groupId, classId }) => {
     };
 
     const viewTopic = (item) => {
-        const raw = convertFromRaw(JSON.parse(item.requirements));
-        setTopicState(EditorState.createWithContent(raw));
+        try {
+            const raw = convertFromRaw(JSON.parse(item.requirements));
+            setTopicState(EditorState.createWithContent(raw));
+        } catch (err) {
+            setTopicState(EditorState.createEmpty());
+        }
     };
 
     const unPickError = () => {
