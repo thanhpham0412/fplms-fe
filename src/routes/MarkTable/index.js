@@ -22,35 +22,64 @@ function createData(studentName, groupId, mark, id) {
 function MarkTable() {
     const { classId } = useParams();
 
-    const [rows, setRows] = useState({});
+    const [rows, setRows] = useState([]);
 
     const [cell, setCell] = useState(0);
 
     useEffect(() => {
-        get(`/classes/${classId}/students`).then((response) => {
-            if (response.status == 200 && response.data.code == 200) {
-                const data = response.data.data;
-                data.forEach((student) => {
-                    get(`/cycle-reports`, { classId: classId }).then((res) => {
-                        if (res.status == 200 && res.data.code == 200) {
-                            const reports = res.data.data;
-                            setRows((rows) => {
-                                if (reports.length > cell) {
-                                    setCell(reports.length);
-                                }
-                                return {
-                                    ...rows,
-                                    [student.id]: {
-                                        marks: reports.map((report) => report.mark),
-                                        group: student.groupNumber,
-                                        name: student.name,
-                                    },
-                                };
-                            });
-                        }
-                    });
-                });
-            }
+        // get(`/classes/${classId}/students`).then((response) => {
+        //     if (response.status == 200 && response.data.code == 200) {
+        //         const data = response.data.data;
+        //         data.forEach((student) => {
+        //             get(`/cycle-reports`, { classId: classId }).then((res) => {
+        //                 if (res.status == 200 && res.data.code == 200) {
+        //                     const reports = res.data.data;
+        //                     setRows((rows) => {
+        //                         if (reports.length > cell) {
+        //                             setCell(reports.length);
+        //                         }
+        //                         return {
+        //                             ...rows,
+        //                             [student.id]: {
+        //                                 marks: reports.map((report) => report.mark),
+        //                                 group: student.groupNumber,
+        //                                 name: student.name,
+        //                             },
+        //                         };
+        //                     });
+        //                 }
+        //             });
+        //         });
+        //     }
+        // });
+
+        const students = get(`/classes/${classId}/students`);
+        const reports = get(`/cycle-reports`, { classId: classId });
+
+        Promise.all([students, reports]).then(([students, reports]) => {
+            const studentList = students.data.data;
+            const reportList = reports.data.data;
+
+            const matcher = (groupId) => {
+                return reportList.filter((report) => report.groupId == groupId);
+            };
+
+            const _list = studentList.map((student) => {
+                const mark = student.groupId ? matcher(student.groupId) : [];
+
+                if (mark.length > cell) {
+                    setCell(mark.length);
+                }
+
+                return {
+                    ...student,
+                    mark,
+                };
+            });
+
+            console.log(_list);
+
+            setRows(_list);
         });
     }, []);
 
@@ -69,28 +98,21 @@ function MarkTable() {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {Object.keys(rows).map((studentId) => {
+                    {rows.map((student) => {
                         return (
-                            <TableRow
-                                key={studentId}
-                                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                            >
+                            <TableRow key={student.id}>
                                 <TableCell component="th" scope="row">
-                                    {rows[studentId].name}
+                                    {student.name}
                                 </TableCell>
                                 <TableCell component="th" scope="row">
-                                    Group {rows[studentId].group}
+                                    {student.groupNumber ? 'Group' + student.groupNumber : '-'}
                                 </TableCell>
-                                {rows[studentId].marks.map((mark, index) => (
-                                    <TableCell
-                                        align="center"
-                                        component="th"
-                                        scope="row"
-                                        key={index}
-                                    >
-                                        {mark}
-                                    </TableCell>
-                                ))}
+                                {student.mark &&
+                                    student.mark.map((mark, index) => (
+                                        <TableCell align="center" key={index}>
+                                            {mark.mark}
+                                        </TableCell>
+                                    ))}
                             </TableRow>
                         );
                     })}

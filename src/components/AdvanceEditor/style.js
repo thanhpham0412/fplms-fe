@@ -86,6 +86,7 @@ export const GroupAvatar = styled.ul`
     display: flex;
     list-style-type: none;
     padding: 0px 7px 0px 0px;
+    width: fit-content;
     z-index: 1;
 `;
 
