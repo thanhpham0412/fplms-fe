@@ -32,6 +32,7 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
 
     const [isCreate, setCreate] = useState(false);
     const [disable, setDisable] = useState(false);
+    const [disableBtn, setDisableBtn] = useState(false);
     const [btnStyle, setBtnStyle] = useState(false);
     const [action, setAction] = useState();
     const [slot, setSlot] = useState(data.currentNumber);
@@ -54,10 +55,19 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
     };
 
     useEffect(() => {
-        if (slot == group.memberQuantity || data.disable) {
+        if (
+            slot === group.memberQuantity ||
+            isJoined ||
+            currentDate > new Date(group.enrollTime) ||
+            data.disable
+        ) {
+            if (data.disable) {
+                setDisableBtn(true);
+            }
             setDisable(true);
-        } else if (isJoined || currentDate > new Date(group.enrollTime)) {
-            setDisable(true);
+        } else {
+            setDisable(false);
+            setDisableBtn(false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [slot, isJoined]);
@@ -189,15 +199,15 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
                         <GroupBtn
                             onClick={() => {
                                 setIsOpen(true);
-                                if (disable) {
+                                if (disableBtn) {
                                     setAction(() => handleEnableGroup);
                                 } else {
                                     setAction(() => handleDisableGroup);
                                 }
                             }}
-                            style={{ backgroundColor: disable ? '#75D996' : '#F776A5' }}
+                            style={{ backgroundColor: disableBtn ? '#75D996' : '#F776A5' }}
                         >
-                            {disable ? 'Enable' : 'Disable'}
+                            {disableBtn ? 'Enable' : 'Disable'}
                         </GroupBtn>
                     </Row>
                 ) : (
