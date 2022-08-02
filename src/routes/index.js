@@ -43,7 +43,7 @@ export const privateRoute = [
         restrict: true,
     },
     {
-        path: 'student-list',
+        path: 'student-list/:classId',
         name: 'student-list',
         component: StudentList,
         exact: true,

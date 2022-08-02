@@ -37,6 +37,7 @@ import { success, error } from '../../utils/toaster';
 import { fromHTML } from '../../utils/draft';
 import {
     Container,
+    TableContainer,
     EditorContainer,
     EditorSideBar,
     BottomSide,
@@ -552,12 +553,13 @@ const StudentView = ({ groupId, classId }) => {
 
     return (
         <StudentViewContainer>
-            <SubmitEdtior isOpen={cycleOpen} type="cycle" groupId={classId} />
-            <SubmitEdtior isOpen={progressOpen} type="progress" groupId={classId} />
-            <SubmitEdtior />
+            <SubmitEdtior setOpen={setCycleOpen} isOpen={cycleOpen} type="cycle" groupId={classId} />
+            <SubmitEdtior setOpen={setProgressOpen} isOpen={progressOpen} type="progress" groupId={classId} />
             <Container>
                 {list.length ? (
-                    <FeedBack list={list} setList={setList} progress={progress} />
+                    <TableContainer>
+                        <FeedBack list={list} setList={setList} progress={progress} />
+                    </TableContainer>
                 ) : (
                     <NeResultContainer>
                         <NoResult>

@@ -1,141 +1,162 @@
-import { useEffect, useState } from 'react';
+/* eslint-disable prettier/prettier */
+/* eslint-disable no-unused-vars */
+
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from 'react';
 
 import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
-import { StudentRow } from '../../components';
-import {
-    StyledContainer,
-    StHeader,
-    StFilterColumn,
-    StFilterLabel,
-    StSerachBox,
-    StFilterBox,
-    StFilterContainer,
-    StFilterLeft,
-    StFilterRight,
-    SettingBtn,
-    StudentListContainer,
-    StHeaderContent,
-    StClass,
-    StLogo,
-    StHeaderTitle,
-    THead,
-    TRow,
-    TBody,
-    TableContainer,
-    Table,
-    TableCell,
-} from './style';
+import { Table, Row, TableHeader, Avatars, Selection } from '../../components';
+import { get } from '../../utils/request';
+import { success } from '../../utils/toaster';
+import { TableContainer, SelectionContainer } from './style';
 
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import SettingsIcon from '@mui/icons-material/Settings';
+function createData(studentName, groupId, mark, id) {
+    return { studentName, groupId, mark, id };
+}
 
-const StudentList = () => {
-    document.title = 'StudentList';
-    const createData = (studentName, studentID, groupName, role, reports, action) => {
-        return { studentName, studentID, groupName, role, reports, action };
-    };
-    const [rows] = useState([
-        createData('Quach Heng To Ni', 'SE161101', 'Group 1', 'Leader', 32, 'Remove'),
-        createData('Mai Thanh Phuong', 'SE161100', 'Group 1', 'Member', 32, 'Remove'),
-        createData('Tran Nhat Hoang', 'SE161102', 'Group 1', 'Member', 32, 'Remove'),
-        createData('Nguyen Thanh Kien', 'SE161103', 'Group 1', 'Member', 32, 'Remove'),
-        createData('Pham Trong Thanh', 'SE161104', 'Group 1', 'Member', 32, 'Remove'),
-        createData('Vuong Tran Dieu Anh', 'SE161105', 'Group 2', 'Member', 32, 'Remove'),
-        createData('Nguyen Dang Khoa', 'SE161106', 'Group 2', 'Member', 32, 'Remove'),
-        createData('Nguyen Duc Thien', 'SE161107', 'Group 2', 'Member', 32, 'Remove'),
-        createData('Duong Chi Khang', 'SE161108', 'Group 2', 'Member', 32, 'Remove'),
-    ]);
+function StudentList() {
+    const { classId } = useParams();
 
-    const API = process.env.REACT_APP_API_URL + `/classes/2/student`;
-    const header = {
-        Authorization: `${localStorage.getItem('token')}`,
+    const [rows, setRows] = useState({});
+
+    const [groups, setGroups] = useState([]);
+
+    const addGroup = (groupNumber) => {
+        setGroups((groups) => {
+            const _group = groups.filter((group) => group.groupNumber == groupNumber);
+            console.log(_group);
+            if (_group.length == 0) {
+                return groups.concat({
+                    groupNumber: groupNumber,
+                    value: groupNumber,
+                    content: 'Group' + groupNumber,
+                });
+            }
+            return groups;
+        });
     };
 
     useEffect(() => {
-        axios.get(API, { headers: header }).then((res) => {
-            const data = res.data;
-            console.log(data);
+        get(`/classes/${classId}/students`).then((response) => {
+            if (response.status == 200 && response.data.code == 200) {
+                const data = response.data.data;
+                data.forEach((student) => {
+                    addGroup(student.groupNumber);
+                    setRows((rows) => {
+                        return {
+                            ...rows,
+                            [student.id]: {
+                                group: student.groupNumber,
+                                name: student.name,
+                                ...student,
+                            },
+                        };
+                    });
+                });
+            }
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const [search, setSearch] = useState('');
+    const _delete = (studentId) => {
+        axios
+            .delete(process.env.REACT_APP_API_URL + `/classes/${classId}/students/${studentId}`, {
+                headers: { Authorization: `${localStorage.getItem('token')}` },
+            })
+            .then((res) => {
+                if (res.data.code == 200) {
+                    console.log(res.data.code);
+                    success('Delete success');
+                    setRows((rows) => {
+                        const _rows = { ...rows };
+                        delete _rows[studentId];
+                        return _rows;
+                    });
+                }
+            });
+    };
+
+    const _move = (selection, student) => {
+        console.log('_move');
+        axios
+            .put(
+                process.env.REACT_APP_API_URL +
+                `/classes/${classId}/students/${student.id}/groups/${selection.groupNumber}`, {
+                headers: { Authorization: `${localStorage.getItem('token')}` },
+            }
+            )
+            .then((res) => {
+                if (res.data.code == 200) {
+                    console.log(res.data.code);
+                    success('Move success');
+                    setRows((rows) => {
+                        const _row = { ...rows };
+                        _row[student.id].group = selection.groupNumber;
+                        return _row;
+                    });
+                }
+            });
+    };
 
     return (
-        <>
-            {/* <StyledModal></StyledModal> */}
-
-            <StyledContainer>
-                <StHeader>
-                    <StLogo />
-                    <StHeaderContent>
-                        <StHeaderTitle>Student List</StHeaderTitle>
-                        <StClass>SE1631</StClass>
-                    </StHeaderContent>
-                </StHeader>
-                <StFilterContainer>
-                    <StFilterLeft>
-                        <StFilterColumn>
-                            <StFilterLabel>Search Students</StFilterLabel>
-                            <StSerachBox
-                                type="text"
-                                value={search}
-                                placeholder="Search students by name..."
-                                onChange={(e) => setSearch(e.target.value)}
-                            />
-                        </StFilterColumn>
-                        <StFilterColumn>
-                            <StFilterLabel>Roles</StFilterLabel>
-                            <StFilterBox>
-                                All Roles
-                                <ExpandMoreIcon />
-                            </StFilterBox>
-                        </StFilterColumn>
-                        <StFilterColumn>
-                            <StFilterLabel>Group by</StFilterLabel>
-                            <StFilterBox>
-                                Group
-                                <ExpandMoreIcon />
-                            </StFilterBox>
-                        </StFilterColumn>
-                    </StFilterLeft>
-                    <StFilterRight>
-                        <StFilterColumn style={{ margin: 0 }}>
-                            <StFilterLabel style={{ color: '#fff' }}>G</StFilterLabel>
-                            <SettingBtn>
-                                <SettingsIcon />
-                                Save
-                            </SettingBtn>
-                        </StFilterColumn>
-                    </StFilterRight>
-                </StFilterContainer>
-
-                {/* Student List Table */}
-                <StudentListContainer>
-                    <TableContainer>
-                        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-                            <THead>
-                                <TRow>
-                                    <TableCell>Name</TableCell>
-                                    <TableCell>ID</TableCell>
-                                    <TableCell>Group</TableCell>
-                                    <TableCell>Role</TableCell>
-                                    <TableCell>Reports</TableCell>
-                                    <TableCell>Actions</TableCell>
-                                </TRow>
-                            </THead>
-                            <TBody>
-                                {rows.map((studentInfo, index) => (
-                                    <StudentRow key={index} {...studentInfo} />
-                                ))}
-                            </TBody>
-                        </Table>
-                    </TableContainer>
-                </StudentListContainer>
-            </StyledContainer>
-        </>
+        <TableContainer>
+            <div>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                    <tbody>
+                        <TableHeader>
+                            <td>Student Name</td>
+                            <td align="left">Group</td>
+                            <td>Remove</td>
+                            <td>Move</td>
+                        </TableHeader>
+                        {Object.keys(rows).map((studentId) => {
+                            return (
+                                <Row
+                                    key={studentId}
+                                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                >
+                                    <td component="th" scope="row">
+                                        {rows[studentId].name}
+                                    </td>
+                                    <td component="th" scope="row">
+                                        Group {rows[studentId].group}
+                                    </td>
+                                    <td
+                                        component="th"
+                                        scope="row"
+                                        onClick={() => _delete(studentId)}
+                                    >
+                                        remove
+                                    </td>
+                                    <td component="th" scope="row">
+                                        <SelectionContainer>
+                                            <Selection
+                                                onChange={(e) =>
+                                                    _move(e, rows[studentId])
+                                                }
+                                                options={groups
+                                                    .filter(
+                                                        (group) =>
+                                                            rows[studentId].groupNumber !=
+                                                            group.groupNumber
+                                                    )
+                                                    .sort((group1, group2) =>
+                                                        group1.groupNumber > group2.groupNumber
+                                                            ? 1
+                                                            : -1
+                                                    )}
+                                            />
+                                        </SelectionContainer>
+                                    </td>
+                                </Row>
+                            );
+                        })}
+                    </tbody>
+                </Table>
+            </div>
+        </TableContainer>
     );
-};
+}
 
 export default StudentList;

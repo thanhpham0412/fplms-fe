@@ -19,9 +19,12 @@ const Selection = ({
     arrow,
     icon,
     onClick,
+    color,
 }) => {
     const [picked, setPicked] = useState(placeholder || 'Pick an option');
     const [open, setOpen] = useState(false);
+
+    color = [COLOR.blue[0], COLOR.primary02];
 
     isLoad = isLoad || false;
     arrow = isBoolean(arrow) ? arrow : true;
@@ -43,6 +46,7 @@ const Selection = ({
             <StyledButton
                 disable={disable}
                 open={open}
+                color={color}
                 ref={ref}
                 isLoad={isLoad}
                 onClick={() => {

@@ -24,10 +24,14 @@ export const StyledHeader = styled.tr`
     color: #434343;
     margin: 0 1rem;
     font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: #fff;
 
     td {
         padding: 0 1rem;
-        border-bottom: 3px solid gray;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.3);
     }
 `;
 
@@ -46,7 +50,7 @@ export const StyledRow = styled.tr`
 
     td {
         padding: 0 1rem;
-        border-bottom: 3px solid gray;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.3);
     }
 
     :hover {

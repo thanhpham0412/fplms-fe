@@ -11,7 +11,7 @@ export const Container = styled.div`
     display: grid;
     grid-template-columns: 1fr 360px;
     gap: 24px;
-    padding-bottom: 24px;
+    overflow: auto;
 
     * {
         font-family: Lato;
@@ -49,8 +49,6 @@ export const StyledItem = styled.div`
 export const Content = styled.div``;
 
 export const SideBar = styled.div`
-    position: sticky;
-    top: 104px;
     height: fit-content;
     z-index: 9;
     display: flex;
@@ -533,4 +531,9 @@ export const ExitButton = styled.button`
     font-family: Lato;
     color: #fff;
     cursor: pointer;
+`;
+
+export const TableContainer = styled.div`
+    min-height: 0;
+    overflow: auto;
 `;
