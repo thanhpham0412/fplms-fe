@@ -28,10 +28,9 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import PeopleIcon from '@mui/icons-material/People';
 
 const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefresh }) => {
-    const { id } = data;
-
     const [isCreate, setCreate] = useState(false);
     const [disable, setDisable] = useState(false);
+    const [disableBtn, setDisableBtn] = useState(false);
     const [btnStyle, setBtnStyle] = useState(false);
     const [action, setAction] = useState();
     const [slot, setSlot] = useState(data.currentNumber);
@@ -43,7 +42,7 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
     const user = getTokenInfo();
 
     const TOKEN = localStorage.getItem('token');
-    const URL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups/${id}/join`;
+    const URL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups/${group.id}/join`;
     const URL_DELETE = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups/${group.id}`;
     const URL_DISABLE =
         process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups/${group.id}/disable`;
@@ -54,21 +53,30 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
     };
 
     useEffect(() => {
-        if (slot == group.memberQuantity || data.disable) {
+        if (
+            slot === group.memberQuantity ||
+            isJoined ||
+            currentDate > new Date(group.enrollTime) ||
+            data.disable
+        ) {
+            if (data.disable) {
+                setDisableBtn(true);
+            }
             setDisable(true);
-        } else if (isJoined || currentDate > new Date(group.enrollTime)) {
-            setDisable(true);
+        } else {
+            setDisable(false);
+            setDisableBtn(false);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [slot, isJoined]);
 
     const handleJoinBtn = async () => {
-        await axios.post(URL, { groupId: id }, { headers: header }).then((res) => {
+        await axios.post(URL, { headers: header }).then((res) => {
             if (res.data.code == 200) {
                 setJoin(true);
                 setBtnStyle(true);
                 setSlot((prev) => prev + 1);
-                navigate(`/class/${class_ID}/group/${id}`);
+                navigate(`/class/${class_ID}/group/${group.id}`);
             } else {
                 error(`An error occured!`);
             }
@@ -189,15 +197,15 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
                         <GroupBtn
                             onClick={() => {
                                 setIsOpen(true);
-                                if (disable) {
+                                if (disableBtn) {
                                     setAction(() => handleEnableGroup);
                                 } else {
                                     setAction(() => handleDisableGroup);
                                 }
                             }}
-                            style={{ backgroundColor: disable ? '#75D996' : '#F776A5' }}
+                            style={{ backgroundColor: disableBtn ? '#75D996' : '#F776A5' }}
                         >
-                            {disable ? 'Enable' : 'Disable'}
+                            {disableBtn ? 'Enable' : 'Disable'}
                         </GroupBtn>
                     </Row>
                 ) : (

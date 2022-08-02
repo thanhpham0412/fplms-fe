@@ -40,7 +40,6 @@ export const Wrapper = styled.div`
 
     animation: ${({ to, from }) => scaleIn(to, from)} 1.5s ease-in-out forwards;
     color: ${COLOR.primary03};
-    min-width: 280px;
 `;
 
 export const Container = styled.div`
@@ -51,7 +50,7 @@ export const Container = styled.div`
     flex-direction: column;
     padding: 10px 15px;
     gap: 5px;
-    min-width: 250px;
+    min-width: fit-content;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 `;
 
@@ -59,20 +58,26 @@ export const SemsterCode = styled.h1`
     margin: 0;
     font-size: 1.2rem;
     font-weight: 700;
+    width: fit-content;
 `;
 
 export const InputDate = styled.div`
     display: flex;
     justify-content: space-between;
-    width: 80%;
     font-size: 1rem;
     margin-bottom: 10px;
+    gap: 10px;
+    width: 100%;
     input[type='date'] {
         cursor: pointer;
         border: 1px solid ${COLOR.primary03};
         border-radius: 4px;
         font-family: 'Lato';
         color: ${COLOR.primary03};
+    }
+    span {
+        white-space: nowrap;
+        width: 35%;
     }
 `;
 
