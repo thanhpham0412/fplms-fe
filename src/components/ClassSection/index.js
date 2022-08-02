@@ -145,7 +145,7 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode, email,
                     transition: { duration: 0.5, ease: bezier },
                 }}
             >
-                {name && (
+                {name && user.role === 'Student' && (
                     <span className="view-mark" onClick={() => navigate(`/mark-table/${id}`)}>
                         Mark Table {/* <ArrowRightAltIcon />{' '} */}
                     </span>
