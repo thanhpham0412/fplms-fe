@@ -28,7 +28,6 @@ const HLogo = styled.div`
 const HIcons = styled.div`
     display: flex;
     gap: 1rem;
-    padding: 0 1rem;
     justify-content: space-between;
 `;
 
@@ -54,7 +53,6 @@ export const BtnContainer = styled.div`
         background-color: #dde6fe;
         border-radius: 50%;
         padding: 8px;
-        margin: 0 10px;
     }
 `;
 

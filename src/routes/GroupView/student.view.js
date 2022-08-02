@@ -478,6 +478,12 @@ const StudentView = ({ groupId, classId }) => {
         setTopicState(EditorState.createWithContent(raw));
     };
 
+    const unPickError = () => {
+        if (!isPicked) {
+            error('Your leader hasn\'t picked a project yet');
+        }
+    }
+
     const avts = ['TP', 'NK', 'TN', 'TT', 'NH'];
 
     return (
@@ -535,6 +541,7 @@ const StudentView = ({ groupId, classId }) => {
                         fixed
                         reset={true}
                         onChange={onChange}
+                        onClick={unPickError}
                     />
                     <Calendar onChange={calendarChange} />
                     <StyledH4>

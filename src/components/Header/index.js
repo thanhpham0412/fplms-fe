@@ -167,16 +167,14 @@ const Header = () => {
                         <NotificationHeader>Notification</NotificationHeader>
                         <NotificationBody>
                             {list.map((noti) => (
-                                <>
-                                    <NotiContainer key={noti.id}>
-                                        {/* <InboxIcon /> */}
-                                        <NotiInfo>
-                                            <small>{noti.userEmail}</small>
-                                            <div>{noti.title}</div>
-                                            <small>{moment(noti.createAt).fromNow()}</small>
-                                        </NotiInfo>
-                                    </NotiContainer>
-                                </>
+                                <NotiContainer key={noti.id}>
+                                    {/* <InboxIcon /> */}
+                                    <NotiInfo>
+                                        <small>{noti.userEmail}</small>
+                                        <div>{noti.title}</div>
+                                        <small>{moment(noti.createAt).fromNow()}</small>
+                                    </NotiInfo>
+                                </NotiContainer>
                             ))}
                         </NotificationBody>
                     </NotificationContainer>

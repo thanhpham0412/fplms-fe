@@ -18,6 +18,7 @@ const Selection = ({
     isLoad,
     arrow,
     icon,
+    onClick,
 }) => {
     const [picked, setPicked] = useState(placeholder || 'Pick an option');
     const [open, setOpen] = useState(false);
@@ -38,7 +39,7 @@ const Selection = ({
     });
 
     return (
-        <Container data-target="container">
+        <Container data-target="container" onClick={onClick && onClick}>
             <StyledButton
                 disable={disable}
                 open={open}
