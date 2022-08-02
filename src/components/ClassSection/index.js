@@ -4,16 +4,15 @@
 import { useState, useRef } from 'react';
 
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-
 import { AnimatePresence, motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 import { useClickOutside } from '../../hooks';
 import { getTokenInfo } from '../../utils/account';
 import { error } from '../../utils/toaster';
+import { isBoolean } from '../../utils/valid';
 import EditClassForm from '../EditClassForm';
 import Skeleton from '../Skeleton';
-import { isBoolean } from '../../utils/valid';
 import {
     Container,
     Title,
@@ -29,6 +28,7 @@ import {
     Back,
 } from './style';
 
+import ArrowRightAltIcon from '@mui/icons-material/ArrowRightAlt';
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 
 const bezier = [0.4, 0, 0.2, 1];
@@ -44,7 +44,7 @@ const Motion = ({ children, delay }) => (
     >
         {children}
     </motion.div>
-)
+);
 
 const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode, email, enrollKey }) => {
     const [open, setOpen] = useState(false);
@@ -145,12 +145,17 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode, email,
                     transition: { duration: 0.5, ease: bezier },
                 }}
             >
+                <span className="view-mark" onClick={() => navigate(`/mark-table/${id}`)}>
+                    Mark Table {/* <ArrowRightAltIcon />{' '} */}
+                </span>
                 <Row>
-                    {
-                        subjectId ? (
-                            <Motion><DetailText>{subjectId}</DetailText></Motion>
-                        ) : <Skeleton style={{ height: 26 }} />
-                    }
+                    {subjectId ? (
+                        <Motion>
+                            <DetailText>{subjectId} </DetailText>
+                        </Motion>
+                    ) : (
+                        <Skeleton style={{ height: 26 }} />
+                    )}
                 </Row>
                 <MiniDetails>
                     <Row>
@@ -160,43 +165,74 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode, email,
                     </Row>
                     {lecture != undefined && (
                         <Row>
-                            <Email>{lecture ? <Motion delay={delay++}>{lecture}</Motion> : <Skeleton />}</Email>
+                            <Email>
+                                {lecture ? (
+                                    <Motion delay={delay++}>{lecture}</Motion>
+                                ) : (
+                                    <Skeleton />
+                                )}
+                            </Email>
                         </Row>
                     )}
                     {email != undefined && (
                         <Row>
-                            <Email>{lecture ? <Motion delay={delay++}>{email}</Motion> : <Skeleton />}</Email>
+                            <Email>
+                                {lecture ? <Motion delay={delay++}>{email}</Motion> : <Skeleton />}
+                            </Email>
                         </Row>
                     )}
                     {enrollKey != undefined && (
                         <Row>
                             <Email>
                                 <Motion delay={delay++}>
-                                    Enroll key: <input onFocus={(e) => { e.target.type = 'text' }} readOnly type="password" defaultValue={enrollKey.toString()} onBlur={(e) => e.target.type = 'password'} />
+                                    Enroll key:{' '}
+                                    <input
+                                        onFocus={(e) => {
+                                            e.target.type = 'text';
+                                        }}
+                                        readOnly
+                                        type="password"
+                                        defaultValue={enrollKey.toString()}
+                                        onBlur={(e) => (e.target.type = 'password')}
+                                    />
                                 </Motion>
                             </Email>
                         </Row>
                     )}
                     <Row>
-                        <Email>{semesterCode ? <Motion delay={delay++}>{semesterCode}</Motion> : <Skeleton />}</Email>
+                        <Email>
+                            {semesterCode ? (
+                                <Motion delay={delay++}>{semesterCode}</Motion>
+                            ) : (
+                                <Skeleton />
+                            )}
+                        </Email>
                     </Row>
                 </MiniDetails>
                 <Row onClick={openEnroll} ref={buttonRef}>
-                    {
-                        (isBoolean(join) || user.role == 'Lecturer') && name ? (
-                            <StyledButton open={open} onClick={joinClass}>
-                                <Front onClick={focus} isEnroll={join}>
-                                    {user.role == 'Student' ? (join ? 'OPEN' : 'ENROLL') : 'GO TO CLASS'}
-                                </Front>
-                                <Back>
-                                    <StyledInput ref={inputRef} type="password" placeholder="Enroll Key" />
-                                    <JoinButton onClick={enroll}>
-                                        <DoubleArrowIcon />
-                                    </JoinButton>
-                                </Back>
-                            </StyledButton>
-                        ) : <Skeleton style={{ height: 42, width: '100%' }} />
-                    }
+                    {(isBoolean(join) || user.role == 'Lecturer') && name ? (
+                        <StyledButton open={open} onClick={joinClass}>
+                            <Front onClick={focus} isEnroll={join}>
+                                {user.role == 'Student'
+                                    ? join
+                                        ? 'OPEN'
+                                        : 'ENROLL'
+                                    : 'GO TO CLASS'}
+                            </Front>
+                            <Back>
+                                <StyledInput
+                                    ref={inputRef}
+                                    type="password"
+                                    placeholder="Enroll Key"
+                                />
+                                <JoinButton onClick={enroll}>
+                                    <DoubleArrowIcon />
+                                </JoinButton>
+                            </Back>
+                        </StyledButton>
+                    ) : (
+                        <Skeleton style={{ height: 42, width: '100%' }} />
+                    )}
                 </Row>
             </Container>
         </AnimatePresence>

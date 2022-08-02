@@ -44,23 +44,26 @@ const Login = () => {
                 const data = res.data;
                 if (data.isAuthSuccessful) {
                     axios
-                        .get(`${process.env.REACT_APP_API_URL}/auth`, {
-                            Authorization: data.token,
+                        .get(`${process.env.REACT_APP_API_URL}/valid`, {
+                            headers: {
+                                Authorization: data.token,
+                            },
                         })
                         .then((res) => {
+                            auth.setAuth(true);
+                            loadContext.setActive(false);
+                            localStorage.setItem('token', data.token);
+
+                            localStorage.setItem('user', JSON.stringify(response.profileObj));
                             if (res.data.code === 200) {
+                                localStorage.setItem('isAdmin', true);
                                 auth.setIsAdmin(true);
                             } else {
                                 auth.setIsAdmin(false);
                             }
-                        })
-                        .then(() => {
-                            auth.setAuth(true);
-                            loadContext.setActive(false);
-                            localStorage.setItem('token', data.token);
-                            localStorage.setItem('user', JSON.stringify(response.profileObj));
                             navigate('/class');
-                        });
+                        })
+                        .catch((err) => error(err));
                 }
             })
             .catch(() => {

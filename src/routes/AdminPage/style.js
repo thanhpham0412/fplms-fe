@@ -194,17 +194,13 @@ export const SemesterCard = styled.div`
     flex-direction: column;
     gap: 10px;
     border-radius: 4px;
-    overflow: hidden;
     min-height: 120px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     padding: 15px;
     position: relative;
-    cursor: pointer;
     transition: transform 200ms ease-in-out;
     color: ${COLOR.primary03};
-    :hover {
-        transform: scale(1.05);
-    }
+
     .edit-icon {
         position: absolute;
         top: 15px;

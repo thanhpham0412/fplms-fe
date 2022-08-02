@@ -23,8 +23,11 @@ import {
     SettingLabel,
     SettingTitle,
     Wrapper,
+    DropdownItem,
 } from './style';
 
+import { faArrowDownLong, faArrowRightArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -47,6 +50,8 @@ const AdminPage = () => {
     const [show, setShow] = useState(true);
     const [isAddingSubject, setIsAdding] = useState(false);
     const [showSemsterForm, setShowSemesterForm] = useState(false);
+    const [showTransfer, setShowTransfer] = useState(false);
+    const [newSemesterCode, setNewSemesterCode] = useState();
 
     const [semester, setSemester] = useState();
 
@@ -98,6 +103,7 @@ const AdminPage = () => {
             }, 1000);
         }
     };
+
     const createSemester = () => {
         setLoadingAdd(true);
         if (startDate > endDate) {
@@ -126,6 +132,8 @@ const AdminPage = () => {
                     setSemesters((prev) =>
                         prev.concat([
                             {
+                                value: semesterCode,
+                                content: semesterCode,
                                 code: semesterCode,
                                 endDate: `${endDate.getFullYear()}-${(
                                     '0' +
@@ -147,6 +155,22 @@ const AdminPage = () => {
                     error(`${res.data.message}`);
                     setLoadingAdd(false);
                 }
+            });
+    };
+
+    const transferSemester = (oldSemesterCode) => {
+        axios
+            .put(
+                `${process.env.REACT_APP_API_URL}/semesters/changeSemester/${oldSemesterCode}/${newSemesterCode.value}`,
+                {},
+                {
+                    headers: {
+                        Authorization: `${localStorage.getItem('token')}`,
+                    },
+                }
+            )
+            .then((res) => {
+                console.log(res);
             });
     };
 
@@ -241,51 +265,6 @@ const AdminPage = () => {
         }
     };
 
-    useEffect(() => {
-        const fetchSemesters = async () => {
-            semesterRef.current.classList.add('active');
-            try {
-                const res = await axios.get(`${process.env.REACT_APP_API_URL}/semesters`, {
-                    headers: {
-                        Authorization: `${localStorage.getItem('token')}`,
-                    },
-                });
-
-                if (res.data.code === 200) {
-                    setSemesters(res.data.data);
-                    setLoading(false);
-                }
-            } catch (err) {
-                error(err);
-            }
-        };
-
-        const fetchSubjects = async () => {
-            try {
-                const res = await axios.get(`${process.env.REACT_APP_API_URL}/subjects`, {
-                    headers: {
-                        Authorization: `${localStorage.getItem('token')}`,
-                    },
-                });
-
-                if (res.data.code === 200) {
-                    const datas = await res.data.data.map((item) => ({
-                        value: item.id,
-                        content: item.name,
-                    }));
-                    setSubjects(datas);
-                    setLoading(false);
-                }
-            } catch (err) {
-                error(err);
-            }
-        };
-
-        fetchSemesters();
-        fetchSubjects();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     const renderSemesterSetting = () => {
         return (
             <>
@@ -307,17 +286,48 @@ const AdminPage = () => {
                                             <MoreVertIcon />
                                         </button>
                                         <DropdownMenu className="dropdown-menu">
-                                            <EditIcon onClick={() => getPos(item, index)} />
+                                            <DropdownItem onClick={() => getPos(item, index)}>
+                                                <EditIcon />
+                                            </DropdownItem>
+                                            <DropdownItem onClick={() => setShowTransfer(true)}>
+                                                <FontAwesomeIcon
+                                                    style={{ fontSize: '20px' }}
+                                                    icon={faArrowRightArrowLeft}
+                                                />
+                                            </DropdownItem>
                                         </DropdownMenu>
                                     </Dropdown>
                                 </CardTitle>
+                                {showTransfer ? (
+                                    <>
+                                        <FontAwesomeIcon
+                                            style={{
+                                                alignSelf: 'flex-start',
+                                                cursor: 'pointer',
+                                            }}
+                                            icon={faArrowDownLong}
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                transferSemester(item.code);
+                                            }}
+                                        />
 
-                                <InputDate>
-                                    Start Date: <span>{item.startDate}</span>
-                                </InputDate>
-                                <InputDate>
-                                    End Date: <span>{item.endDate}</span>
-                                </InputDate>
+                                        <Selection
+                                            options={semesters}
+                                            placeholder={'Semester'}
+                                            onChange={setNewSemesterCode}
+                                        />
+                                    </>
+                                ) : (
+                                    <>
+                                        <InputDate>
+                                            Start Date: <span>{item.startDate}</span>
+                                        </InputDate>
+                                        <InputDate>
+                                            End Date: <span>{item.endDate}</span>
+                                        </InputDate>{' '}
+                                    </>
+                                )}
                             </SemesterCard>
                         );
                     })}
@@ -347,7 +357,6 @@ const AdminPage = () => {
                                                     value={startDate || ''}
                                                     onChange={(newValue) => {
                                                         setStartDate(newValue);
-                                                        console.log(newValue);
                                                     }}
                                                     renderInput={(params) => (
                                                         <TextField {...params} />
@@ -449,6 +458,52 @@ const AdminPage = () => {
             />
         );
     };
+
+    useEffect(() => {
+        const fetchSemesters = async () => {
+            semesterRef.current.classList.add('active');
+            try {
+                const res = await axios.get(`${process.env.REACT_APP_API_URL}/semesters`, {
+                    headers: {
+                        Authorization: `${localStorage.getItem('token')}`,
+                    },
+                });
+
+                if (res.data.code === 200) {
+                    const datas = res.data.data.map((item) => ({
+                        ...item,
+                        value: item.code,
+                        content: item.code,
+                    }));
+                    setSemesters(datas);
+                    setLoading(false);
+                }
+            } catch (err) {
+                error(err);
+            }
+        };
+
+        const fetchSubjects = async () => {
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/subjects`, {
+                headers: {
+                    Authorization: `${localStorage.getItem('token')}`,
+                },
+            });
+
+            if (res.data.code === 200) {
+                const datas = await res.data.data.map((item) => ({
+                    value: item.id,
+                    content: item.name,
+                }));
+                setSubjects(datas);
+                setLoading(false);
+            }
+        };
+
+        fetchSemesters();
+        fetchSubjects();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <>

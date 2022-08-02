@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 
@@ -60,6 +60,7 @@ const Menu = ({ menu, level, expand, setShow }) => {
 
 const SideBar = () => {
     const auth = useContext(AuthContext);
+    console.log(auth.isAdmin);
     const [menu, setMenu] = useState([
         {
             title: 'Home',
@@ -105,18 +106,21 @@ const SideBar = () => {
             submenu: [],
         },
     ]);
-    if (auth.isAdmin) {
-        setMenu((prev) =>
-            prev.concat([
-                {
-                    title: 'Settings',
-                    path: '/admin',
-                    icon: <SettingsIcon />,
-                    submenu: [],
-                },
-            ])
-        );
-    }
+    useEffect(() => {
+        if (auth.isAdmin) {
+            setMenu((prev) =>
+                prev.concat([
+                    {
+                        title: 'Settings',
+                        path: '/admin',
+                        icon: <SettingsIcon />,
+                        submenu: [],
+                    },
+                ])
+            );
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const setShow = (target, status = false) => {
         const switchMenu = (sections) => {

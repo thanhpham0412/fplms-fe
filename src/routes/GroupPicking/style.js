@@ -92,9 +92,11 @@ const CreateGroupBtn = styled.button`
     background-color: ${COLOR.blue[1]};
     border: none;
     border-radius: 4px;
-    padding: 12px 35px;
+    padding: 10px 20px;
+    margin-left: 5px;
     :hover {
         cursor: pointer;
+        background-color: ${COLOR.blue[2]};
     }
 `;
 
