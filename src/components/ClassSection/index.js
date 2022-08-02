@@ -145,9 +145,11 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode, email,
                     transition: { duration: 0.5, ease: bezier },
                 }}
             >
-                <span className="view-mark" onClick={() => navigate(`/mark-table/${id}`)}>
-                    Mark Table {/* <ArrowRightAltIcon />{' '} */}
-                </span>
+                {name && (
+                    <span className="view-mark" onClick={() => navigate(`/mark-table/${id}`)}>
+                        Mark Table {/* <ArrowRightAltIcon />{' '} */}
+                    </span>
+                )}
                 <Row>
                     {subjectId ? (
                         <Motion>
