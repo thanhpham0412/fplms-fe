@@ -172,7 +172,7 @@ export const JoinButton = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
+    cursor: ${({ onLoad }) => (onLoad ? 'not-allowed' : 'pointer')};
     transition: all 0.5s;
     svg {
         fill: #fff;

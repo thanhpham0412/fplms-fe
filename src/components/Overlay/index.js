@@ -55,14 +55,13 @@ const Overlay = ({
             {isOpen && (
                 <Container
                     ref={node}
-                    initial={{ background: `rgba(0, 0, 0, 0)`, backdropFilter: `blur(${blur}px)` }}
+                    initial={{ background: `rgba(0, 0, 0, 0)` }}
                     animate={{
                         background: `rgba(0, 0, 0, ${dark})`,
                         transition: { duration: duration, ease: bezier, delay: inDelay },
                     }}
                     exit={{
                         background: `rgba(0, 0, 0, 0)`,
-                        backdropFilter: 'blur(0px)',
                         transition: { duration: duration, ease: bezier, delay: outDelay },
                     }}
                 >
@@ -77,15 +76,11 @@ const Overlay = ({
                             opacity: 1,
                             transform: 'translateY(0px)',
                             transition: { duration: duration, ease: bezier, delay: inDelay },
-                            width: fullFill ? '100%' : 'fit-content',
-                            height: fullFill ? '100%' : 'fit-content',
                         }}
                         exit={{
                             opacity: 0,
                             transform: 'translateY(40px)',
                             transition: { duration: duration, ease: bezier, delay: outDelay },
-                            width: fullFill ? '100%' : 'fit-content',
-                            height: fullFill ? '100%' : 'fit-content',
                         }}
                     >
                         {children}

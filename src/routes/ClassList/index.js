@@ -5,11 +5,11 @@ import { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
-import { ClassSection as Section, CreateClassForm, Button, Selection, Overlay } from '../../components';
+import { ClassSection as Section, CreateClassForm, Button, Selection, Overlay, NoResult } from '../../components';
 import { getTokenInfo } from '../../utils/account';
 import { get } from '../../utils/request';
 import { error } from '../../utils/toaster';
-import { Container, StyledList, StyledInput, ToolBar, SelectionContainer, SearchBar } from './style';
+import { Container, StyledList, StyledInput, ToolBar, SelectionContainer, SearchBar, NoResultContainer } from './style';
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
@@ -133,26 +133,36 @@ const ClassList = () => {
                     </SelectionContainer>
                     {user.role == 'Lecturer' && <Button onClick={open} icon={<AddCircleIcon />}></Button>}
                 </ToolBar>
-                <StyledList>
-                    {
-                        classList
-                            .filter((item) => item.name.toLowerCase().includes(filter.name))
-                            .filter((item) => filter.subjectId != -1 ? item.subjectId == filter.subjectId : true)
-                            .map((item) => (
-                                <Section
-                                    key={item.id}
-                                    name={item.name}
-                                    lecture={item.lecturerDto && item.lecturerDto.name}
-                                    enrollKey={item && item.enrollKey}
-                                    email={item.lecturerDto && item.lecturerDto.email}
-                                    subjectId={subjects[item.subjectId]}
-                                    semesterCode={item.semesterCode}
-                                    id={item.id}
-                                    join={item.join}
-                                />
-                            ))
-                    }
-                </StyledList>
+                {
+                    (classList && classList.length) ? (
+                        <StyledList>
+                            {
+                                classList
+                                    .filter((item) => item.name.toLowerCase().includes(filter.name))
+                                    .filter((item) => filter.subjectId != -1 ? item.subjectId == filter.subjectId : true)
+                                    .map((item) => (
+                                        <Section
+                                            key={item.id}
+                                            name={item.name}
+                                            lecture={item.lecturerDto && item.lecturerDto.name}
+                                            enrollKey={item && item.enrollKey}
+                                            email={item.lecturerDto && item.lecturerDto.email}
+                                            subjectId={subjects[item.subjectId]}
+                                            semesterCode={item.semesterCode}
+                                            id={item.id}
+                                            join={item.join}
+                                        />
+                                    ))
+                            }
+                        </StyledList>
+                    ) : (
+                        <NoResultContainer>
+                            <NoResult>
+                                <h4>There is no class for now</h4>
+                            </NoResult>
+                        </NoResultContainer>
+                    )
+                }
             </Container>
         </>
     );

@@ -93,3 +93,13 @@ export const SelectionContainer = styled.div`
         min-width: 200px;
     }
 `;
+
+export const NoResultContainer = styled.div`
+    width: 100%;
+    background: #fff;
+    display: flex;
+    justify-content: center;
+    flex: 1 0 auto;
+    align-items: center;
+    height: 100%;
+`;

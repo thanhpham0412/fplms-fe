@@ -49,7 +49,7 @@ export const EditorSideBar = styled.div`
 export const Header = styled.div`
     width: 100%;
     height: 100%;
-    background: #fff;
+    background: ${({ headColor }) => headColor || '#fff'};
     box-sizing: border-box;
     display: none;
     padding: 0 1rem;
@@ -66,6 +66,7 @@ export const BackBtn = styled.div`
     align-items: center;
     gap: 1rem;
     font-weight: bold;
+    color: #fff;
     cursor: pointer;
 
     :hover {

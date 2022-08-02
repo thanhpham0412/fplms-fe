@@ -1,22 +1,18 @@
 import styled from 'styled-components';
 
-export const StyledTable = styled.div`
-    display: flex;
-    gap: 0.5rem;
-    min-width: 100%;
+export const StyledTable = styled.table`
+    width: 100%;
     overflow: auto;
-    flex-direction: column;
+    height: fit-content;
 
     [data-target='row'] {
-        grid-template-columns: ${({ columns }) => columns};
     }
 `;
 
-export const StyledHeader = styled.div`
+export const StyledHeader = styled.tr`
     font-weight: bold;
-    display: grid;
-    align-items: center;
     gap: 1rem;
+    padding: 1rem;
     box-sizing: border-box;
     padding: 1.5rem;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
@@ -26,13 +22,13 @@ export const StyledHeader = styled.div`
     background: #fff;
 `;
 
-export const StyledRow = styled.div`
+export const StyledRow = styled.tr`
     box-sizing: border-box;
     font-size: 1rem;
     padding: 0rem 1.5rem;
     border-radius: 2px;
-    display: grid;
     align-items: center;
+    max-height: 60px;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
     gap: 1rem;
     height: fit-content;

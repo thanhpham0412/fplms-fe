@@ -1,5 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 /* eslint-disable no-unused-vars */
-import { useState, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 
 import {
     Editor,
@@ -60,30 +62,32 @@ const DraftEditor = ({
     //     }
     // };
 
-    const onChange = (editorState) => {
-        const blocks = convertToRaw(editorState.getCurrentContent());
-        const selectionState = editorState.getSelection();
-        const anchorKey = selectionState.getAnchorKey();
-        const start = selectionState.getStartOffset();
-        const end = selectionState.getEndOffset();
-        const offset = getVisibleSelectionRect(window);
+    const onChange = useCallback(
+        (editorState) => {
+            const selectionState = editorState.getSelection();
+            const anchorKey = selectionState.getAnchorKey();
+            const start = selectionState.getStartOffset();
+            const end = selectionState.getEndOffset();
+            const offset = getVisibleSelectionRect(window);
 
-        if (anchorKey && start != end) {
-            setToolBar({
-                ...toolBar,
-                top: offset?.top,
-                left: offset?.left + offset?.width / 2,
-                isOpen: true,
-            });
-        } else {
-            setToolBar({
-                ...toolBar,
-                isOpen: false,
-            });
-        }
-        // checkSave();
-        if (setEditorState) setEditorState(editorState);
-    };
+            if (anchorKey && start != end) {
+                setToolBar({
+                    ...toolBar,
+                    top: offset?.top,
+                    left: offset?.left + offset?.width / 2,
+                    isOpen: true,
+                });
+            } else {
+                setToolBar({
+                    ...toolBar,
+                    isOpen: false,
+                });
+            }
+            // checkSave();
+            if (setEditorState) setEditorState(editorState);
+        },
+        [editorState]
+    );
 
     const handleKeyCommand = (command, editorState) => {
         const newState = RichUtils.handleKeyCommand(editorState, command);

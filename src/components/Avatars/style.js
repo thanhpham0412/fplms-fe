@@ -17,7 +17,7 @@ export const Avatar = styled.li`
     img,
     span {
         background: ${({ color }) => color || '#596376'};
-        border: 2px solid #fff;
+        border: 2px solid ${({ outline }) => outline || '#fff'};
         border-radius: 100px 100px 100px 100px;
         color: #ffffff;
         display: block;

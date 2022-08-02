@@ -22,7 +22,7 @@ import {
 } from '../../components';
 import { DraftRenderer } from '../../components/DraftEditor';
 import { get, post, put } from '../../utils/request';
-import { stringToColour } from '../../utils/style';
+import { COLOR, stringToColour } from '../../utils/style';
 import { error, success } from '../../utils/toaster';
 import {
     Container,
@@ -69,14 +69,161 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import KeyboardBackspaceIcon from '@mui/icons-material/KeyboardBackspace';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 
+const TextEditor = ({ report, close }) => {
+    const [editorState, setEditorState] = useState(EditorState.createEmpty());
+    const [viewState, setViewState] = useState(EditorState.createEmpty());
+    const [mark, setMark] = useState(0);
+    const [title, setTitle] = useState('');
+
+    useEffect(() => {
+        if (report) {
+            setEditorState(
+                report.content
+                    ? EditorState.createWithContent(convertFromRaw(JSON.parse(report.feedback)))
+                    : EditorState.createEmpty()
+            );
+            setViewState(
+                report.content
+                    ? EditorState.createWithContent(convertFromRaw(JSON.parse(report.content)))
+                    : EditorState.createEmpty()
+            );
+            setTitle(report.title || '');
+        }
+    }, [report]);
+
+    const onMarkChange = (e) => {
+        setMark(e.target.value);
+    };
+
+    const sendFeedback = () => {
+        const API =
+            report.type == 'cycle' ? '/cycle-reports/feedback' : '/progress-reports/feedback';
+        put(API, {
+            feedback: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+            groupId: parseInt(report.groupId),
+            mark: parseInt(mark),
+            reportId: parseInt(report.id),
+        })
+            .then((res) => {
+                if (res.data.code == 200) {
+                    success('Feedback success');
+                } else {
+                    error('Feedback error');
+                }
+            })
+            .catch(() => {
+                error('An error occured while processing feedback');
+            });
+    };
+
+    return (
+        <Overlay isOpen={report.isOpen} fullFill={true}>
+            <AdvanceEditor
+                closeFn={close}
+                editorState={viewState}
+                setEditorState={setViewState}
+                avatars={['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']}
+                readOnly
+                headColor={report && report.type == 'cycle' ? COLOR.blue[0] : COLOR.green[0]}
+            >
+                <GoalContainer>
+                    <GoalDes>Report Title</GoalDes>
+                    <span>{report.title}</span>
+                </GoalContainer>
+
+                {report.type == 'cycle' && (
+                    <>
+                        <FeedBackContainer>
+                            {/* <GoalDes>Reports Stats:</GoalDes>
+                            <StatusBar progress={progress} />
+                            <GoalCounter>
+                                <span>{progress[0]}</span> / {progress[1]}
+                            </GoalCounter> */}
+                            <GoalDes>Reports Feedback:</GoalDes>
+                            <FeedBackView>
+                                <DraftEditor
+                                    id={`feedback_${report.groupId}_${report.type}`}
+                                    placeholder="Write your feedback..."
+                                    editorState={editorState}
+                                    setEditorState={setEditorState}
+                                />
+                            </FeedBackView>
+                            <GoalCounter>Cycle Reports need to be feedback</GoalCounter>
+                            <GoalDes>Reports Score:</GoalDes>
+                            <ScoreBar placeholder="Score" value={mark} onChange={onMarkChange} />
+                            <GoalCounter>Cycle Reports need to be scored</GoalCounter>
+                        </FeedBackContainer>
+                    </>
+                )}
+
+                <SendBtn onClick={sendFeedback}>Send Feedback</SendBtn>
+            </AdvanceEditor>
+        </Overlay>
+    );
+};
+
+const TopicPickedView = ({ list, setList }) => {
+    const open = (report) => {
+        setList((list) => {
+            let _list = [...list];
+            _list.forEach((item, index) => {
+                if (item.displayId == report.displayId) {
+                    _list[index].isOpen = true;
+                    return _list;
+                }
+            });
+            return _list;
+        });
+    };
+
+    const close = (report) => {
+        setList((list) => {
+            let _list = [...list];
+            _list.forEach((item, index) => {
+                if (item.displayId == report.displayId) {
+                    _list[index].isOpen = false;
+                    return _list;
+                }
+            });
+            return _list;
+        });
+    };
+
+    return (
+        <Table columns="200px 1fr 200px 200px">
+            <Row>
+                <td>Type</td>
+                <td>Report Title</td>
+                <td>Report Time</td>
+                <td>Write by</td>
+            </Row>
+            {list &&
+                list.map((item) => (
+                    <React.Fragment key={item.displayId}>
+                        <TextEditor report={item} close={() => close(item)} />
+                        <Row feedback={item.type} onClick={() => open(item)}>
+                            <td>
+                                <Type type={item.type}>
+                                    {item.type == 'cycle' ? 'Cycle Report' : 'Progress Report'}
+                                </Type>
+                            </td>
+                            <td>
+                                <Title>{item.title}</Title>
+                            </td>
+                            <td>
+                                <Title>{item.reportTime}</Title>
+                            </td>
+                            <td>
+                                <Avatars list={['TP', 'NK', 'TN', 'TT', 'NH']} />
+                            </td>
+                        </Row>
+                    </React.Fragment>
+                ))}
+        </Table>
+    );
+};
+
 const LecturerView = ({ groupId, classId }) => {
-    const [query, setQuery] = useState({
-        viewState: EditorState.createEmpty(),
-        editorState: EditorState.createEmpty(),
-        cycleNumber: 0,
-        mark: 0,
-        title: '',
-    });
     const [events, setEvents] = useState([
         {
             icon: null,
@@ -96,66 +243,6 @@ const LecturerView = ({ groupId, classId }) => {
     });
     const [progress, setProgress] = useState([1, 10]);
     const [list, setList] = useState([]);
-    const [isDraftOpen, setDraft] = useState(false);
-    const edtior1 = useRef();
-    const edtior2 = useRef();
-
-    const setViewState = (state) => {
-        setQuery((query) => ({
-            ...query,
-            viewState: state,
-        }));
-    };
-
-    const setEditorState = (state) => {
-        setQuery((query) => ({
-            ...query,
-            editorState: state,
-        }));
-    };
-
-    const showDraft = (item) => {
-        console.log(item);
-        setDraft(() => {
-            setViewState(EditorState.createWithContent(convertFromRaw(JSON.parse(item.content))));
-            item.feedback &&
-                setEditorState(
-                    EditorState.createWithContent(convertFromRaw(JSON.parse(item.feedback)))
-                );
-            return true;
-        });
-        setQuery({
-            ...query,
-            ...item,
-            reportId: parseInt(item.id),
-            type: item.type,
-            title: item.title,
-        });
-    };
-
-    const TopicPickedView = React.memo(() => {
-        return (
-            <Table columns="200px 1fr 200px 200px">
-                <TableHeader>
-                    <div>Type</div>
-                    <div>Report Title</div>
-                    <div>Report Time</div>
-                    <div>Write by</div>
-                </TableHeader>
-                {list &&
-                    list.map((item, index) => (
-                        <Row feedback={item.type} key={index} onClick={() => showDraft(item)}>
-                            <Type type={item.type}>
-                                {item.type == 'cycle' ? 'Cycle Report' : 'Progress Report'}
-                            </Type>
-                            <Title>{item.title}</Title>
-                            <Title>{item.reportTime}</Title>
-                            <Avatars list={['TP', 'NK', 'TN', 'TT', 'NH']} />
-                        </Row>
-                    ))}
-            </Table>
-        );
-    });
 
     const getReports = () => {
         get('/cycle-reports', { groupId }).then((res) => {
@@ -165,7 +252,8 @@ const LecturerView = ({ groupId, classId }) => {
                         res.data.data.map((data) => ({
                             ...data,
                             type: 'cycle',
-                            id: 'cycle' + data.id,
+                            displayId: 'cycle' + data.id,
+                            isOpen: false,
                         }))
                     )
                 );
@@ -178,7 +266,8 @@ const LecturerView = ({ groupId, classId }) => {
                         res.data.data.map((data) => ({
                             ...data,
                             type: 'progress',
-                            key: 'progress' + data.id,
+                            displayId: 'progress' + data.id,
+                            isOpen: false,
                         }))
                     )
                 );
@@ -212,35 +301,6 @@ const LecturerView = ({ groupId, classId }) => {
         });
         getReports();
     }, []);
-
-    const sendFeedback = () => {
-        const API =
-            query.type == 'cycle' ? '/cycle-reports/feedback' : '/progress-reports/feedback';
-        console.log(query);
-        put(API, {
-            feedback: JSON.stringify(convertToRaw(query.editorState.getCurrentContent())),
-            groupId: parseInt(groupId),
-            mark: parseInt(query.mark),
-            reportId: parseInt(query.reportId),
-        })
-            .then((res) => {
-                if (res.data.code == 200) {
-                    success('Feedback success');
-                } else {
-                    error('Feedback error');
-                }
-            })
-            .catch(() => {
-                error('An error occured while processing feedback');
-            });
-    };
-
-    const changeHandle = (field, value) => {
-        setQuery({
-            ...query,
-            [field]: value,
-        });
-    };
 
     const closeFn = () => {
         setOpen(false);
@@ -309,56 +369,6 @@ const LecturerView = ({ groupId, classId }) => {
 
     return (
         <>
-            {isDraftOpen ? (
-                <Overlay isOpen={true} fullFill={true}>
-                    <AdvanceEditor
-                        closeFn={() => setDraft(false)}
-                        editorState={query.viewState}
-                        setEditorState={setViewState}
-                        avatars={['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']}
-                        readOnly
-                    >
-                        <GoalContainer>
-                            <GoalDes>Report Title</GoalDes>
-                            <span>{query.title}</span>
-                        </GoalContainer>
-
-                        {query.type == 'cycle' && (
-                            <>
-                                <FeedBackContainer>
-                                    <GoalDes>Reports Stats:</GoalDes>
-                                    <StatusBar progress={progress} />
-                                    <GoalCounter>
-                                        <span>{progress[0]}</span> / {progress[1]}
-                                    </GoalCounter>
-                                    <GoalDes>Reports Feedback:</GoalDes>
-                                    <FeedBackView onClick={() => edtior2.current.focus()}>
-                                        <DraftEditor
-                                            id={`feedback_${groupId}_${classId}`}
-                                            editorRef={edtior2}
-                                            placeholder="Write your feedback..."
-                                            editorState={query.editorState}
-                                            setEditorState={setEditorState}
-                                        />
-                                    </FeedBackView>
-                                    <GoalCounter>Cycle Reports need to be feedback</GoalCounter>
-                                    <GoalDes>Reports Score:</GoalDes>
-                                    <ScoreBar
-                                        placeholder="Score"
-                                        value={query.mark}
-                                        onChange={(e) =>
-                                            changeHandle('mark', parseFloat(e.target.value))
-                                        }
-                                    />
-                                    <GoalCounter>Cycle Reports need to be scored</GoalCounter>
-                                </FeedBackContainer>
-                            </>
-                        )}
-
-                        <SendBtn onClick={sendFeedback}>Send Feedback</SendBtn>
-                    </AdvanceEditor>
-                </Overlay>
-            ) : null}
             <CreateMeetingForm
                 showing={isOpen}
                 setForm={setForm}
@@ -368,7 +378,7 @@ const LecturerView = ({ groupId, classId }) => {
                 setEvents={setEvents}
             />
             <Container>
-                <TopicPickedView />
+                <TopicPickedView list={list} setList={setList} />
                 <SideBar>
                     <Calendar onChange={onDateChange} />
                     <StyledH4>
