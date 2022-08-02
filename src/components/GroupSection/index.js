@@ -38,6 +38,8 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
     const [group] = useState(data);
     const currentDate = new Date();
 
+    console.log(data);
+
     const navigate = useNavigate();
     const user = getTokenInfo();
 
@@ -71,7 +73,7 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
     }, [slot, isJoined]);
 
     const handleJoinBtn = async () => {
-        await axios.post(URL, { headers: header }).then((res) => {
+        await axios.post(URL, {}, { headers: header }).then((res) => {
             if (res.data.code == 200) {
                 setJoin(true);
                 setBtnStyle(true);

@@ -165,6 +165,7 @@ const SubmitEdtior = ({ isOpen, setOpen, type, groupId }) => {
             resourceLink: '',
             groupId: parseInt(groupId),
         };
+        console.log(data);
         post('/' + type + '-reports', data)
             .then((res) => {
                 if (res.data.code == 200) {
@@ -563,8 +564,8 @@ const StudentView = ({ groupId, classId }) => {
 
     return (
         <StudentViewContainer>
-            <SubmitEdtior setOpen={setCycleOpen} isOpen={cycleOpen} type="cycle" groupId={classId} />
-            <SubmitEdtior setOpen={setProgressOpen} isOpen={progressOpen} type="progress" groupId={classId} />
+            <SubmitEdtior setOpen={setCycleOpen} isOpen={cycleOpen} type="cycle" groupId={groupId} />
+            <SubmitEdtior setOpen={setProgressOpen} isOpen={progressOpen} type="progress" groupId={groupId} />
             <Container>
                 {list.length ? (
                     <TableContainer>

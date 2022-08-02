@@ -55,6 +55,8 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode, email,
     const inputRef = useRef();
     const navigate = useNavigate();
 
+    console.log(subjectId);
+
     useClickOutside(buttonRef, () => {
         if (open == true) {
             setOpen(false);
@@ -152,7 +154,7 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode, email,
                     transition: { duration: 0.5, ease: bezier },
                 }}
             >
-                {name && user.role === 'Student' && (
+                {name && user.role === 'Lecturer' && (
                     <span className="view-mark" onClick={() => navigate(`/mark-table/${id}`)}>
                         Mark Table {/* <ArrowRightAltIcon />{' '} */}
                     </span>
