@@ -89,6 +89,13 @@ const GroupPicking = () => {
                             </CreateGroupBtn>
                             <CreateGroupBtn
                                 onClick={() => {
+                                    navigate(`/student-list/${class_ID}`);
+                                }}
+                            >
+                                Mark Table
+                            </CreateGroupBtn>
+                            <CreateGroupBtn
+                                onClick={() => {
                                     setCreate(true);
                                 }}
                             >

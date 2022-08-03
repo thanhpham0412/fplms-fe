@@ -78,7 +78,7 @@ function StudentList() {
                 process.env.REACT_APP_API_URL +
                 `/classes/${classId}/students/${student.id}/groups/${selection.groupNumber}`,
                 {
-                    headers: { Authorization: `${localStorage.getItem('token')}` },
+                    Authorization: `${localStorage.getItem('token')}`
                 }
             )
             .then((res) => {
