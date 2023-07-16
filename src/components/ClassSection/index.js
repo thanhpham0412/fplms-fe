@@ -68,8 +68,8 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode, email,
 
     const enroll = () => {
         const header = {
-            Authorization: `${localStorage.getItem('token')}`,
-            'Content-Type': 'text/plain',
+            Authorization: `bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json',
         };
         if (!join && open && !onLoad) {
             if (inputRef.current.value.trim().length) {
@@ -106,7 +106,7 @@ const ClassSection = ({ name, lecture, join, id, subjectId, semesterCode, email,
 
     const joinClass = () => {
         const header = {
-            Authorization: `${localStorage.getItem('token')}`,
+            Authorization: `bearer ${localStorage.getItem('token')}`,
         };
         if (user.role == 'Lecturer') {
             navigate(`/class/${id}`);

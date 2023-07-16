@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 
 import axios from 'axios';
+// import jwtDecode from 'jwt-decode';
 import { GoogleLogin } from 'react-google-login';
 import { useNavigate } from 'react-router-dom';
 
@@ -29,7 +30,7 @@ const Login = () => {
 
     document.title = 'Login';
 
-    const URL = process.env.REACT_APP_AUTH_URL + '/accounts/login';
+    const URL = process.env.REACT_APP_AUTH_URL + '/login';
 
     const responseGoogle = (response) => {
         loadContext.setActive(true);
@@ -43,27 +44,32 @@ const Login = () => {
                 const data = res.data;
 
                 if (data.isAuthSuccessful) {
-                    axios
-                        .get(`${process.env.REACT_APP_API_URL}/valid`, {
-                            headers: {
-                                Authorization: data.token,
-                            },
-                        })
-                        .then((res) => {
-                            auth.setAuth(true);
-                            loadContext.setActive(false);
-                            localStorage.setItem('token', data.token);
+                    auth.setAuth(true);
+                    loadContext.setActive(false);
+                    localStorage.setItem('token', data.token);
 
-                            localStorage.setItem('user', JSON.stringify(response.profileObj));
-                            if (res.data.code === 200) {
-                                localStorage.setItem('isAdmin', true);
-                                auth.setIsAdmin(true);
-                            } else {
-                                auth.setIsAdmin(false);
-                            }
-                            navigate('/class');
-                        })
-                        .catch((err) => error(err));
+                    localStorage.setItem('user', JSON.stringify(response.profileObj));
+                    // console.log(jwtDecode(data.token));
+                    // if (jwtDecode(data.token).role === ) {
+                    //     localStorage.setItem('isAdmin', true);
+                    //     auth.setIsAdmin(true);
+                    // } else {
+                    //     auth.setIsAdmin(false);
+                    // }
+                    navigate('/class');
+                    // axios
+                    //     .get(${process.env.REACT_APP_API_URL}/valid, {
+                    //         headers: {
+                    //             Authorization: data.token,
+                    //         },
+                    //     })
+                    //     .then((res) => {
+
+                    //     })
+                    //     .catch((err) => error(err));
+                } else {
+                    loadContext.setActive(false);
+                    auth.setAuth(false);
                 }
             })
             .catch(() => {

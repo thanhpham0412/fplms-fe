@@ -36,7 +36,7 @@ const ClassList = () => {
             subjectId: null,
             semesterCode: null,
             id: index,
-            join: null,
+            isJoin: null,
         }))
     );
     const [filter, setFilter] = useState({
@@ -49,7 +49,7 @@ const ClassList = () => {
     const user = getTokenInfo();
 
     const header = {
-        Authorization: `${localStorage.getItem('token')}`,
+        Authorization: `bearer ${localStorage.getItem('token')}`,
     };
 
     useEffect(() => {
@@ -61,6 +61,8 @@ const ClassList = () => {
             .get(process.env.REACT_APP_API_URL + '/subjects', { headers: header })
             .then((subs) => {
                 if (subs.data.code == 200) {
+                    console.log("subs");
+                    console.log(subs.data);
                     setSubjects(
                         subs.data.data.reduce((pre, cur) => {
                             pre[cur.id] = cur.name;
@@ -78,6 +80,8 @@ const ClassList = () => {
             })
             .then((list) => {
                 if (list.data.code == 200) {
+                    console.log("list");
+                    console.log(list.data);
                     setList(list.data.data);
                 }
             })
@@ -178,7 +182,7 @@ const ClassList = () => {
                                     subjectId={subjects[item.subjectId]}
                                     semesterCode={item.semesterCode}
                                     id={item.id}
-                                    join={item.join}
+                                    join={item.isJoin}
                                 />
                             ))}
                     </StyledList>
