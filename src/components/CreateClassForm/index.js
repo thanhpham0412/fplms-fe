@@ -79,7 +79,7 @@ const CreateClassForm = ({ setCreate, setClass }) => {
         setDisable(true);
 
         const header = {
-            Authorization: `${localStorage.getItem('token')}`,
+            Authorization: `bearer ${localStorage.getItem('token')}`,
         };
 
         const API = process.env.REACT_APP_API_URL + '/classes';
@@ -123,7 +123,7 @@ const CreateClassForm = ({ setCreate, setClass }) => {
     };
 
     const [semester, setSemester] = useState([]);
-
+    
     useEffect(() => {
         const sems = get('/semesters');
         const subs = get('/subjects');
@@ -142,7 +142,7 @@ const CreateClassForm = ({ setCreate, setClass }) => {
                         content: subject.name,
                     }))
                 );
-            if (sems.data.code == 200 && subs.data.code == 200) setLoad(false);
+            if (sems.data.code == 200 || subs.data.code == 200) setLoad(false);
         });
     }, []);
 

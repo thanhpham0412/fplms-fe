@@ -121,7 +121,7 @@ const AdminPage = () => {
                 },
                 {
                     headers: {
-                        Authorization: `${localStorage.getItem('token')}`,
+                        Authorization: `bearer ${localStorage.getItem('token')}`,
                     },
                 }
             )
@@ -165,7 +165,7 @@ const AdminPage = () => {
                 {},
                 {
                     headers: {
-                        Authorization: `${localStorage.getItem('token')}`,
+                        Authorization: `bearer ${localStorage.getItem('token')}`,
                     },
                 }
             )
@@ -200,7 +200,7 @@ const AdminPage = () => {
                     },
                     {
                         headers: {
-                            Authorization: `${localStorage.getItem('token')}`,
+                            Authorization: `bearer ${localStorage.getItem('token')}`,
                         },
                     }
                 )
@@ -229,7 +229,7 @@ const AdminPage = () => {
                     },
                     {
                         headers: {
-                            Authorization: `${localStorage.getItem('token')}`,
+                            Authorization: `bearer ${localStorage.getItem('token')}`,
                         },
                     }
                 )
@@ -248,7 +248,7 @@ const AdminPage = () => {
             axios
                 .delete(`${process.env.REACT_APP_API_URL}/subjects/${subject.value}`, {
                     headers: {
-                        Authorization: `${localStorage.getItem('token')}`,
+                        Authorization: `bearer ${localStorage.getItem('token')}`,
                     },
                 })
                 .then((res) => {
@@ -465,7 +465,7 @@ const AdminPage = () => {
             try {
                 const res = await axios.get(`${process.env.REACT_APP_API_URL}/semesters`, {
                     headers: {
-                        Authorization: `${localStorage.getItem('token')}`,
+                        Authorization: `bearer ${localStorage.getItem('token')}`,
                     },
                 });
 
@@ -486,7 +486,7 @@ const AdminPage = () => {
         const fetchSubjects = async () => {
             const res = await axios.get(`${process.env.REACT_APP_API_URL}/subjects`, {
                 headers: {
-                    Authorization: `${localStorage.getItem('token')}`,
+                    Authorization: `bearer ${localStorage.getItem('token')}`,
                 },
             });
 

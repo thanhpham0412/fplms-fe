@@ -31,7 +31,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 
 const header = {
-    Authorization: `${localStorage.getItem('token')}`,
+    Authorization: `bearer ${localStorage.getItem('token')}`,
 };
 
 const TEMPLATE = '<b>(Project has no requirement)</b>';

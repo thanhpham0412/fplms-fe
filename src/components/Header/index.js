@@ -60,12 +60,12 @@ const Header = () => {
     useEffect(() => {
         const socket = io(process.env.REACT_APP_WS, {
             extraHeaders: {
-                Authorization: localStorage.getItem('token'),
+                Authorization: `bearer ${localStorage.getItem('token')}`,
             },
         });
 
         const header = {
-            Authorization: `${localStorage.getItem('token')}`,
+            Authorization: `bearer ${localStorage.getItem('token')}`,
         };
 
         setInterval(() => {

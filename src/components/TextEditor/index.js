@@ -26,7 +26,7 @@ const TextEditor = () => {
     const questionId = new URLSearchParams(location.search).get('id');
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions`;
     const header = {
-        Authorization: `${localStorage.getItem('token')}`,
+        Authorization: `bearer ${localStorage.getItem('token')}`,
     };
 
     const focus = () => {
@@ -54,7 +54,7 @@ const TextEditor = () => {
         if (questionId != null) {
             const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions/${questionId}`;
             const header = {
-                Authorization: `${localStorage.getItem('token')}`,
+                Authorization: bearer `${localStorage.getItem('token')}`,
             };
             const getQuestion = () => {
                 axios

@@ -427,7 +427,7 @@ export const GoalContainer = styled.div`
 
 export const FeedBackView = styled.div`
     flex: 1;
-    overflow: auto;
+    // overflow: auto;
 `;
 
 export const FeedBackContainer = styled(GoalContainer)`

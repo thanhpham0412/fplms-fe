@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const header = {
-    Authorization: `${localStorage.getItem('token')}`,
+    Authorization: `bearer ${localStorage.getItem('token')}`,
 };
 
 const post = (url, body, head) => {

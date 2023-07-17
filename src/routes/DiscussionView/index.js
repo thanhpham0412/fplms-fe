@@ -68,7 +68,7 @@ const DiscussionView = () => {
 
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions/${question?.id}`;
     const header = {
-        Authorization: `${localStorage.getItem('token')}`,
+        Authorization: `bearer ${localStorage.getItem('token')}`,
     };
 
     if (question && question.content) {
@@ -78,7 +78,7 @@ const DiscussionView = () => {
     useEffect(() => {
         const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions/${questionId}`;
         const header = {
-            Authorization: `${localStorage.getItem('token')}`,
+            Authorization: `bearer ${localStorage.getItem('token')}`,
         };
         const fetchData = () => {
             axios

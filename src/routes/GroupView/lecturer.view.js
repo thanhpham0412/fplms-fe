@@ -126,6 +126,7 @@ const TextEditor = ({ report, close, progress }) => {
                                 <DraftEditor
                                     id={`feedback_${report.groupId}_${report.type}`}
                                     placeholder="Write your feedback..."
+                                    // editorState={editorState}
                                     editorState={editorState}
                                     setEditorState={setEditorState}
                                 />

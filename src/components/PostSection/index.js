@@ -44,7 +44,7 @@ const PostSection = ({ post, setOpen, setPosts, setStudentInfo, setRefresh }) =>
     const user = getTokenInfo();
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions/${post.id}`;
     const header = {
-        Authorization: `${localStorage.getItem('token')}`,
+        Authorization: `bearer ${localStorage.getItem('token')}`,
     };
     const deleteQuestion = () => {
         axios

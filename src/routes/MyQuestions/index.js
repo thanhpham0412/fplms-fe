@@ -82,7 +82,7 @@ const MyQuestions = () => {
     }
 
     const header = {
-        Authorization: `${localStorage.getItem('token')}`,
+        Authorization: `bearer ${localStorage.getItem('token')}`,
     };
 
     useEffect(() => {

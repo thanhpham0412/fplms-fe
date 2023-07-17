@@ -33,7 +33,7 @@ const GroupPicking = () => {
     const UNENROLL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/unenroll`;
     const TOKEN = localStorage.getItem('token');
     const header = {
-        Authorization: TOKEN,
+        Authorization: `bearer ${TOKEN}`,
     };
     var user = jwt_decode(TOKEN);
     useEffect(() => {

@@ -31,7 +31,7 @@ const EditGroupForm = ({ showing, setCreate, group, class_ID, setRefresh }) => {
     const URL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups`;
     const TOKEN = localStorage.getItem('token');
     const header = {
-        Authorization: TOKEN,
+        Authorization: `bearer ${TOKEN}`,
     };
 
     const closeForm = () => {

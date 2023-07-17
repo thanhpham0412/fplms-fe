@@ -42,7 +42,7 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
     const URL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups`;
     const TOKEN = localStorage.getItem('token');
     const header = {
-        Authorization: TOKEN,
+        Authorization: `bearer ${TOKEN}`,
     };
     const handleCreateBtn = () => {
         setLoading(true);
@@ -51,7 +51,7 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
                 URL,
                 {
                     classId: class_ID,
-                    enrollTime: enrollTime,
+                    enrollTime: `${enrollTime.split(" ")[0]}T${enrollTime.split(" ")[1]}Z`,
                     groupQuantity: groups,
                     memberQuantity: members,
                 },

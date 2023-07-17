@@ -36,7 +36,7 @@ const CreateMeetingForm = ({ showing, closeFn, groupId, form, setForm, setEvents
         setDisable(true);
 
         const header = {
-            Authorization: `${localStorage.getItem('token')}`,
+            Authorization: `bearer ${localStorage.getItem('token')}`,
         };
 
         const API = process.env.REACT_APP_API_URL + '/meetings';
@@ -47,7 +47,7 @@ const CreateMeetingForm = ({ showing, closeFn, groupId, form, setForm, setEvents
                     {
                         groupId: parseInt(groupId),
                         link: form.link,
-                        scheduleTime: `${form.date} ${form.time}:00.000`,
+                        scheduleTime: `${form.date}T${form.time}:00.000Z`,
                         title: form.title,
                     },
                     { headers: header }
@@ -130,7 +130,7 @@ const CreateMeetingForm = ({ showing, closeFn, groupId, form, setForm, setEvents
             <Container>
                 <StyledHeader>
                     <StyledJumbotron>
-                        <Title>{form.isAdd ? 'CREATE NEW MEETING' : 'UPDATE MEETING'}</Title>
+                        <Title>{form.isAdd ? '' : 'UPDATE MEETING'}</Title>
                         <SubTitle>{form.isAdd ? 'New Meeting' : 'Update Meeting'}</SubTitle>
                     </StyledJumbotron>
                     <CloseIcon onClick={closeFn} />

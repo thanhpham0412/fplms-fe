@@ -51,7 +51,7 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
     const URL_ENABLE =
         process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups/${group.id}/enable`;
     const header = {
-        Authorization: `${TOKEN}`,
+        Authorization: `bearer ${TOKEN}`,
     };
 
     useEffect(() => {
@@ -59,9 +59,9 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
             slot === group.memberQuantity ||
             isJoined ||
             currentDate > new Date(group.enrollTime) ||
-            data.disable
+            data.isDisable
         ) {
-            if (data.disable) {
+            if (data.isDisable) {
                 setDisableBtn(true);
             }
             setDisable(true);

@@ -90,7 +90,7 @@ const DiscussionList = () => {
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions`;
 
     const header = {
-        Authorization: `${localStorage.getItem('token')}`,
+        Authorization: `bearer ${localStorage.getItem('token')}`,
     };
     useEffect(() => {
         try {

@@ -19,7 +19,7 @@ const SemesterForm = ({ open, setOpen, w, h, from, to, semester, setSemesters })
             const res = await axios.delete(
                 `${process.env.REACT_APP_API_URL}/semesters/${semester.code}`,
                 {
-                    headers: { Authorization: `${localStorage.getItem('token')}` },
+                    headers: { Authorization: `bearer ${localStorage.getItem('token')}` },
                 }
             );
             if (res.data.code === 200) {
@@ -50,7 +50,7 @@ const SemesterForm = ({ open, setOpen, w, h, from, to, semester, setSemesters })
                 },
                 {
                     headers: {
-                        Authorization: `${localStorage.getItem('token')}`,
+                        Authorization: `bearer ${localStorage.getItem('token')}`,
                     },
                 }
             );

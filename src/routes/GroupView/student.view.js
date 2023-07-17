@@ -545,7 +545,7 @@ const StudentView = ({ groupId, classId }) => {
     const unEnroll = () => {
         axios
             .delete(`${process.env.REACT_APP_API_URL}/classes/${classId}/groups/leave`, {
-                headers: { Authorization: `${localStorage.getItem('token')}` },
+                headers: { Authorization: `bearer ${localStorage.getItem('token')}` },
             })
             .then((res) => {
                 if (res.data.code == 200) {

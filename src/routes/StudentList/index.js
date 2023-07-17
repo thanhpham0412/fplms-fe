@@ -56,7 +56,7 @@ function StudentList() {
     const _delete = (studentId) => {
         axios
             .delete(process.env.REACT_APP_API_URL + `/classes/${classId}/students/${studentId}`, {
-                headers: { Authorization: `${localStorage.getItem('token')}` },
+                headers: { Authorization: `bearer ${localStorage.getItem('token')}` },
             })
             .then((res) => {
                 if (res.data.code == 200) {
@@ -78,7 +78,7 @@ function StudentList() {
                 process.env.REACT_APP_API_URL +
                 `/classes/${classId}/students/${student.id}/groups/${selection.groupNumber}`,
                 {
-                    Authorization: `${localStorage.getItem('token')}`
+                    Authorization: `bearer ${localStorage.getItem('token')}`
                 }
             )
             .then((res) => {

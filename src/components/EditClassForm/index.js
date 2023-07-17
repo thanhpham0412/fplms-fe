@@ -45,7 +45,7 @@ const EditClassForm = ({ showing, setCreate, classItem }) => {
     const update = () => {
         setDisable(true);
         const header = {
-            Authorization: `${localStorage.getItem('token')}`,
+            Authorization: `bearer ${localStorage.getItem('token')}`,
         };
 
         const API = process.env.REACT_APP_API_URL + '/classes';

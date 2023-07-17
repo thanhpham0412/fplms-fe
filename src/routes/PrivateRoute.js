@@ -10,7 +10,7 @@ const PrivateRoute = () => {
 
     axios
         .get(process.env.REACT_APP_API_URL + '/valid/role', {
-            headers: { Authorization: localStorage.getItem('token') },
+            headers: { Authorization: `bearer ${localStorage.getItem('token')}` },
         })
         .then((res) => {
             console.log(res);

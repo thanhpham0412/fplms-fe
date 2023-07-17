@@ -44,7 +44,7 @@ const AnswerSection = ({ questionId, answers, setRefresh, setStudent, setOpenStu
 
     const URL = process.env.REACT_APP_DISCUSSION_URL + `/answers`;
     const header = {
-        Authorization: `${localStorage.getItem('token')}`,
+        Authorization: `bearer ${localStorage.getItem('token')}`,
     };
     const handlePostAnswer = () => {
         setLoading(true);
