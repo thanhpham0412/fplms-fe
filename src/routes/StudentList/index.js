@@ -75,10 +75,14 @@ function StudentList() {
         console.log('_move');
         axios
             .put(
-                process.env.REACT_APP_API_URL +
-                `/classes/${classId}/students/${student.id}/groups/${selection.groupNumber}`,
+                process.env.REACT_APP_API_URL + `/classes/${classId}/students/${student.id}/groups/${selection.groupNumber}`,
+                {},
                 {
-                    Authorization: `bearer ${localStorage.getItem('token')}`
+                    headers: {
+                        Authorization: `bearer ${localStorage.getItem('token')}`
+
+                    }
+                    
                 }
             )
             .then((res) => {

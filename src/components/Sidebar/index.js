@@ -88,18 +88,18 @@ const SideBar = () => {
             //     },
             // ],
         },
-        // {
-        //     title: 'Discussion',
-        //     path: '/discussion-list',
-        //     icon: <ForumIcon />,
-        //     submenu: [
-        //         {
-        //             title: 'My questions',
-        //             path: '/my-questions',
-        //             submenu: [],
-        //         },
-        //     ],
-        // },
+        {
+            title: 'Discussion',
+            path: '/discussion-list',
+            icon: <ForumIcon />,
+            submenu: [
+                {
+                    title: 'My questions',
+                    path: '/my-questions',
+                    submenu: [],
+                },
+            ],
+        },
         {
             title: 'Topics',
             path: '/topic',

@@ -129,17 +129,21 @@ const SubmitEdtior = ({ isOpen, setOpen, type, groupId }) => {
         EditorState.createWithContent(fromHTML(TEMPLATE2))
     );
     const [title, setTitle] = useState('');
+    const [resourceLink, setResourceLink] = useState('');
+
 
     useEffect(() => {
         setEditorState(EditorState.createWithContent(fromHTML(TEMPLATE2)));
         setTitle('');
+        setResourceLink('');
+
     }, [isOpen]);
 
     const submitCycle = () => {
         const data = {
             title: title,
             content: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
-            resourceLink: '',
+            resourceLink: resourceLink,
             groupId: parseInt(groupId),
         };
         console.log(data);
@@ -171,6 +175,14 @@ const SubmitEdtior = ({ isOpen, setOpen, type, groupId }) => {
                     </GoalCounter>
                 </GoalContainer> */}
                 <GoalContainer>
+                    <GoalDes>Report Link</GoalDes>
+                    <Input
+                        placeholder={"Report's Link"}
+                        value={resourceLink}
+                        onChange={(e) => setResourceLink(e.target.value || '')}
+                    />
+                </GoalContainer>
+                <GoalContainer>
                     <GoalDes>Report Title</GoalDes>
                     <Input
                         placeholder={"Report's Title"}
@@ -187,6 +199,8 @@ const SubmitEdtior = ({ isOpen, setOpen, type, groupId }) => {
 const TextEditor = ({ report, close, progress }) => {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const [title, setTitle] = useState('');
+    const [resourceLink, setResourceLink] = useState('');
+
 
     const avts = ['TP', 'NK', 'TN', 'TT', 'NH'];
 
@@ -202,6 +216,7 @@ const TextEditor = ({ report, close, progress }) => {
                 setEditorState(EditorState.createEmpty());
             }
             setTitle(report.title || '');
+            setResourceLink(report.resourceLink || '');
         }
     }, [report]);
 
@@ -209,7 +224,7 @@ const TextEditor = ({ report, close, progress }) => {
         const data = {
             title: title,
             content: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
-            resourceLink: '',
+            resourceLink: resourceLink,
             groupId: parseInt(report.groupId),
         };
         post('/' + report.type + '-reports', data)
@@ -240,6 +255,14 @@ const TextEditor = ({ report, close, progress }) => {
                     <GoalCounter>
                         <span>{progress[0]}</span> / {progress[1]}
                     </GoalCounter>
+                </GoalContainer>
+                <GoalContainer>
+                    <GoalDes>Report Link</GoalDes>
+                    <Input
+                        placeholder={"Report's Link"}
+                        value={resourceLink}
+                        onChange={(e) => setResourceLink(e.target.value || '')}
+                    />
                 </GoalContainer>
                 <GoalContainer>
                     <GoalDes>Report Title</GoalDes>
