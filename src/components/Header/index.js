@@ -25,13 +25,11 @@ import {
 
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import PersonIcon from '@mui/icons-material/Person';
-import { io } from 'socket.io-client';
 
 const Header = () => {
     const [isNotiOpen, setNotiOpen] = useState(false);
     const [isUserOpen, setUserOpen] = useState(false);
 
-    const [socket, setSocket] = useState(null);
 
     const navigate = useNavigate();
     const [list, setList] = useState([]);
@@ -58,11 +56,7 @@ const Header = () => {
     const user = getTokenInfo();
 
     useEffect(() => {
-        const socket = io(process.env.REACT_APP_WS, {
-            extraHeaders: {
-                Authorization: `bearer ${localStorage.getItem('token')}`,
-            },
-        });
+    
 
         const header = {
             Authorization: `bearer ${localStorage.getItem('token')}`,
@@ -72,32 +66,10 @@ const Header = () => {
             axios
                 .get(process.env.REACT_APP_API_URL + '/subjects', { headers: header })
                 .then((subs) => {
-                    console.log(subs);
                 });
         }, 300000);
 
-        socket.emit('notifications', {});
-
-        socket.on('notifications', (e) => {
-            if (Array.isArray(e)) {
-                setList((list) => list.concat(e));
-                setNewNoti((noti) => noti + e.length);
-            } else {
-                setList((list) => list.concat(JSON.parse(e)));
-                setNewNoti((noti) => noti + 1);
-            }
-        });
-        socket.on('disconnect', (e) => {
-            console.log('disconnect');
-        });
-        socket.on('connect', (e) => {
-            console.log('connected');
-        });
-
-        setSocket(socket);
-
-        return () => socket.close();
-    }, [setSocket]);
+    }, []);
 
     return (
         <HContainer>
@@ -124,30 +96,7 @@ const Header = () => {
                         </NotiInfo>
                     </UserContainer>
                 </BtnContainer>
-                <BtnContainer ref={notiRef}>
-                    <NotificationsIcon
-                        onClick={() => {
-                            setNewNoti(0);
-                            setNotiOpen((e) => !e);
-                        }}
-                    />
-                    <NotiNews isDisplay={newNoti > 0}>{newNoti}</NotiNews>
-                    <NotificationContainer isOpen={isNotiOpen}>
-                        <NotificationHeader>Notification</NotificationHeader>
-                        <NotificationBody>
-                            {list.map((noti) => (
-                                <NotiContainer key={noti.id}>
-                                    {/* <InboxIcon /> */}
-                                    <NotiInfo>
-                                        <small>{noti.userEmail}</small>
-                                        <div>{noti.title}</div>
-                                        <small>{moment(noti.createAt).fromNow()}</small>
-                                    </NotiInfo>
-                                </NotiContainer>
-                            ))}
-                        </NotificationBody>
-                    </NotificationContainer>
-                </BtnContainer>
+              
             </HIcons>
         </HContainer>
     );

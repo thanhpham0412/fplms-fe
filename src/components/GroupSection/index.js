@@ -38,7 +38,6 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
     const [group] = useState(data);
     const currentDate = new Date();
 
-    console.log(data);
 
     const navigate = useNavigate();
     const user = getTokenInfo();

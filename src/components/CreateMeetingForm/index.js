@@ -80,8 +80,13 @@ const CreateMeetingForm = ({ showing, closeFn, groupId, form, setForm, setEvents
                 .put(
                     API,
                     {
-                        ...form,
+                        // ...form,
+                        // groupId: parseInt(groupId),
+                        id: form.id,
                         groupId: parseInt(groupId),
+                        link: form.link,
+                        scheduleTime: `${form.date}T${form.time}:00.000Z`,
+                        title: form.title,
                     },
                     { headers: header }
                 )
@@ -124,7 +129,7 @@ const CreateMeetingForm = ({ showing, closeFn, groupId, form, setForm, setEvents
             time: e.target.value,
         });
     };
-
+    console.log(form);
     return (
         <Overlay isOpen={showing} closeFn={closeFn}>
             <Container>

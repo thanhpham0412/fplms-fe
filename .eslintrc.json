@@ -8,7 +8,7 @@
         // "eslint:recommended",
         // "plugin:react/recommended",
         // "plugin:prettier/recommended",
-        // "plugin:react-hooks/recommended"
+        // "plugin:react-hooks/recommended",
         // "plugin:import/errors",
         // "plugin:import/warnings"
     ],
@@ -20,7 +20,8 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react"
+        "react",
+        "react-hooks"
     ],
     "rules": {
         // "prettier/prettier": "error",

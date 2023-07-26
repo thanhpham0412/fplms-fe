@@ -5,7 +5,6 @@ import { Col, Input, Label, OptContent, Row, SelectionOuter, Title } from './sty
 
 const SettingSection = ({ values, title, opts }) => {
     const [exact, setExact] = useState(opts[0] || '');
-    console.log(opts);
     const semesterSetting = () => {
         return (
             <>

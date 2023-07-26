@@ -8,7 +8,7 @@ import AuthContext from '../contexts/auth';
 const PrivateRoute = () => {
     const auth = useContext(AuthContext);
 
-    axios
+    /*axios
         .get(process.env.REACT_APP_API_URL + '/valid/role', {
             headers: { Authorization: `bearer ${localStorage.getItem('token')}` },
         })
@@ -21,7 +21,7 @@ const PrivateRoute = () => {
                 localStorage.removeItem('token');
                 auth.setAuth(false);
             }
-        });
+        });*/
 
     return auth.isAuth ? <Outlet /> : <Navigate to="/login" />;
 };

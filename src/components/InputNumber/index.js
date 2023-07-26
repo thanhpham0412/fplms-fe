@@ -7,23 +7,20 @@ const InputNumber = ({ init, max, onChange, className }) => {
     max = max || 10;
 
     const change = (e) => {
-        const reg = /(^[0-9]{0,2}$)|(^[0-9]{0,2}\.[0-9]{0,5}$)/;
-
-        setValue(e.target.value);
-
-        const n = parseFloat(e.target.value);
-
+        // const reg = /(^[0-9]{0,2}$)|(^[0-9]{0,2}\.[0-9]{0,5}$)/;
+        const reg = /^(10(\.00?)?|[0-9](\.\d{1,2})?)$/;
+        setValue(e.target.value.replace(",", "."));
+        // const n = parseFloat(e.target.value.replace(",", "."));
         if (e.target.value.trim().length == 0) {
-            setValue(n || min);
+            setValue(e.target.value || min);
         }
 
         if (!reg.test(e.target.value)) {
-            setValue(n || min);
+            setValue(e.target.value || min);
         }
 
-        if (n > max) setValue(max || 0);
-        if (n < min) setValue(min || 0);
-
+        if (e.target.value > max) setValue(max || 0);
+        if (e.target.value < min) setValue(min || 0);
         // if (typeof onChange == 'function') {
         //     onChange(e, value);
         // }

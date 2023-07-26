@@ -61,8 +61,6 @@ const ClassList = () => {
             .get(process.env.REACT_APP_API_URL + '/subjects', { headers: header })
             .then((subs) => {
                 if (subs.data.code == 200) {
-                    console.log('subs');
-                    console.log(subs.data);
                     setSubjects(
                         subs.data.data.reduce((pre, cur) => {
                             pre[cur.id] = cur.name;
@@ -80,8 +78,6 @@ const ClassList = () => {
             })
             .then((list) => {
                 if (list.data.code == 200) {
-                    console.log('list');
-                    console.log(list.data);
                     setList(list.data.data);
                 }
             })
@@ -112,7 +108,6 @@ const ClassList = () => {
     };
 
     const subjectFilter = (e) => {
-        console.log(e);
         setFilter((filter) => ({
             ...filter,
             subjectId: e.value || -1,

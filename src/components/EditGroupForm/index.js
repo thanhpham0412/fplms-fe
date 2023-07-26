@@ -21,13 +21,16 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 
 const EditGroupForm = ({ showing, setCreate, group, class_ID, setRefresh }) => {
-    const myDate = group.enrollTime.split(' ');
+    const myDate = group.enrollTime.split('T');
     const [groupNumEdit, setGroupNumEdit] = useState(group.number);
     const [membersEdit, setMembersEdit] = useState(group.memberQuantity);
     const [date, setDate] = useState(myDate[0]);
-    const [time, setTime] = useState(myDate[1]);
+    const [time, setTime] = useState(myDate[1].split("Z")[0]);
     const [enrollTime, setEnrollTime] = useState(group.enrollTime);
     const [isLoading, setLoading] = useState(false);
+
+    const [errorForm, setErrorForm] = useState({ numErr: '', memberQuantityErr: '', closingDateErr: "" });
+
     const URL = process.env.REACT_APP_API_URL + `/classes/${class_ID}/groups`;
     const TOKEN = localStorage.getItem('token');
     const header = {
@@ -68,12 +71,21 @@ const EditGroupForm = ({ showing, setCreate, group, class_ID, setRefresh }) => {
                 closeForm();
                 setLoading(false);
             });
-    };
+    };  
+
+    const validateClosing = (date) => {
+        const today = new Date();
+
+        return today.getFullYear() === date.getFullYear() && today.getMonth() === date.getMonth() && today.getDate() === date.getDate() || date > today;
+    }
 
     useEffect(() => {
-        setEnrollTime(date + ' ' + time);
+        setEnrollTime(date + 'T' + time + "Z");
     }, [date, time]);
 
+    const renderError = (error) => {
+        return <span style={{ color: 'red', fontSize: '10px' }}>{error}</span>;
+    };
     return (
         <>
             <Overlay isOpen={showing} closeFn={setCreate}>
@@ -91,8 +103,15 @@ const EditGroupForm = ({ showing, setCreate, group, class_ID, setRefresh }) => {
                                 <small>Group number</small>
                                 <EditInput
                                     defaultValue={groupNumEdit}
-                                    onChange={(e) => setGroupNumEdit(e.target.value)}
+                                    onChange={(e) => {
+                                        setGroupNumEdit(e.target.value);
+                                        setErrorForm((prev) => ({
+                                            ...prev,
+                                            numErr: e.target.value < 1 ? 'Group num must be greater or equal 1!': "",
+                                        }))
+                                    }}
                                 />
+                                  {renderError(errorForm.numErr)}
                             </FormColumn>
                         </FormRow>
                         <FormRow>
@@ -100,8 +119,16 @@ const EditGroupForm = ({ showing, setCreate, group, class_ID, setRefresh }) => {
                                 <small>Members</small>
                                 <EditInput
                                     defaultValue={membersEdit}
-                                    onChange={(e) => setMembersEdit(e.target.value)}
+                                    type='number'
+                                    min={1}
+                                    onChange={(e) => {setMembersEdit(e.target.value); 
+                                        setErrorForm((prev) => ({
+                                            ...prev,
+                                            memberQuantityErr: e.target.value < 1 ? 'Number of students in group must be greater or equal 1!': "",
+                                        }))
+                                    }}
                                 />
+                                  {renderError(errorForm.memberQuantityErr)}
                             </FormColumn>
                         </FormRow>
                         <FormRow>
@@ -110,8 +137,15 @@ const EditGroupForm = ({ showing, setCreate, group, class_ID, setRefresh }) => {
                                 <EditInput
                                     type={'date'}
                                     defaultValue={date}
-                                    onChange={(e) => setDate(e.target.value)}
+                                    onChange={(e) => {
+                                        setDate(e.target.value);
+                                        setErrorForm({
+                                            ...errorForm,
+                                            closingDateErr: validateClosing(new Date(e.target.value)) ? "" : "Closing date must be today or the future"
+                                        })
+                                    }}
                                 />
+                                 {renderError(errorForm.closingDateErr)}
                             </FormColumn>
                         </FormRow>
                         <FormRow>
@@ -125,7 +159,8 @@ const EditGroupForm = ({ showing, setCreate, group, class_ID, setRefresh }) => {
                             </FormColumn>
                         </FormRow>
                         <FormRow justifyContent={'center'}>
-                            <StyledButton isLoading={isLoading} onClick={handleSaveBtn}>
+                            
+                            <StyledButton isLoading={isLoading} onClick={handleSaveBtn} disabled={errorForm.memberQuantityErr !== "" || errorForm.numErr !== "" || errorForm.closingDateErr !== ""}>
                                 <ButtonLoader isLoading={isLoading} />
                                 <span>SAVE</span>
                             </StyledButton>

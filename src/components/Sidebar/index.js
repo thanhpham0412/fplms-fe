@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 
+import jwt_decode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 
 import AuthContext from '../../contexts/auth';
@@ -60,7 +61,8 @@ const Menu = ({ menu, level, expand, setShow }) => {
 
 const SideBar = () => {
     const auth = useContext(AuthContext);
-    console.log(auth.isAdmin);
+    const TOKEN = localStorage.getItem('token');
+    var user = jwt_decode(TOKEN);
     const [menu, setMenu] = useState([
         {
             title: 'Home',
@@ -100,21 +102,34 @@ const SideBar = () => {
                 },
             ],
         },
-        {
-            title: 'Topics',
-            path: '/topic',
-            icon: <TopicIcon />,
-            submenu: [],
-        },
     ]);
     useEffect(() => {
         if (auth.isAdmin) {
             setMenu((prev) =>
                 prev.concat([
                     {
+                        title: 'Topics',
+                        path: '/topic',
+                        icon: <TopicIcon />,
+                        submenu: [],
+                    },
+                    {
                         title: 'Settings',
                         path: '/admin',
                         icon: <SettingsIcon />,
+                        submenu: [],
+                    },
+                ])
+            );
+        }
+
+        if (user.role === 'Lecturer') {
+            setMenu((prev) =>
+                prev.concat([
+                    {
+                        title: 'Topics',
+                        path: '/topic',
+                        icon: <TopicIcon />,
                         submenu: [],
                     },
                 ])

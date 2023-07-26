@@ -130,7 +130,7 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
                         </FormRow>
                         <FormRow>
                             <FormColumn>
-                                <small>Min number of members</small>
+                                <small>Max number of members</small>
 
                                 <FormInput>
                                     <ArrowBackIosIcon
@@ -142,7 +142,7 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
                                                     return {
                                                         ...prev,
                                                         memberQuantityErr:
-                                                            'Min number of students in group must be greater or equal 1!',
+                                                            'Max number of students in group must be greater or equal 1!',
                                                     };
                                                 });
                                             }
@@ -170,7 +170,6 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
                                     defaultValue={date}
                                     onChange={(e) => {
                                         setDate(e.target.value);
-                                        console.log(e.target.value);
                                     }}
                                 />
                             </FormColumn>
@@ -182,7 +181,6 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
                                     type={'time'}
                                     onChange={(e) => {
                                         setTime(e.target.value + ':00.000');
-                                        console.log(e.target.value);
                                     }}
                                     defaultValue={time}
                                 />

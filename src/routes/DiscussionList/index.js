@@ -110,7 +110,6 @@ const DiscussionList = () => {
                     .then((res) => {
                         // console.log(res);
                         if (res.status == 200) {
-                            console.log('Success', res);
                             setPosts(res.data);
                             setTotalPages(JSON.parse(res.headers['x-pagination']).TotalPages);
                             setLoading(false);

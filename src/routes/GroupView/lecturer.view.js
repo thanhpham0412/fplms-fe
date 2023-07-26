@@ -48,7 +48,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 const TextEditor = ({ report, close, progress }) => {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const [viewState, setViewState] = useState(EditorState.createEmpty());
-    const [mark, setMark] = useState(0);
+    const [mark, setMark] = useState(report.mark||0);
 
     useEffect(() => {
         if (report) {
@@ -83,7 +83,7 @@ const TextEditor = ({ report, close, progress }) => {
         put(API, {
             feedback: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
             groupId: parseInt(report.groupId),
-            mark: parseInt(mark),
+            mark: parseFloat(mark),
             reportId: parseInt(report.id),
         })
             .then((res) => {
@@ -133,7 +133,7 @@ const TextEditor = ({ report, close, progress }) => {
                             </FeedBackView>
                             <GoalCounter>Cycle Reports need to be feedback</GoalCounter>
                             <GoalDes>Reports Score:</GoalDes>
-                            <ScoreBar placeholder="Score" value={mark} onChange={onMarkChange} />
+                            <ScoreBar placeholder="Score" value={mark} init={mark} onChange={onMarkChange} />
                             <GoalCounter>Cycle Reports need to be scored</GoalCounter>
                         </FeedBackContainer>
                     </>
@@ -269,10 +269,10 @@ const LecturerView = ({ groupId, classId }) => {
             endDate: moment(new Date())
                 .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
                 .add(1, 'd')
-                .format('yyyy-MM-DD HH:mm:ss.SSS'),
+                .format('yyyy-MM-DDTHH:mm:ss.SSSZ'),
             startDate: moment(new Date())
                 .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-                .format('yyyy-MM-DD HH:mm:ss.SSS'),
+                .format('yyyy-MM-DDTHH:mm:ss.SSSZ'),
             groupId: parseInt(groupId),
         }).then((res) => {
             if (res.data.code == 200) {
@@ -297,8 +297,8 @@ const LecturerView = ({ groupId, classId }) => {
     const onDateChange = (date) => {
         get('/meetings', {
             classId: parseInt(classId),
-            endDate: moment(date).add(1, 'd').format('yyyy-MM-DD HH:mm:ss.SSS'),
-            startDate: moment(date).format('yyyy-MM-DD HH:mm:ss.SSS'),
+            endDate: moment(date).add(1, 'd').format('yyyy-MM-DDTHH:mm:ssZ'),
+            startDate: moment(date).format('yyyy-MM-DDTHH:mm:ssZ'),
             groupId: parseInt(groupId),
         }).then((res) => {
             if (res.data.code == 200) {
