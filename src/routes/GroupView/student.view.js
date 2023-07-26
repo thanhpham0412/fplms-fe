@@ -130,6 +130,7 @@ const SubmitEdtior = ({ isOpen, setOpen, type, groupId }) => {
     );
     const [title, setTitle] = useState('');
     const [resourceLink, setResourceLink] = useState('');
+    const [errForm, setErrForm] = useState({titleErr: ""});
 
 
     useEffect(() => {
@@ -159,6 +160,9 @@ const SubmitEdtior = ({ isOpen, setOpen, type, groupId }) => {
                 error('An error occured');
             });
     };
+    const renderError = (error) => {
+        return <span style={{ color: 'red', fontSize: '10px' }}>{error}</span>;
+    };
 
     return (
         <Overlay isOpen={isOpen} fullFill={true}>
@@ -183,14 +187,20 @@ const SubmitEdtior = ({ isOpen, setOpen, type, groupId }) => {
                     />
                 </GoalContainer>
                 <GoalContainer>
-                    <GoalDes>Report Title</GoalDes>
+                    <GoalDes>Report Title <span style={{color:"red"}}>*</span></GoalDes>
                     <Input
                         placeholder={"Report's Title"}
                         value={title}
-                        onChange={(e) => setTitle(e.target.value || '')}
+                        onChange={(e) => {
+                            setTitle(e.target.value);
+                            setErrForm({
+                                titleErr: e.target.value === "" ? "Title must not be blank" : ""
+                            })
+                        }}
                     />
+                    {renderError(errForm.titleErr)}
                 </GoalContainer>
-                <SendBtn onClick={() => submitCycle(type)}>Send Report</SendBtn>
+                <SendBtn onClick={() => submitCycle(type)} disabled={errForm.titleErr !== "" || title === ""}>Send Report</SendBtn>
             </AdvanceEditor>
         </Overlay>
     );
@@ -528,7 +538,6 @@ const StudentView = ({ groupId, classId }) => {
                 error('An error occurred');
             }
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const pickTopic = (topic) => {
@@ -644,7 +653,7 @@ const StudentView = ({ groupId, classId }) => {
                         setIsOpen={setConfirmOpen}
                         action={unEnroll}
                     />
-                    <ExitButton onClick={toggleModal}>UNENROLL FROM CLASS</ExitButton>
+                    <ExitButton onClick={toggleModal}>UNENROLL FROM GROUP</ExitButton>
                 </SideBar>
             </Container>
         </StudentViewContainer>

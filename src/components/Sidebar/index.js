@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 
 import { useNavigate } from 'react-router-dom';
-
+import jwt_decode from 'jwt-decode';
 import AuthContext from '../../contexts/auth';
 import { StyledContainer, StyledUL, StyledSection, StyledBlock } from './style';
 
@@ -61,6 +61,11 @@ const Menu = ({ menu, level, expand, setShow }) => {
 const SideBar = () => {
     const auth = useContext(AuthContext);
     console.log(auth.isAdmin);
+    const TOKEN = localStorage.getItem('token');
+    const header = {
+        Authorization: `bearer ${TOKEN}`,
+    };
+    var user = jwt_decode(TOKEN);
     const [menu, setMenu] = useState([
         {
             title: 'Home',
@@ -100,27 +105,41 @@ const SideBar = () => {
                 },
             ],
         },
-        {
-            title: 'Topics',
-            path: '/topic',
-            icon: <TopicIcon />,
-            submenu: [],
-        },
+        
     ]);
     useEffect(() => {
         if (auth.isAdmin) {
             setMenu((prev) =>
                 prev.concat([
                     {
+                        title: 'Topics',
+                        path: '/topic',
+                        icon: <TopicIcon />,
+                        submenu: [],
+                    },
+                    {
                         title: 'Settings',
                         path: '/admin',
                         icon: <SettingsIcon />,
                         submenu: [],
                     },
+                    
                 ])
             );
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+
+        if(user.role === "Lecturer"){
+            setMenu((prev) =>
+            prev.concat([
+                {
+                    title: 'Topics',
+                    path: '/topic',
+                    icon: <TopicIcon />,
+                    submenu: [],
+                },
+            ])
+        );
+        }
     }, []);
 
     const setShow = (target, status = false) => {

@@ -388,6 +388,9 @@ export const SendBtn = styled.button`
     letter-spacing: 0.05rem;
     font-size: 1rem;
     padding: 1rem;
+    &:disabled{
+        cursor: default;
+    }
 `;
 
 export const GoalContainer = styled.div`
@@ -466,6 +469,7 @@ export const GoalCounter = styled.div`
 export const GoalDes = styled.span`
     font-weight: 600;
     font-size: 12px;
+   
 `;
 
 export const GroupAvatar = styled.ul`

@@ -48,7 +48,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 const TextEditor = ({ report, close, progress }) => {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const [viewState, setViewState] = useState(EditorState.createEmpty());
-    const [mark, setMark] = useState(0);
+    const [mark, setMark] = useState(report.mark||0);
 
     useEffect(() => {
         if (report) {
@@ -74,6 +74,7 @@ const TextEditor = ({ report, close, progress }) => {
     }, [report]);
 
     const onMarkChange = (e) => {
+        console.log("Mark change", e.target.value)
         setMark(e.target.value);
     };
 
@@ -83,7 +84,7 @@ const TextEditor = ({ report, close, progress }) => {
         put(API, {
             feedback: JSON.stringify(convertToRaw(editorState.getCurrentContent())),
             groupId: parseInt(report.groupId),
-            mark: parseInt(mark),
+            mark: parseFloat(mark),
             reportId: parseInt(report.id),
         })
             .then((res) => {
@@ -133,7 +134,7 @@ const TextEditor = ({ report, close, progress }) => {
                             </FeedBackView>
                             <GoalCounter>Cycle Reports need to be feedback</GoalCounter>
                             <GoalDes>Reports Score:</GoalDes>
-                            <ScoreBar placeholder="Score" value={mark} onChange={onMarkChange} />
+                            <ScoreBar placeholder="Score" value={mark} init={mark} onChange={onMarkChange} />
                             <GoalCounter>Cycle Reports need to be scored</GoalCounter>
                         </FeedBackContainer>
                     </>
@@ -288,7 +289,6 @@ const LecturerView = ({ groupId, classId }) => {
             }
         });
         getReports();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const closeFn = () => {

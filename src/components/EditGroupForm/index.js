@@ -71,7 +71,7 @@ const EditGroupForm = ({ showing, setCreate, group, class_ID, setRefresh }) => {
                 closeForm();
                 setLoading(false);
             });
-    };
+    };  
 
     const validateClosing = (date) => {
         const today = new Date();
