@@ -91,6 +91,9 @@ const StyledButton = styled.button`
     font-family: Lato;
     display: grid;
     place-content: center;
+    &:disabled {
+        cursor: default;
+    }
     span {
         display: ${({ isLoading }) => (isLoading ? 'none' : 'inline')};
     }
