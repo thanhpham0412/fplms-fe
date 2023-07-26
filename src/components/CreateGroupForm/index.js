@@ -170,7 +170,6 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
                                     defaultValue={date}
                                     onChange={(e) => {
                                         setDate(e.target.value);
-                                        console.log(e.target.value);
                                     }}
                                 />
                             </FormColumn>
@@ -182,7 +181,6 @@ const CreateGroupForm = ({ showing, setCreate, class_ID, setRefresh }) => {
                                     type={'time'}
                                     onChange={(e) => {
                                         setTime(e.target.value + ':00.000');
-                                        console.log(e.target.value);
                                     }}
                                     defaultValue={time}
                                 />

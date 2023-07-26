@@ -74,7 +74,6 @@ const TextEditor = ({ report, close, progress }) => {
     }, [report]);
 
     const onMarkChange = (e) => {
-        console.log("Mark change", e.target.value)
         setMark(e.target.value);
     };
 
@@ -270,10 +269,10 @@ const LecturerView = ({ groupId, classId }) => {
             endDate: moment(new Date())
                 .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
                 .add(1, 'd')
-                .format('yyyy-MM-DD HH:mm:ss.SSS'),
+                .format('yyyy-MM-DDTHH:mm:ss.SSSZ'),
             startDate: moment(new Date())
                 .set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
-                .format('yyyy-MM-DD HH:mm:ss.SSS'),
+                .format('yyyy-MM-DDTHH:mm:ss.SSSZ'),
             groupId: parseInt(groupId),
         }).then((res) => {
             if (res.data.code == 200) {
@@ -298,8 +297,8 @@ const LecturerView = ({ groupId, classId }) => {
     const onDateChange = (date) => {
         get('/meetings', {
             classId: parseInt(classId),
-            endDate: moment(date).add(1, 'd').format('yyyy-MM-DD HH:mm:ss.SSS'),
-            startDate: moment(date).format('yyyy-MM-DD HH:mm:ss.SSS'),
+            endDate: moment(date).add(1, 'd').format('yyyy-MM-DDTHH:mm:ssZ'),
+            startDate: moment(date).format('yyyy-MM-DDTHH:mm:ssZ'),
             groupId: parseInt(groupId),
         }).then((res) => {
             if (res.data.code == 200) {

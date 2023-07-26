@@ -66,7 +66,6 @@ const Header = () => {
             axios
                 .get(process.env.REACT_APP_API_URL + '/subjects', { headers: header })
                 .then((subs) => {
-                    console.log(subs);
                 });
         }, 300000);
 
@@ -97,30 +96,7 @@ const Header = () => {
                         </NotiInfo>
                     </UserContainer>
                 </BtnContainer>
-                <BtnContainer ref={notiRef}>
-                    <NotificationsIcon
-                        onClick={() => {
-                            setNewNoti(0);
-                            setNotiOpen((e) => !e);
-                        }}
-                    />
-                    <NotiNews isDisplay={newNoti > 0}>{newNoti}</NotiNews>
-                    <NotificationContainer isOpen={isNotiOpen}>
-                        <NotificationHeader>Notification</NotificationHeader>
-                        <NotificationBody>
-                            {list.map((noti) => (
-                                <NotiContainer key={noti.id}>
-                                    {/* <InboxIcon /> */}
-                                    <NotiInfo>
-                                        <small>{noti.userEmail}</small>
-                                        <div>{noti.title}</div>
-                                        <small>{moment(noti.createAt).fromNow()}</small>
-                                    </NotiInfo>
-                                </NotiContainer>
-                            ))}
-                        </NotificationBody>
-                    </NotificationContainer>
-                </BtnContainer>
+              
             </HIcons>
         </HContainer>
     );

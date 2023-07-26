@@ -60,11 +60,7 @@ const Menu = ({ menu, level, expand, setShow }) => {
 
 const SideBar = () => {
     const auth = useContext(AuthContext);
-    console.log(auth.isAdmin);
     const TOKEN = localStorage.getItem('token');
-    const header = {
-        Authorization: `bearer ${TOKEN}`,
-    };
     var user = jwt_decode(TOKEN);
     const [menu, setMenu] = useState([
         {

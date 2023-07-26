@@ -10,7 +10,6 @@ const InputNumber = ({ init, max, onChange, className }) => {
         // const reg = /(^[0-9]{0,2}$)|(^[0-9]{0,2}\.[0-9]{0,5}$)/;
         const reg = /^(10(\.00?)?|[0-9](\.\d{1,2})?)$/;
         setValue(e.target.value.replace(",", "."));
-        console.log(e.target.value)
         // const n = parseFloat(e.target.value.replace(",", "."));
         if (e.target.value.trim().length == 0) {
             setValue(e.target.value || min);
@@ -22,7 +21,6 @@ const InputNumber = ({ init, max, onChange, className }) => {
 
         if (e.target.value > max) setValue(max || 0);
         if (e.target.value < min) setValue(min || 0);
-        console.log("Final num", e.target.value)
         // if (typeof onChange == 'function') {
         //     onChange(e, value);
         // }
