@@ -132,9 +132,9 @@ const PostSection = ({ post, setOpen, setPosts, setStudentInfo, setRefresh }) =>
                     <Divider />
                     <Row>
                         <Author onClick={() => displayAuthorInfo(student?.id)}>
-                            <img src={student?.picture} alt="Student Avatar" />
+                            <img src={student?.imageUrl} alt="Student Avatar" />
                             <p>
-                                Posted by <span>{student?.name} </span>
+                                Posted by <span>{student?.email} </span>
                                 <ReactTimeAgo date={Date.parse(createdDate)} locale="en-US" />
                             </p>
                         </Author>

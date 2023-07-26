@@ -288,7 +288,6 @@ const LecturerView = ({ groupId, classId }) => {
             }
         });
         getReports();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const closeFn = () => {

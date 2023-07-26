@@ -131,12 +131,10 @@ const SubmitEdtior = ({ isOpen, setOpen, type, groupId }) => {
     const [title, setTitle] = useState('');
     const [resourceLink, setResourceLink] = useState('');
 
-
     useEffect(() => {
         setEditorState(EditorState.createWithContent(fromHTML(TEMPLATE2)));
         setTitle('');
         setResourceLink('');
-
     }, [isOpen]);
 
     const submitCycle = () => {
@@ -200,7 +198,6 @@ const TextEditor = ({ report, close, progress }) => {
     const [editorState, setEditorState] = useState(EditorState.createEmpty());
     const [title, setTitle] = useState('');
     const [resourceLink, setResourceLink] = useState('');
-
 
     const avts = ['TP', 'NK', 'TN', 'TT', 'NH'];
 
@@ -528,7 +525,6 @@ const StudentView = ({ groupId, classId }) => {
                 error('An error occurred');
             }
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const pickTopic = (topic) => {

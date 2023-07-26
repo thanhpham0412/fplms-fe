@@ -74,7 +74,7 @@ const DiscussionList = () => {
     const [loadAnim] = useState(
         new Array(3).fill(PostLoader).map((Load, i) => <PostLoader key={i} />)
     );
-    const [isLoading, setLoading] = useState(true);
+    const [isLoading, setLoading] = useState(false);
     const [isOpen, setOpen] = useState(false);
     const [studentInfo, setStudentInfo] = useState();
     const [posts, setPosts] = useState([]);
@@ -93,9 +93,9 @@ const DiscussionList = () => {
         Authorization: `bearer ${localStorage.getItem('token')}`,
     };
     useEffect(() => {
-        try {
-            setLoading(true);
-            const fetchData = () => {
+        const fetchData = () => {
+            try {
+                setLoading(true);
                 axios
                     .get(URL, {
                         headers: header,
@@ -108,8 +108,9 @@ const DiscussionList = () => {
                         },
                     })
                     .then((res) => {
+                        // console.log(res);
                         if (res.status == 200) {
-                            console.log(res);
+                            console.log('Success', res);
                             setPosts(res.data);
                             setTotalPages(JSON.parse(res.headers['x-pagination']).TotalPages);
                             setLoading(false);
@@ -117,25 +118,24 @@ const DiscussionList = () => {
                             error(`An error occured!`);
                             setLoading(false);
                         }
-                    });
-            };
+                    })
+                    .catch((e) => setLoading(false));
+            } catch (err) {
+                error(`${err}`);
+                setLoading(false);
+            }
+        };
 
-            fetchData();
-        } catch (err) {
-            error(`${err}`);
-            setLoading(false);
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        fetchData();
     }, [pageNum, subject, sort]);
 
     useEffect(() => {
         const getSubjects = () => {
-            const URL = process.env.REACT_APP_DISCUSSION_URL + `/subjects`;
+            const URL = process.env.REACT_APP_API_URL + `/subjects`;
             axios
                 .get(URL, { headers: header })
                 .then((res) => {
-                    const datas = res.data.map((item) => ({
+                    const datas = res.data.data.map((item) => ({
                         value: item.name,
                         content: item.name,
                     }));
@@ -148,7 +148,6 @@ const DiscussionList = () => {
                 });
         };
         getSubjects();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const searchForQuestions = (e) => {

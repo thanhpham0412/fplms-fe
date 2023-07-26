@@ -40,7 +40,6 @@ const CreateTopicForm = ({ showing, item, setOpen, save, disable, subjects }) =>
             name: item?.name || '',
             requirements: item?.requirements || '',
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [item?.id]);
 
     const submit = () => {

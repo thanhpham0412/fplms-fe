@@ -51,7 +51,6 @@ const GroupPicking = () => {
                 error(err);
                 setLoading(false);
             });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [refresh]);
 
     const handleUnenroll = () => {

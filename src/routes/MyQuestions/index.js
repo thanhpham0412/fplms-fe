@@ -74,7 +74,7 @@ const MyQuestions = () => {
     const [refresh, setRefresh] = useState(0);
     const navigate = useNavigate();
     const user = getTokenInfo();
-    let URL = process.env.REACT_APP_DISCUSSION_URL;
+    let URL = process.env.REACT_APP_API_URL;
     if (user.role == 'Student') {
         URL = URL + '/students/questions';
     } else {
@@ -102,8 +102,6 @@ const MyQuestions = () => {
                 .catch(setLoading(false));
         };
         fetchData();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [refresh]);
 
     return (

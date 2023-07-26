@@ -35,11 +35,11 @@ const TextEditor = () => {
 
     useEffect(() => {
         const getSubjects = () => {
-            const URL = process.env.REACT_APP_DISCUSSION_URL + `/subjects`;
+            const URL = process.env.REACT_APP_API_URL + `/subjects`;
             axios
                 .get(URL, { headers: header })
                 .then((res) => {
-                    const datas = res.data.map((item) => ({
+                    const datas = res.data.data.map((item) => ({
                         value: item.id,
                         content: item.name,
                     }));
@@ -54,7 +54,7 @@ const TextEditor = () => {
         if (questionId != null) {
             const URL = process.env.REACT_APP_DISCUSSION_URL + `/questions/${questionId}`;
             const header = {
-                Authorization: bearer `${localStorage.getItem('token')}`,
+                Authorization: `bearer ${localStorage.getItem('token')}`,
             };
             const getQuestion = () => {
                 axios
@@ -79,7 +79,6 @@ const TextEditor = () => {
 
             getQuestion();
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const onEditorStateChange = (editorState) => {

@@ -69,7 +69,6 @@ const GroupSection = ({ data, class_ID, role, email, isJoined, setJoin, setRefre
             setDisable(false);
             setDisableBtn(false);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [slot, isJoined]);
 
     const handleJoinBtn = async () => {

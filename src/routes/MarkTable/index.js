@@ -48,7 +48,6 @@ function MarkTable() {
 
             setRows(_list);
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

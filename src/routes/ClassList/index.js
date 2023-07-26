@@ -61,7 +61,7 @@ const ClassList = () => {
             .get(process.env.REACT_APP_API_URL + '/subjects', { headers: header })
             .then((subs) => {
                 if (subs.data.code == 200) {
-                    console.log("subs");
+                    console.log('subs');
                     console.log(subs.data);
                     setSubjects(
                         subs.data.data.reduce((pre, cur) => {
@@ -80,7 +80,7 @@ const ClassList = () => {
             })
             .then((list) => {
                 if (list.data.code == 200) {
-                    console.log("list");
+                    console.log('list');
                     console.log(list.data);
                     setList(list.data.data);
                 }
@@ -98,8 +98,6 @@ const ClassList = () => {
         //     );
         //     setList(list.data.data);
         // });
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const open = () => {

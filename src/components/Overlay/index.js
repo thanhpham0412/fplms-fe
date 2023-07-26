@@ -34,7 +34,6 @@ const Overlay = ({ children, isOpen, closeFn, dark, duration, inDelay, outDelay,
         return () => {
             document.removeEventListener('click', handleClickOutSide);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
     return (

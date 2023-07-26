@@ -130,7 +130,7 @@ const DiscussionView = () => {
                 ) : (
                     <>
                         <StyledHeader>
-                            <img src={question?.student.picture} alt="Student Avatar" />
+                            <img src={question?.student.imageUrl} alt="Student Avatar" />
                             <Column>
                                 <Title>{question?.student.email}</Title>
                                 <Subtitle>{question.createdDate}</Subtitle>

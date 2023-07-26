@@ -191,7 +191,6 @@ const Particles = () => {
             window.removeEventListener('click', newDot);
             // window.removeEventListener('dblclick', newSDot);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return <canvas width={size.w} height={size.h} ref={canvas}></canvas>;

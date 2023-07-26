@@ -120,7 +120,6 @@ const SideBar = () => {
                 ])
             );
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const setShow = (target, status = false) => {

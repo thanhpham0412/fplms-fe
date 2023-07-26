@@ -12,8 +12,6 @@ const AvatarGroup = (props) => {
     // var arr = ['#BBCCFD', '#BAECCA', '#D0D0D0'];
     useEffect(() => {
         setSlot(props.members - props.slot);
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.slot]);
     const rows = [];
     for (let i = 0; i < props.slot; i++) {

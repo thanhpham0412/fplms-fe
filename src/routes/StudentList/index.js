@@ -50,7 +50,6 @@ function StudentList() {
                 });
             }
         });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const _delete = (studentId) => {
@@ -75,14 +74,13 @@ function StudentList() {
         console.log('_move');
         axios
             .put(
-                process.env.REACT_APP_API_URL + `/classes/${classId}/students/${student.id}/groups/${selection.groupNumber}`,
+                process.env.REACT_APP_API_URL +
+                    `/classes/${classId}/students/${student.id}/groups/${selection.groupNumber}`,
                 {},
                 {
                     headers: {
-                        Authorization: `bearer ${localStorage.getItem('token')}`
-
-                    }
-                    
+                        Authorization: `bearer ${localStorage.getItem('token')}`,
+                    },
                 }
             )
             .then((res) => {

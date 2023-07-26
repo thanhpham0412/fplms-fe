@@ -190,7 +190,7 @@ const AnswerSection = ({ questionId, answers, setRefresh, setStudent, setOpenStu
                 {answers?.map((data, index) => (
                     <Answers key={data.id}>
                         <Col>
-                            <img src={data.student?.picture} alt="Student Avatar" />
+                            <img src={data.student?.imageUrl} alt="Student Avatar" />
                         </Col>
                         <Col>
                             <Row>
