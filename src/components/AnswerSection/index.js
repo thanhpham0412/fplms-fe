@@ -62,8 +62,8 @@ const AnswerSection = ({ questionId, answers, setRefresh, setStudent, setOpenStu
                 setLoading(false);
             })
             .catch((err) => {
-                error(`${err}`);
-                setLoading(false);
+                // error(`${err}`);
+                // setLoading(false);
             })
             .finally(() => {
                 setRefresh((prev) => prev + 1);

@@ -1,4 +1,4 @@
-/* eslint-disable prettier/prettier */
+// eslint-disable prettier/prettier;
 import { useState, useEffect } from 'react';
 
 import axios from 'axios';
@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 
 import { Table, Row, TableHeader, Selection } from '../../components';
 import { get } from '../../utils/request';
-import { success } from '../../utils/toaster';
+import { error, success } from '../../utils/toaster';
 import { TableContainer, SelectionContainer } from './style';
 
 function StudentList() {
@@ -92,6 +92,8 @@ function StudentList() {
                         _row[student.id].group = selection.groupNumber;
                         return _row;
                     });
+                } else {
+                    error(res.data.message);
                 }
             });
     };
